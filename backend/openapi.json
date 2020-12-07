@@ -1,0 +1,216 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Komodo Portal",
+    "description" : "Komodo Portal API",
+    "version" : "1.0.0-oas3"
+  },
+  "servers" : [ {
+    "url" : "https://api.komodo-dev.library.illinois.edu/api",
+    "description" : "Production server"
+  }, {
+    "url" : "http://localhost:4040/api",
+    "description" : "Local server"
+  } ],
+  "tags" : [ {
+    "name" : "Courses",
+    "description" : "API for courses"
+  }, {
+    "name" : "Labs",
+    "description" : "API for lab sessions"
+  }, {
+    "name" : "Assets",
+    "description" : "API for assets"
+  }, {
+    "name" : "Public",
+    "description" : "API for VMD uploading"
+  } ],
+  "paths" : {
+    "/portal/courses/{courseId}" : {
+      "get" : {
+        "tags" : [ "Courses" ],
+        "summary" : "Get course detail with a given id",
+        "parameters" : [ {
+          "name" : "courseId",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Course"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/portal/labs/{labId}/assets" : {
+      "get" : {
+        "tags" : [ "Labs" ],
+        "summary" : "Get asset list for a lab session",
+        "parameters" : [ {
+          "name" : "labId",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Asset"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/portal/assets/{assetId}" : {
+      "get" : {
+        "tags" : [ "Assets" ],
+        "summary" : "Get asset detail with a given id",
+        "parameters" : [ {
+          "name" : "assetId",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Asset"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/upload" : {
+      "post" : {
+        "tags" : [ "Public" ],
+        "summary" : "Presign public upload request",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "API key is missing or invalid"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Course" : {
+        "properties" : {
+          "course_id" : {
+            "type" : "integer"
+          },
+          "course_no" : {
+            "type" : "string"
+          },
+          "course_name" : {
+            "type" : "string"
+          },
+          "department" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Asset" : {
+        "properties" : {
+          "asset_id" : {
+            "type" : "integer"
+          },
+          "uuid" : {
+            "type" : "string"
+          },
+          "asset_name" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "creator" : {
+            "type" : "string"
+          },
+          "is_public" : {
+            "type" : "boolean"
+          },
+          "create_at" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "update_at" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "path" : {
+            "type" : "string"
+          }
+        }
+      },
+      "inline_response_200" : {
+        "properties" : {
+          "url" : {
+            "type" : "string",
+            "description" : "The URL to use as the action of the form"
+          },
+          "fields" : {
+            "type" : "object",
+            "description" : "A hash of fields that must be included in the form for the upload to succeed."
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "ApiKeyAuth" : {
+        "type" : "apiKey",
+        "name" : "X-API-KEY",
+        "in" : "header"
+      }
+    }
+  }
+}

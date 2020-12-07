@@ -1,0 +1,58 @@
+version: '3.3'
+services:
+
+  komodo_portal_db:
+    image: mysql:5.7
+    container_name: komodo_portal_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'komodo_portal'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - ./backend/scripts:/docker-entrypoint-initdb.d
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - komodo_internal
+    # ports:
+    #   - 3306:3306
+      
+  komodo_portal_backend:
+    build: ./backend
+    container_name: komodo_portal_backend
+    restart: always
+    depends_on:
+      - komodo_portal_db
+    labels:
+      - "traefik.frontend.rule=Host:api.komodo-dev.library.illinois.edu"
+      - "traefik.backend=komodo_portal_backend"
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.port=4040"
+    networks:
+      - proxy
+      - komodo_internal
+  komodo_portal_frontend:
+    build: ./frontend
+    container_name: komodo_portal_frontend
+    restart: always
+    depends_on:
+      - komodo_portal_backend
+    labels:
+      - "traefik.frontend.rule=Host:komodo-dev.library.illinois.edu"
+      - "traefik.backend=komodo_portal_frontend"
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+    environment:
+      - VUE_APP_API_BASE_URL 
+    networks:
+      - proxy
+      - komodo_internal
+
+networks:
+  proxy:
+    external: true
+  komodo_internal:
+    external: false
