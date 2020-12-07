@@ -14,7 +14,7 @@ _______________
 #### Getting started
 Prerequisite:
 * [Node.js](https://nodejs.org/en/download/)
-* [vue/cli] Installed by `npm install -g @vue/cli-service-global`
+* vue/cli installed by `npm install -g @vue/cli-service-global`
 * [MySQL workbench](https://dev.mysql.com/downloads/workbench/) (Recommend but not required)
 
 Clone this repository
