@@ -26,9 +26,9 @@ Clone this repository
 This repo contains two parts: frontend and backend. You need to set up these two parts seperatively and run them on different port. 
 
 1. Frontend
-Visit [here] to get more details about the frontend.
+Visit [here](https://github.com/gelic-idealab/komodo-portal/tree/master/frontend) to get more details about the frontend.
 2. Backend
-Visit [here] to get more details about the backend.
+Visit [here](https://github.com/gelic-idealab/komodo-portal/tree/master/backend) to get more details about the backend.
 
 ______________
 <a name="deployment"></a>
