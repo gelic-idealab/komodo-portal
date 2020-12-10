@@ -59,16 +59,14 @@ app.use("/users", userController);
 app.use("/courses", courseController);
 app.use("/labs", labController);
 app.use("/assets", assetController);
-
-// TODO(rob): change routes of data controller
-app.use("/api/portal/data", dataController);
-app.use("/api/public", publicController);
+app.use("/data", dataController);
+app.use("/public", publicController);
 
 const ExampleConfig = {};
 
 
 app.get('/', (req, res) => res.send('Hello Komodo!'));
-app.post('/api/portal/register', (req, res) => {
+app.post('/register', (req, res) => {
   const {email, password} = req.body;
   if (!email || !password) {
     res.end(JSON.stringify({success: false, errorMessage: "illegal request"}));
@@ -94,13 +92,13 @@ app.post('/api/portal/register', (req, res) => {
     });
 });
 
-app.get('/api/portal/config', (req, res) => {
+app.get('/config', (req, res) => {
   if (!req.session.config) {
     res.end(JSON.stringify({success: false, errorMessage: "not login"}));
   }
   res.end(JSON.stringify({success: true, data: JSON.stringify(req.session.config)}));
 });
-app.post('/api/portal/config', (req, res) => {
+app.post('/config', (req, res) => {
   const {config} = req.body;
   if (!req.session.config) {
     res.end(JSON.stringify({success: false, errorMessage: "not login"}));
@@ -121,7 +119,7 @@ app.post('/api/portal/config', (req, res) => {
     });
 });
 
-app.get('/api/portal/s3_signed/:name', (req, res) => {
+app.get('/s3_signed/:name', (req, res) => {
   const name = req.params.name;
   if (!name || !/^[a-zA-Z0-9_]+$/.test(name)) {
     console.log(name);
