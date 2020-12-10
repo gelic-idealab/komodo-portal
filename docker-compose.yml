@@ -1,30 +1,10 @@
 version: '3.3'
 services:
 
-  komodo_portal_db:
-    image: mysql:5.7
-    container_name: komodo_portal_db
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'komodo_portal'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
-    volumes:
-      - ./backend/scripts:/docker-entrypoint-initdb.d
-    labels:
-      - "traefik.enable=false"
-    networks:
-      - komodo_internal
-    # ports:
-    #   - 3306:3306
-      
-  komodo_portal_backend:
+  backend:
     build: ./backend
-    container_name: komodo_portal_backend
+    container_name: komodo-portal-backend
     restart: always
-    depends_on:
-      - komodo_portal_db
     labels:
       - "traefik.frontend.rule=Host:api.komodo-dev.library.illinois.edu"
       - "traefik.backend=komodo_portal_backend"
@@ -34,12 +14,11 @@ services:
     networks:
       - proxy
       - komodo_internal
-  komodo_portal_frontend:
+
+  frontend:
     build: ./frontend
-    container_name: komodo_portal_frontend
+    container_name: komodo-portal-frontend
     restart: always
-    depends_on:
-      - komodo_portal_backend
     labels:
       - "traefik.frontend.rule=Host:komodo-dev.library.illinois.edu"
       - "traefik.backend=komodo_portal_frontend"
