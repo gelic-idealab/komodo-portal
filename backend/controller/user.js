@@ -42,7 +42,7 @@ userController.post("/login",
     const results = await login(email, password);
     const id = results.data.user.user_id;
     // Generate a new token for the login user 
-    const token = await promisify(jwt.sign)({id},'random_secret',
+    const token = await promisify(jwt.sign)({id}, config.jwt,
     {
       expiresIn: 7 * 24 * 60 * 60 * 1000
     }

@@ -25,6 +25,7 @@ app.use(cors({
   origin: [
     "https://vr.komodo-dev.library.illinois.edu",
     "https://komodo-dev.library.illinois.edu",
+    "http://localhost:8080"
   ],
   methods: [
     'GET', 'PUT', 'POST', 'DELETE'
