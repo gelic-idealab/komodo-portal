@@ -1,7 +1,8 @@
 FROM node:lts-alpine
 COPY ./ /app
 WORKDIR /app
-RUN npm install && npm run build
+RUN npm install 
+RUN npm run build
 
 FROM nginx
 RUN mkdir /app
