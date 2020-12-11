@@ -24,13 +24,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors({
   origin: [
     "https://vr.komodo-dev.library.illinois.edu",
-    "http://localhost",
-    "https://localhost",
     "https://komodo-dev.library.illinois.edu",
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "http://localhost:8080",
-    "https://localhost:8080"
   ],
   methods: [
     'GET', 'PUT', 'POST', 'DELETE'
@@ -66,58 +60,6 @@ const ExampleConfig = {};
 
 
 app.get('/', (req, res) => res.send('Hello Komodo!'));
-app.post('/register', (req, res) => {
-  const {email, password} = req.body;
-  if (!email || !password) {
-    res.end(JSON.stringify({success: false, errorMessage: "illegal request"}));
-    return;
-  }
-  const config = {
-    ...ExampleConfig,
-    email: email,
-  };
-  pool.execute("INSERT INTO user (email, password, config) values (?, SHA(?), ?);",
-    [email, password, JSON.stringify(config)], (err) => {
-      if (err) {
-        if (err.code === 'ER_DUP_ENTRY') {
-          res.end(JSON.stringify({success: false, errorMessage: "email already registered"}));
-        } else {
-          res.end(JSON.stringify({success: false, errorMessage: err.toString()}));
-        }
-      } else {
-        req.session.config = config;
-
-        res.end(JSON.stringify({success: true}));
-      }
-    });
-});
-
-app.get('/config', (req, res) => {
-  if (!req.session.config) {
-    res.end(JSON.stringify({success: false, errorMessage: "not login"}));
-  }
-  res.end(JSON.stringify({success: true, data: JSON.stringify(req.session.config)}));
-});
-app.post('/config', (req, res) => {
-  const {config} = req.body;
-  if (!req.session.config) {
-    res.end(JSON.stringify({success: false, errorMessage: "not login"}));
-  }
-  if (!config) {
-    res.end(JSON.stringify({success: false, errorMessage: "illegal request"}));
-    return;
-  }
-  pool.execute("UPDATE user SET config = ? WHERE email = ?",
-    [JSON.stringify(config), req.session.config.email], (err) => {
-      if (err) {
-        console.log(err);
-        req.session.config = config;
-        res.end(JSON.stringify({success: false, errorMessage: err.toString()}));
-      } else {
-        res.end(JSON.stringify({success: true}));
-      }
-    });
-});
 
 app.get('/s3_signed/:name', (req, res) => {
   const name = req.params.name;
