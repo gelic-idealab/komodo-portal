@@ -11,7 +11,6 @@
   "dependencies": {
     "apexcharts": "^3.17.0",
     "axios": "^0.19.0",
-    "chartist": "0.11.2",
     "crypto-js": "^4.0.0",
     "eslint": "^5.16.0",
     "eslint-loader": "^2.1.2",

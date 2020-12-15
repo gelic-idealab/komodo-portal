@@ -45,8 +45,8 @@ VALUES
 const getRegisteredCourse = `
 SELECT
   c.*
-FROM komodo_portal.KP_Course c
-JOIN komodo_portal.KP_Registration r
+FROM KP_Course c
+JOIN KP_Registration r
   ON c.course_id = r.course_id
 WHERE r.student_id = ?;
 `

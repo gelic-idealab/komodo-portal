@@ -18,7 +18,6 @@ import Notifications from "./components/NotificationPlugin";
 import MaterialDashboard from "./plugins/material-dashboard";
 import vuetify from "./plugins/vuetify.js";
 
-import Chartist from "chartist";
 import moment from "moment";
 import VueApexCharts from "vue-apexcharts";
 
@@ -64,7 +63,6 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-Vue.prototype.$Chartist = Chartist;
 Vue.prototype.moment = moment;
 Vue.use(VueRouter);
 Vue.use(MaterialDashboard);
@@ -83,7 +81,4 @@ new Vue({
   router,
   store,
   vuetify,
-  data: {
-    Chartist: Chartist
-  }
 });

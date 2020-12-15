@@ -69,10 +69,10 @@ WHERE user_id = ?;
 
 const getUserListByCourse = `
 SELECT u.user_id, CONCAT(u.last_name, ', ', u.first_name) as user_name
-FROM komodo_portal.KP_Course c
-JOIN komodo_portal.KP_Registration r
+FROM KP_Course c
+JOIN KP_Registration r
 ON c.course_id = r.course_id
-JOIN komodo_portal.KP_User u
+JOIN KP_User u
 ON r.student_id = u.user_id
 WHERE c.course_id = ?;
 `
@@ -80,8 +80,8 @@ WHERE c.course_id = ?;
 const getRegisteredUser = `
 SELECT
   u.*
-FROM komodo_portal.KP_User u
-JOIN komodo_portal.KP_Registration r
+FROM KP_User u
+JOIN KP_Registration r
   ON u.user_id = r.student_id
 WHERE r.course_id = ?;
 `
