@@ -143,8 +143,7 @@ export default {
         },
         setupSocket() {
             // connect to socket.io relay server
-            this.socket = io("https://relay.komodo-dev.library.illinois.edu/chat");
-            // this.socket = io("http://localhost:3000/chat");
+            this.socket = io(`${process.env.VUE_APP_RELAY_BASE_URL}/chat`);
 
             // register socket event handlers
             this.socket.on('joined', this.addNewPeer);
@@ -163,7 +162,7 @@ export default {
         createPeer() {
             // create new PeerJS connection, setup event handlers
             this.peer = new Peer({
-                host: 'relay.komodo-dev.library.illinois.edu',
+                host: `${process.env.VUE_APP_RELAY_BASE_URL}`,
                 path: '/call',
                 secure: true
             });
