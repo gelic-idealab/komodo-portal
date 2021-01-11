@@ -289,6 +289,7 @@ export default {
                 });
             }
             this.muted = true;
+            this.disableSpeechToText();
         },
         unMute() {
             console.log('unmuting mic')
@@ -298,6 +299,7 @@ export default {
                 });
             }
             this.muted = false;
+            this.enableSpeechToText();
         },
         addNewPeer(data) {
             console.log('joined event:', data);
