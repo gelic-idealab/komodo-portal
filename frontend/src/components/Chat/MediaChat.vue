@@ -119,6 +119,7 @@ export default {
             stock: "",
             isconnectedToServer: false,
             socket: null,
+            secureSocket: false,
             localStream: null,
             recordContext: null,
             RECORD_BUFFER_SIZE: 4096,
@@ -161,10 +162,15 @@ export default {
         },
         createPeer() {
             // create new PeerJS connection, setup event handlers
+            let url = new URL(process.env.VUE_APP_RELAY_BASE_URL);
+            let host = url.hostname;
+            let port = url.port;
+            let secure = url.protocol === "https:";
             this.peer = new Peer({
-                host: `${process.env.VUE_APP_RELAY_BASE_URL}`,
+                host: host,
+                port: port || 443,
                 path: '/call',
-                secure: true
+                secure: secure
             });
             this.peer.on('open', this.connectedToServer);
             this.peer.on('call', this.answer);
@@ -195,6 +201,10 @@ export default {
                     this.mute();
                 }
                 console.log('local stream added:', this.localStream);
+
+                // enable speech-to-text by default
+                this.enableSpeechToText();
+
                 // renegotiate calls with new local stream
                 this.renegotiateCalls();
             }, (err) => {

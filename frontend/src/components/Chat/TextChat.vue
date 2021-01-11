@@ -60,8 +60,7 @@ export default {
     }
   },
   mounted() {
-    this.socket = io("https://relay.komodo-dev.library.illinois.edu/chat"); 
-    // this.socket = io("http://localhost:3000/chat"); // TODO(rob): should use base url param
+    this.socket = io(`${process.env.VUE_APP_RELAY_BASE_URL}/chat`); 
     this.socket.emit("join", [this.sessionId, this.userId]);
     this.socket.on("micText", this.handleMicText);
   },
