@@ -96,6 +96,7 @@
 import io from 'socket.io-client';
 import Peer from 'peerjs';
 import axios from 'axios';
+import RecordRTC from 'recordrtc';
 
 export default {
     name: "MediaChat",
@@ -108,6 +109,7 @@ export default {
     data() {
         return {
             audio: new Audio(require("../../assets/sound_notification.mp4")),
+            recorder: null,
             muted: false,
             audioIsSupported: false,
             videoIsSupported: false,
@@ -202,13 +204,33 @@ export default {
                 }
                 console.log('local stream added:', this.localStream);
 
-                // enable speech-to-text by default
-                this.enableSpeechToText();
+                this.beginAudioStreaming();
 
                 // renegotiate calls with new local stream
                 this.renegotiateCalls();
             }, (err) => {
                 console.log('error getting local stream:', err);
+            });
+        },
+        beginAudioStreaming() {
+            console.log('BEGIN AUDIO STREAMING')
+            this.recorder = RecordRTC(this.localStream, {
+                type: 'audio',
+                mimeType: 'audio/webm',
+                sampleRate: 44100,
+                desiredSampRate: 16000,
+                timeSlice: 4000,
+                ondataavailable: this.emitAudioBlob
+            });
+
+            this.recorder.startRecording();
+        },
+        emitAudioBlob(blob) {
+            console.log('EMITTING AUDIO:', blob)
+            this.socket.emit('mic', {
+                client_id: this.client_id,
+                session_id: this.session_id,
+                data: blob
             });
         },
         enableVideo() {
