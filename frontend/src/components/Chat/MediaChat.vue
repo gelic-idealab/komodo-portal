@@ -52,10 +52,10 @@
                             <v-btn class="mx-2" fab dark small color="error" v-show="sharingScreen" v-on:click="stopShareScreen">
                                 <v-icon dark>stop_screen_share</v-icon>
                             </v-btn>
-                            <v-btn class="mx-2" fab dark small color="primary" v-show="!recordContext" v-on:click="enableSpeechToText">
+                            <v-btn class="mx-2" fab dark small color="primary" v-show="true" v-on:click="enableSpeechToText">
                                 <v-icon dark>record_voice_over</v-icon>
                             </v-btn>
-                            <v-btn class="mx-2" fab dark small color="error" v-show="recordContext" v-on:click="disableSpeechToText">
+                            <v-btn class="mx-2" fab dark small color="error" v-show="false" v-on:click="disableSpeechToText">
                                 <v-icon dark>voice_over_off</v-icon>
                             </v-btn>
                         </div>                        
@@ -123,14 +123,6 @@ export default {
             socket: null,
             secureSocket: false,
             localStream: null,
-            recordContext: null,
-            RECORD_BUFFER_SIZE: 4096,
-            recordSource: null,
-            recordProcessor: null,
-            micData: {
-                buffer: Buffer.alloc(1024*512),
-                cursor: 0
-            }
         }
     },
     methods: {
@@ -229,9 +221,10 @@ export default {
         emitAudioBlob(blob) {
             console.log('EMITTING AUDIO:', blob)
             this.socket.emit('mic', {
-                client_id: this.client_id,
-                session_id: this.session_id,
-                data: blob
+                session_id: this.sessionId, 
+                client_id: this.userId, 
+                client_name: this.firstName + " " + this.lastName, 
+                blob: blob
             });
         },
         enableVideo() {
@@ -460,46 +453,10 @@ export default {
             }
         },
         enableSpeechToText() {
-            // if (this.localStream) {
-            //     console.log('enabling speech-to-text')
-            //     // setup speech-to-text relay with current local stream
-            //     this.recordContext = new AudioContext();
-            //     this.recordSource = this.recordContext.createMediaStreamSource(this.localStream);
-            //     this.recordProcessor = this.recordContext.createScriptProcessor(this.RECORD_BUFFER_SIZE, 1, 1); 
-            //     this.recordSource.connect(this.recordProcessor);
-            //     this.recordProcessor.connect(this.recordContext.destination);
-            //     this.recordProcessor.onaudioprocess = this.processAudio;
-            // } else {
-            //     console.log('cannot enable speech-to-text: no local stream');
-            // }
+            // TODO(rob): toggle render flag for speech to text payloads
         },
         disableSpeechToText() {
-            // if (this.recordContext) {
-            //     console.log('disabling speech-to-text');
-            //     this.recordContext.close();
-            //     this.recordContext = null;
-            //     this.recordSource = null;
-            //     this.recordProcessor.onaudioprocess = null;
-            //     this.recordProcessor = null;
-            // }
-        },
-        processAudio(e) {
-            // send record buffer to relay server for speech-to-text
-            // let data = e.inputBuffer.getChannelData(0); // returns Float32Array
-            // if (this.micData.cursor + data.byteLength > this.micData.buffer.byteLength) {
-            //     this.socket.emit('mic', { 
-            //         session_id: this.sessionId, 
-            //         client_id: this.userId, 
-            //         client_name: this.firstName + " " + this.lastName, 
-            //         buffer: this.micData.buffer, 
-            //         sampleRate: this.recordContext.sampleRate 
-            //     });
-            //     this.micData.cursor = 0;
-            // }
-            // for (let i = 0; i < data.length; i++) {
-            //     this.micData.buffer.writeFloatLE(data[i], (i*4) + this.micData.cursor);
-            // }
-            // this.micData.cursor += data.byteLength;
+            // TODO(rob): toggle render flag -- or collapse into single toggle function
         },
         handleMessage(data) {
             console.log('received message:', data);
