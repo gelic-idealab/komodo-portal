@@ -216,9 +216,10 @@ export default {
             console.log('BEGIN AUDIO STREAMING')
             this.recorder = RecordRTC(this.localStream, {
                 type: 'audio',
-                mimeType: 'audio/webm',
-                sampleRate: 44100,
+                mimeType: 'audio/wav',
+                recorderType: RecordRTC.StereoAudioRecorder,
                 desiredSampRate: 16000,
+                numberOfAudioChannels: 1,
                 timeSlice: 4000,
                 ondataavailable: this.emitAudioBlob
             });
@@ -311,7 +312,7 @@ export default {
                 });
             }
             this.muted = true;
-            this.disableSpeechToText();
+            this.recorder.stopRecording();
         },
         unMute() {
             console.log('unmuting mic')
@@ -321,7 +322,7 @@ export default {
                 });
             }
             this.muted = false;
-            this.enableSpeechToText();
+            this.recorder.startRecording();
         },
         addNewPeer(data) {
             console.log('joined event:', data);
@@ -436,6 +437,7 @@ export default {
             this.stopShareScreen(false);
             this.disableSpeechToText();
             this.stopStream();
+            this.recorder.stopRecording();
             console.log('hanging up')
             for (let c = 0; c < this.connections.length; c++) {
                 console.log('closing connection:', this.connections[c]);
@@ -458,46 +460,46 @@ export default {
             }
         },
         enableSpeechToText() {
-            if (this.localStream) {
-                console.log('enabling speech-to-text')
-                // setup speech-to-text relay with current local stream
-                this.recordContext = new AudioContext();
-                this.recordSource = this.recordContext.createMediaStreamSource(this.localStream);
-                this.recordProcessor = this.recordContext.createScriptProcessor(this.RECORD_BUFFER_SIZE, 1, 1); 
-                this.recordSource.connect(this.recordProcessor);
-                this.recordProcessor.connect(this.recordContext.destination);
-                this.recordProcessor.onaudioprocess = this.processAudio;
-            } else {
-                console.log('cannot enable speech-to-text: no local stream');
-            }
+            // if (this.localStream) {
+            //     console.log('enabling speech-to-text')
+            //     // setup speech-to-text relay with current local stream
+            //     this.recordContext = new AudioContext();
+            //     this.recordSource = this.recordContext.createMediaStreamSource(this.localStream);
+            //     this.recordProcessor = this.recordContext.createScriptProcessor(this.RECORD_BUFFER_SIZE, 1, 1); 
+            //     this.recordSource.connect(this.recordProcessor);
+            //     this.recordProcessor.connect(this.recordContext.destination);
+            //     this.recordProcessor.onaudioprocess = this.processAudio;
+            // } else {
+            //     console.log('cannot enable speech-to-text: no local stream');
+            // }
         },
         disableSpeechToText() {
-            if (this.recordContext) {
-                console.log('disabling speech-to-text');
-                this.recordContext.close();
-                this.recordContext = null;
-                this.recordSource = null;
-                this.recordProcessor.onaudioprocess = null;
-                this.recordProcessor = null;
-            }
+            // if (this.recordContext) {
+            //     console.log('disabling speech-to-text');
+            //     this.recordContext.close();
+            //     this.recordContext = null;
+            //     this.recordSource = null;
+            //     this.recordProcessor.onaudioprocess = null;
+            //     this.recordProcessor = null;
+            // }
         },
         processAudio(e) {
             // send record buffer to relay server for speech-to-text
-            let data = e.inputBuffer.getChannelData(0); // returns Float32Array
-            if (this.micData.cursor + data.byteLength > this.micData.buffer.byteLength) {
-                this.socket.emit('mic', { 
-                    session_id: this.sessionId, 
-                    client_id: this.userId, 
-                    client_name: this.firstName + " " + this.lastName, 
-                    buffer: this.micData.buffer, 
-                    sampleRate: this.recordContext.sampleRate 
-                });
-                this.micData.cursor = 0;
-            }
-            for (let i = 0; i < data.length; i++) {
-                this.micData.buffer.writeFloatLE(data[i], (i*4) + this.micData.cursor);
-            }
-            this.micData.cursor += data.byteLength;
+            // let data = e.inputBuffer.getChannelData(0); // returns Float32Array
+            // if (this.micData.cursor + data.byteLength > this.micData.buffer.byteLength) {
+            //     this.socket.emit('mic', { 
+            //         session_id: this.sessionId, 
+            //         client_id: this.userId, 
+            //         client_name: this.firstName + " " + this.lastName, 
+            //         buffer: this.micData.buffer, 
+            //         sampleRate: this.recordContext.sampleRate 
+            //     });
+            //     this.micData.cursor = 0;
+            // }
+            // for (let i = 0; i < data.length; i++) {
+            //     this.micData.buffer.writeFloatLE(data[i], (i*4) + this.micData.cursor);
+            // }
+            // this.micData.cursor += data.byteLength;
         },
         handleMessage(data) {
             console.log('received message:', data);
