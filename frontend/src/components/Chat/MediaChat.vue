@@ -108,21 +108,21 @@ export default {
     },
     data() {
         return {
-            audio: new Audio(require("../../assets/sound_notification.mp4")),
-            recorder: null,
-            muted: false,
             audioIsSupported: false,
-            videoIsSupported: false,
-            sharingVideo: false,
-            sharingScreen: false,
-            peer: null,
+            callNotification: new Audio(require("../../assets/sound_notification.mp4")),
             connections: [],
             images: [],
-            stock: "",
             isconnectedToServer: false,
-            socket: null,
-            secureSocket: false,
             localStream: null,
+            muted: false,
+            peer: null,
+            recorder: null,
+            secureSocket: false,
+            sharingScreen: false,
+            sharingVideo: false,
+            socket: null,
+            stock: "",
+            videoIsSupported: false,
         }
     },
     methods: {
@@ -475,7 +475,7 @@ export default {
             })
         },
         soundNotification(){
-            this.audio.play();
+            this.callNotification.play();
         }
     }
 }
