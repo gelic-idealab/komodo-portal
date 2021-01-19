@@ -110,7 +110,8 @@ export default {
         description: "",
       },
       currentTab: 1,
-      labList: []
+      labList: [],
+      captures: []
     }
   },
   mounted: function() {
@@ -149,6 +150,7 @@ export default {
               duration: moment.duration(startTime.diff(endTime)).humanize()
             }
           });
+          this.captures = values[2].data;
         });
     }
   }
