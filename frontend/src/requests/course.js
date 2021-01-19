@@ -102,3 +102,11 @@ export const deleteCourse = params => {
     }
   );
 }
+
+// Get list of captures by course id
+export const getCaptures = params => {
+  return baseRequest.get(
+    "/labs/captures",
+    { params }
+  );
+}

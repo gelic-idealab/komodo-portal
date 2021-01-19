@@ -83,7 +83,7 @@
 
 <script>
 import moment from "moment";
-import { getCourseDetail, getLabList } from "../../requests/course";
+import { getCourseDetail, getLabList, getCaptures } from "../../requests/course";
 
 import SectionCard from "../../components/Cards/SectionCard";
 
@@ -114,6 +114,7 @@ export default {
     }
   },
   mounted: function() {
+    this.course.courseId = this.$route.params.courseId;
     this.getData();
   },
   watch: {
@@ -125,13 +126,14 @@ export default {
      */
     getData() {
       // Get course id from the url
-      this.course.courseId = this.$route.params.courseId;
       Promise.all([
         // Get course detailed information and lab list
         getCourseDetail({ courseId: this.course.courseId }),
-        getLabList({ courseId: this.course.courseId })
+        getLabList({ courseId: this.course.courseId }),
+        getCaptures({ courseId: this.course.courseId })
       ])
         .then(values => {
+          console.log('values:', values)
           this.course = {
             courseId: this.course.courseId,
             ...values[0].data
