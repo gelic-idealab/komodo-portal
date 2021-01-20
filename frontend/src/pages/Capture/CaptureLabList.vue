@@ -38,6 +38,7 @@ export default {
     return {
       user: this.$store.getters.user,
       tableHeaders: [
+        { text: "ID", value: "captureId"},
         { text: "Name", value: "labName" },
         { text: "Date", value: "date" },
         { text: "Time", value: "time" },

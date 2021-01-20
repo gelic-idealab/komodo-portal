@@ -439,10 +439,10 @@ export default {
     },
     // Start the session
     startSession() {
-      if(this.captureId == "") {
-        this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}`;
-      } else {
+      if(this.captureId) {
         this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${9999+this.sessionId}&teacher=${this.teacher}&playback=${this.captureId}`;
+      } else {
+        this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}`;
       }
       console.log('Starting session with client:', this.clientPath);
     },
