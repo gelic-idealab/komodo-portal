@@ -440,7 +440,8 @@ export default {
     // Start the session
     startSession() {
       if(this.captureId) {
-        this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${9999+this.sessionId}&teacher=${this.teacher}&playback=${this.captureId}`;
+        this.sessionId = 9999+this.sessionId;
+        this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}&playback=${this.captureId}`;
       } else {
         this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}`;
       }

@@ -63,6 +63,7 @@ export default {
     this.socket = io(`${process.env.VUE_APP_RELAY_BASE_URL}/chat`); 
     this.socket.emit("join", [this.sessionId, this.userId]);
     this.socket.on("micText", this.handleMicText);
+    this.socket.on("audioReplay", this.handleAudioReplay);
   },
   methods: {
     formatTime(ts) {
@@ -70,6 +71,9 @@ export default {
     },
     handleMicText(record) {
       this.appendRecord(record).then( () => { this.updateScroll(); });
+    },
+    handleAudioReplay(data) {
+      console.log('audio replay data:', data);
     },
     async appendRecord(record) {
       const {
