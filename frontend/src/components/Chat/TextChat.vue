@@ -34,6 +34,7 @@
       hide-details
       outlined
     />
+    <audio controls ref="audio"></audio>
   </div>
 </template>
 
@@ -74,6 +75,13 @@ export default {
     },
     handleAudioReplay(data) {
       console.log('audio replay data:', data);
+      let buf = Buffer.from(data);
+      let audioElement = this.$refs.audio;
+      const blob = new Blob([buf], { type: "audio/wav" });
+      let obj = URL.createObjectURL(blob)
+      console.log(obj)
+      let audio = new Audio(obj);
+      audio.play();
     },
     async appendRecord(record) {
       const {
