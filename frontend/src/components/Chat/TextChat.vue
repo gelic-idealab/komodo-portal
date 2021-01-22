@@ -52,6 +52,9 @@ export default {
   },
   data() {
     return {
+      audioCache: [],
+      audioIndex: 0,
+      audioInit: false,
       socket: null,
       userId: this.$store.getters.user.userId,
       text: "",
@@ -65,6 +68,7 @@ export default {
     this.socket.emit("join", [this.sessionId, this.userId]);
     this.socket.on("micText", this.handleMicText);
     this.socket.on("audioReplay", this.handleAudioReplay);
+    this.socket.on("audioCacheEmitted", function(data) { console.log("audioCacheEmitted") });
   },
   methods: {
     formatTime(ts) {
@@ -75,13 +79,27 @@ export default {
     },
     handleAudioReplay(data) {
       console.log('audio replay data:', data);
-      let buf = Buffer.from(data);
-      let audioElement = this.$refs.audio;
-      const blob = new Blob([buf], { type: "audio/wav" });
-      let obj = URL.createObjectURL(blob)
-      console.log(obj)
-      let audio = new Audio(obj);
-      audio.play();
+      this.audioCache.push(data);
+      if (!this.audioInit) {
+        this.playNextAudio();
+      }
+    },
+    playNextAudio(){
+      this.audioInit = true;
+      console.log('playNextAudio index:', this.audioIndex);
+      let item = this.audioCache[this.audioIndex];
+      if (item) {
+        let buf = Buffer.from(item.data);
+        let blob = new Blob([buf], { type: "audio/wav" });
+        let obj = URL.createObjectURL(blob);
+        let audio = new Audio(obj);
+        audio.addEventListener("ended", this.playNextAudio);
+        audio.play();
+        this.audioIndex++;
+      } else {
+        this.audioInit = false;
+        this.audioIndex = 0;
+      }
     },
     async appendRecord(record) {
       const {
