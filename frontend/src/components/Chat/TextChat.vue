@@ -52,9 +52,9 @@ export default {
   },
   data() {
     return {
+      audioManifest: null,
       audioCache: [],
       audioIndex: 0,
-      audioInit: false,
       socket: null,
       userId: this.$store.getters.user.userId,
       text: "",
@@ -67,8 +67,8 @@ export default {
     this.socket = io(`${process.env.VUE_APP_RELAY_BASE_URL}/chat`); 
     this.socket.emit("join", [this.sessionId, this.userId]);
     this.socket.on("micText", this.handleMicText);
+    this.socket.on("audioManifest", this.handleAudioManifest);
     this.socket.on("audioReplay", this.handleAudioReplay);
-    this.socket.on("audioCacheEmitted", function(data) { console.log("audioCacheEmitted") });
   },
   methods: {
     formatTime(ts) {
@@ -77,15 +77,21 @@ export default {
     handleMicText(record) {
       this.appendRecord(record).then( () => { this.updateScroll(); });
     },
+    handleAudioManifest(data) {
+      this.audioManifest = data;
+    },
     handleAudioReplay(data) {
       console.log('audio replay data:', data);
       this.audioCache.push(data);
-      if (!this.audioInit) {
+      if (this.audioCache.length == this.audioManifest.length) {
+        this.sortAudioCache();
         this.playNextAudio();
       }
     },
+    sortAudioCache() {
+      this.audioCache.sort((a, b) => (a.seq > b.seq) ? 1 : -1);
+    },
     playNextAudio(){
-      this.audioInit = true;
       console.log('playNextAudio index:', this.audioIndex);
       let item = this.audioCache[this.audioIndex];
       if (item) {
@@ -97,7 +103,6 @@ export default {
         audio.play();
         this.audioIndex++;
       } else {
-        this.audioInit = false;
         this.audioIndex = 0;
       }
     },
