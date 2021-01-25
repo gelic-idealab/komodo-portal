@@ -55,6 +55,7 @@ export default {
       audioManifest: null,
       audioCache: [],
       audioIndex: 0,
+      loadedAudio: [],
       socket: null,
       userId: this.$store.getters.user.userId,
       text: "",
@@ -85,22 +86,29 @@ export default {
       this.audioCache.push(data);
       if (this.audioCache.length == this.audioManifest.length) {
         this.sortAudioCache();
-        this.playNextAudio();
+        this.preloadAudio();
+        this.scheduleAudio();
       }
     },
     sortAudioCache() {
       this.audioCache.sort((a, b) => (a.seq > b.seq) ? 1 : -1);
     },
-    playNextAudio(){
-      console.log('playNextAudio index:', this.audioIndex);
-      let item = this.audioCache[this.audioIndex];
-      if (item) {
+    preloadAudio() {
+      this.audioCache.forEach(item => {
         let buf = Buffer.from(item.data);
         let blob = new Blob([buf], { type: "audio/wav" });
         let obj = URL.createObjectURL(blob);
         let audio = new Audio(obj);
-        audio.addEventListener("ended", this.playNextAudio);
+        audio.load();
+        this.loadedAudio.push(audio);
+      })
+    },
+    scheduleAudio(){
+      console.log('scheduleNextAudio index:', this.audioIndex);
+      let audio = this.loadedAudio[this.audioIndex];
+      if (audio) {
         audio.play();
+        audio.addEventListener("ended", this.scheduleAudio);
         this.audioIndex++;
       } else {
         this.audioIndex = 0;

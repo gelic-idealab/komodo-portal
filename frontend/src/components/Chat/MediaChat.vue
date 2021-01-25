@@ -205,14 +205,13 @@ export default {
             });
         },
         beginAudioStreaming() {
-            console.log('BEGIN AUDIO STREAMING')
             this.recorder = RecordRTC(this.localStream, {
                 type: 'audio',
                 mimeType: 'audio/wav',
                 recorderType: RecordRTC.StereoAudioRecorder,
                 desiredSampRate: 16000,
                 numberOfAudioChannels: 1,
-                timeSlice: 4000,
+                timeSlice: 1000,
                 ondataavailable: this.emitAudioBlob
             });
 
