@@ -34,13 +34,13 @@
       hide-details
       outlined
     />
-    <audio controls ref="audio"></audio>
   </div>
 </template>
 
 <script>
 import io from "socket.io-client";
 import moment from "moment";
+import {Howl, Howler} from 'howler';
 
 export default {
   name: "TextChat",
@@ -68,8 +68,8 @@ export default {
     this.socket = io(`${process.env.VUE_APP_RELAY_BASE_URL}/chat`); 
     this.socket.emit("join", [this.sessionId, this.userId]);
     this.socket.on("micText", this.handleMicText);
-    this.socket.on("audioManifest", this.handleAudioManifest);
-    this.socket.on("audioReplay", this.handleAudioReplay);
+    this.socket.on("playbackAudioManifest", this.handleAudioManifest);
+    this.socket.on("playbackAudioData", this.handleplaybackAudioData);
   },
   methods: {
     formatTime(ts) {
@@ -81,13 +81,14 @@ export default {
     handleAudioManifest(data) {
       this.audioManifest = data;
     },
-    handleAudioReplay(data) {
+    handleplaybackAudioData(data) {
       console.log('audio replay data:', data);
       this.audioCache.push(data);
       if (this.audioCache.length == this.audioManifest.length) {
         this.sortAudioCache();
         this.preloadAudio();
         this.scheduleAudio();
+        this.startPlaybackAudio();
       }
     },
     sortAudioCache() {
@@ -97,22 +98,24 @@ export default {
       this.audioCache.forEach(item => {
         let buf = Buffer.from(item.data);
         let blob = new Blob([buf], { type: "audio/wav" });
-        let obj = URL.createObjectURL(blob);
-        let audio = new Audio(obj);
-        audio.load();
-        this.loadedAudio.push(audio);
+        let url = URL.createObjectURL(blob);
+        let haudio = new Howl({ 
+          src: [url],
+          format: ['wav'],
+        });
+        this.loadedAudio.push(haudio);
       })
     },
     scheduleAudio(){
-      console.log('scheduleNextAudio index:', this.audioIndex);
-      let audio = this.loadedAudio[this.audioIndex];
-      if (audio) {
-        audio.play();
-        audio.addEventListener("ended", this.scheduleAudio);
-        this.audioIndex++;
-      } else {
-        this.audioIndex = 0;
-      }
+      this.loadedAudio.forEach((item, index, loadedAudio) => {
+        item.on('end', () => {
+          loadedAudio[index+1].play();
+        });
+      });
+    },
+    startPlaybackAudio() {
+      console.log('starting playback audio')
+      this.loadedAudio[0].play();
     },
     async appendRecord(record) {
       const {
