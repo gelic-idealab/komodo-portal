@@ -211,7 +211,7 @@ export default {
                 recorderType: RecordRTC.StereoAudioRecorder,
                 desiredSampRate: 16000,
                 numberOfAudioChannels: 1,
-                timeSlice: 1000,
+                timeSlice: 2000,
                 ondataavailable: this.emitAudioBlob
             });
 
