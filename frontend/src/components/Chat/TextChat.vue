@@ -55,6 +55,7 @@ export default {
       audioManifest: null,
       audioCache: [],
       audioIndex: 0,
+      currentAudioPlaying: null,
       loadedAudio: [],
       socket: null,
       userId: this.$store.getters.user.userId,
@@ -72,6 +73,12 @@ export default {
     this.socket.on("playbackAudioData", this.handleplaybackAudioData);
   },
   methods: {
+    cleanup() {
+      console.log('stopping capture session audio playback')
+      this.loadedAudio[this.currentAudioPlaying].stop();
+      this.loadedAudio = null;
+      this.socket.disconnect();
+    },
     formatTime(ts) {
       return moment(ts).format('h:mm a');
     },
@@ -110,11 +117,13 @@ export default {
       this.loadedAudio.forEach((item, index, loadedAudio) => {
         item.on('end', () => {
           loadedAudio[index+1].play();
+          this.currentAudioPlaying++;
         });
       });
     },
     startPlaybackAudio() {
-      console.log('starting playback audio')
+      console.log('starting playback audio');
+      this.currentAudioPlaying = 0;
       this.loadedAudio[0].play();
     },
     async appendRecord(record) {

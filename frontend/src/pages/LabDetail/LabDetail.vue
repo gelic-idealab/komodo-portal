@@ -40,7 +40,7 @@
           <v-tab-item>
             <!-- Text chat section -->
             <SectionCard>
-              <TextChat :session-id="sessionId"/>
+              <TextChat ref="textchat" :session-id="sessionId"/>
             </SectionCard>
           </v-tab-item>
           <v-tab>
@@ -404,21 +404,19 @@ export default {
   },
   // Navigation handler
   beforeRouteLeave(to, from, next){
-    if(this.inCall){
-      if(!window.confirm("Are you sure you want to leave?")){
+    if (this.inCall) {
+      if (!window.confirm("Are you sure you want to leave?")) {
         return;
       }
       this.$refs.mediachat.hangup();
     }
-    next();
-  },
-  created(){
-    // Before unload handler
-    window.addEventListener('beforeunload', (event) => {
-      if(this.inCall){
-        event.returnValue = `Are you sure you want to leave?`
+    if (this.captureId) {
+      if (!window.confirm("Are you sure you want to leave?")) {
+        return;
       }
-    });
+      this.$refs.textchat.cleanup();
+    }
+    next();
   },
   methods: {
     getBuilds() {

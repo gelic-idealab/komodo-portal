@@ -4,6 +4,7 @@
     <v-data-table
       :headers="tableHeaders"
       :items="captures"
+      :item-key="`captureId`"
       :items-per-page="10"
       :sort-by="['date']"
       :sort-desc="[true]"
