@@ -71,11 +71,14 @@ export default {
     this.socket.on("micText", this.handleMicText);
     this.socket.on("playbackAudioManifest", this.handleAudioManifest);
     this.socket.on("playbackAudioData", this.handleplaybackAudioData);
+    this.socket.on("startPlaybackAudio", this.startPlaybackAudio);
   },
   methods: {
     cleanup() {
-      console.log('stopping capture session audio playback')
-      this.loadedAudio[this.currentAudioPlaying].stop();
+      if (this.currentAudioPlaying) {
+        console.log('stopping capture session audio playback')
+        this.loadedAudio[this.currentAudioPlaying].stop();
+      }
       this.loadedAudio = null;
       this.socket.disconnect();
     },
@@ -95,11 +98,10 @@ export default {
         this.sortAudioCache();
         this.preloadAudio();
         this.scheduleAudio();
-        this.startPlaybackAudio();
       }
     },
     sortAudioCache() {
-      this.audioCache.sort((a, b) => (a.seq > b.seq) ? 1 : -1);
+      this.audioCache.sort((a, b) => (Number(a.seq) > Number(b.seq)) ? 1 : -1);
     },
     preloadAudio() {
       this.audioCache.forEach(item => {
