@@ -162,7 +162,7 @@ export default {
             let secure = url.protocol === "https:";
             this.peer = new Peer({
                 host: host,
-                port: port || 443,
+                port: 9000,
                 path: '/call',
                 secure: secure
             });
