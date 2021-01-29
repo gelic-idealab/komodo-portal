@@ -164,7 +164,10 @@ export default {
                 host: host,
                 port: 9000,
                 path: '/call',
-                secure: secure
+                secure: secure,
+                config: {'iceServers': [
+                    { url: 'stun:stun.l.google.com:19302' }
+                ]}
             });
             this.peer.on('open', this.connectedToServer);
             this.peer.on('call', this.answer);
