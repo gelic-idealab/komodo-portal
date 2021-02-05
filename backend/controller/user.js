@@ -40,21 +40,23 @@ userController.post("/login",
     }
     // Do the login process and return the user id
     const results = await login(email, password);
-    const id = results.data.user.user_id;
-    // Generate a new token for the login user 
-    const token = await promisify(jwt.sign)({id}, config.jwt,
-    {
-      expiresIn: 7 * 24 * 60 * 60 * 1000
+    if (results.data.user) {
+      const id = results.data.user.user_id;
+      // Generate a new token for the login user 
+      const token = await promisify(jwt.sign)({id}, config.jwt,
+      {
+        expiresIn: 7 * 24 * 60 * 60 * 1000
+      }
+      );
+      // Store the token in the cookie
+      res.cookie('jwt', token, {
+        expires: new Date(
+          Date.now() + 7 * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: false,
+        secure: req.secure || req.headers['x-forwarded-proto'] === 'https'
+      });
     }
-    );
-    // Store the token in the cookie
-    res.cookie('jwt', token, {
-      expires: new Date(
-        Date.now() + 7 * 24 * 60 * 60 * 1000
-      ),
-      httpOnly: false,
-      secure: req.secure || req.headers['x-forwarded-proto'] === 'https'
-    });
     res.status(results.code || 200).json(results.data);
   }
   );

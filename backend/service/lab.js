@@ -2,7 +2,6 @@ const pool = require("./index");
 const moment = require("moment");
 const labQuery = require("../query/lab");
 const assetQuery = require("../query/asset");
-const lab = require("../query/lab");
 
 // Get lab list for the specific course id
 const getLabList = async ({ courseId }) => {
@@ -126,11 +125,25 @@ const deleteLab = async({labId}) => {
   }
 }
 
+// Get captures for the specific course id
+const getCaptures = async ({ courseId }) => {
+  const results = await pool.execute(
+    labQuery.capturesQuery,
+    [courseId || 0]
+  );
+  const captures = results[0];
+  return {
+    data: captures
+  };
+};
+
+
 module.exports = {
   getLabList,
   getLabDetail,
   getLabAssetList,
   createLab,
   editLab,
-  deleteLab
+  deleteLab,
+  getCaptures
 };

@@ -2,6 +2,7 @@
   <div>
     <v-row class="lab-basic-info mb-4 flex-column no-gutters">
       <p class="display-1 my-2 text-capitalize">{{ labName }}</p>
+      <p v-if="captureId"> CAPTURE ID: {{ captureId }}</p>
       <p class="mb-0">
         <span class="body-1 pointer" @click="goToCourse">{{ `${courseNo}: ${courseName}` }}</span>
       </p>
@@ -39,7 +40,7 @@
           <v-tab-item>
             <!-- Text chat section -->
             <SectionCard>
-              <TextChat :session-id="sessionId"/>
+              <TextChat ref="textchat" :session-id="sessionId"/>
             </SectionCard>
           </v-tab-item>
           <v-tab>
@@ -331,6 +332,7 @@ export default {
       lastName: "",
       labName: "",
       labId: "",
+      captureId:"",
       courseId: "",
       courseNo: "",
       courseName: "",
@@ -357,9 +359,10 @@ export default {
     }
   },
   mounted: function() {
-    const { courseId, labId } = this.$route.params;
+    const { courseId, labId, captureId } = this.$route.params;
     this.courseId = this.$route.params.courseId;
     this.labId = this.$route.params.labId;
+    this.captureId = this.$route.params.captureId;
     const { userId, role, firstName, lastName } = this.$store.getters.user;
     this.teacher = role === "student" ? 0 : 1;
     this.userId = userId;
@@ -401,21 +404,19 @@ export default {
   },
   // Navigation handler
   beforeRouteLeave(to, from, next){
-    if(this.inCall){
-      if(!window.confirm("Are you sure you want to leave?")){
+    if (this.inCall) {
+      if (!window.confirm("Are you sure you want to leave?")) {
         return;
       }
       this.$refs.mediachat.hangup();
     }
-    next();
-  },
-  created(){
-    // Before unload handler
-    window.addEventListener('beforeunload', (event) => {
-      if(this.inCall){
-        event.returnValue = `Are you sure you want to leave?`
+    if (this.captureId) {
+      if (!window.confirm("Are you sure you want to leave?")) {
+        return;
       }
-    });
+      this.$refs.textchat.cleanup();
+    }
+    next();
   },
   methods: {
     getBuilds() {
@@ -436,7 +437,12 @@ export default {
     },
     // Start the session
     startSession() {
-      this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}`;
+      if(this.captureId) {
+        this.sessionId = 9999+this.sessionId;
+        this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}&playback=${this.captureId}`;
+      } else {
+        this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}`;
+      }
       console.log('Starting session with client:', this.clientPath);
     },
     // Redirect to the asset detail page

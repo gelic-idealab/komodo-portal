@@ -52,10 +52,10 @@
                             <v-btn class="mx-2" fab dark small color="error" v-show="sharingScreen" v-on:click="stopShareScreen">
                                 <v-icon dark>stop_screen_share</v-icon>
                             </v-btn>
-                            <v-btn class="mx-2" fab dark small color="primary" v-show="!recordContext" v-on:click="enableSpeechToText">
+                            <v-btn class="mx-2" fab dark small color="primary" v-show="true" v-on:click="enableSpeechToText">
                                 <v-icon dark>record_voice_over</v-icon>
                             </v-btn>
-                            <v-btn class="mx-2" fab dark small color="error" v-show="recordContext" v-on:click="disableSpeechToText">
+                            <v-btn class="mx-2" fab dark small color="error" v-show="false" v-on:click="disableSpeechToText">
                                 <v-icon dark>voice_over_off</v-icon>
                             </v-btn>
                         </div>                        
@@ -96,6 +96,7 @@
 import io from 'socket.io-client';
 import Peer from 'peerjs';
 import axios from 'axios';
+import RecordRTC from 'recordrtc';
 
 export default {
     name: "MediaChat",
@@ -107,27 +108,21 @@ export default {
     },
     data() {
         return {
-            audio: new Audio(require("../../assets/sound_notification.mp4")),
-            muted: false,
             audioIsSupported: false,
-            videoIsSupported: false,
-            sharingVideo: false,
-            sharingScreen: false,
-            peer: null,
+            callNotification: new Audio(require("../../assets/sound_notification.mp4")),
             connections: [],
             images: [],
-            stock: "",
             isconnectedToServer: false,
-            socket: null,
             localStream: null,
-            recordContext: null,
-            RECORD_BUFFER_SIZE: 4096,
-            recordSource: null,
-            recordProcessor: null,
-            micData: {
-                buffer: Buffer.alloc(1024*512),
-                cursor: 0
-            }
+            muted: false,
+            peer: null,
+            recorder: null,
+            secureSocket: false,
+            sharingScreen: false,
+            sharingVideo: false,
+            socket: null,
+            stock: "",
+            videoIsSupported: false,
         }
     },
     methods: {
@@ -143,8 +138,7 @@ export default {
         },
         setupSocket() {
             // connect to socket.io relay server
-            this.socket = io("https://relay.komodo-dev.library.illinois.edu/chat");
-            // this.socket = io("http://localhost:3000/chat");
+            this.socket = io(`${process.env.VUE_APP_RELAY_BASE_URL}/chat`);
 
             // register socket event handlers
             this.socket.on('joined', this.addNewPeer);
@@ -162,10 +156,18 @@ export default {
         },
         createPeer() {
             // create new PeerJS connection, setup event handlers
+            let url = new URL(process.env.VUE_APP_RELAY_BASE_URL);
+            let host = url.hostname;
+            let port = url.port;
+            let secure = url.protocol === "https:";
             this.peer = new Peer({
-                host: 'relay.komodo-dev.library.illinois.edu',
+                host: host,
+                port: 9000,
                 path: '/call',
-                secure: true
+                secure: secure,
+                config: {'iceServers': [
+                    { url: 'stun:stun.l.google.com:19302' }
+                ]}
             });
             this.peer.on('open', this.connectedToServer);
             this.peer.on('call', this.answer);
@@ -196,10 +198,35 @@ export default {
                     this.mute();
                 }
                 console.log('local stream added:', this.localStream);
+
+                this.beginAudioStreaming();
+
                 // renegotiate calls with new local stream
                 this.renegotiateCalls();
             }, (err) => {
                 console.log('error getting local stream:', err);
+            });
+        },
+        beginAudioStreaming() {
+            this.recorder = RecordRTC(this.localStream, {
+                type: 'audio',
+                mimeType: 'audio/wav',
+                recorderType: RecordRTC.StereoAudioRecorder,
+                desiredSampRate: 16000,
+                numberOfAudioChannels: 1,
+                timeSlice: 2000,
+                ondataavailable: this.emitAudioBlob
+            });
+
+            this.recorder.startRecording();
+        },
+        emitAudioBlob(blob) {
+            console.log('EMITTING AUDIO:', blob)
+            this.socket.emit('mic', {
+                session_id: this.sessionId, 
+                client_id: this.userId, 
+                client_name: this.firstName + " " + this.lastName, 
+                blob: blob
             });
         },
         enableVideo() {
@@ -280,6 +307,7 @@ export default {
                 });
             }
             this.muted = true;
+            this.recorder.stopRecording();
         },
         unMute() {
             console.log('unmuting mic')
@@ -289,6 +317,7 @@ export default {
                 });
             }
             this.muted = false;
+            this.recorder.startRecording();
         },
         addNewPeer(data) {
             console.log('joined event:', data);
@@ -403,6 +432,7 @@ export default {
             this.stopShareScreen(false);
             this.disableSpeechToText();
             this.stopStream();
+            this.recorder.stopRecording();
             console.log('hanging up')
             for (let c = 0; c < this.connections.length; c++) {
                 console.log('closing connection:', this.connections[c]);
@@ -425,46 +455,10 @@ export default {
             }
         },
         enableSpeechToText() {
-            if (this.localStream) {
-                console.log('enabling speech-to-text')
-                // setup speech-to-text relay with current local stream
-                this.recordContext = new AudioContext();
-                this.recordSource = this.recordContext.createMediaStreamSource(this.localStream);
-                this.recordProcessor = this.recordContext.createScriptProcessor(this.RECORD_BUFFER_SIZE, 1, 1); 
-                this.recordSource.connect(this.recordProcessor);
-                this.recordProcessor.connect(this.recordContext.destination);
-                this.recordProcessor.onaudioprocess = this.processAudio;
-            } else {
-                console.log('cannot enable speech-to-text: no local stream');
-            }
+            // TODO(rob): toggle render flag for speech to text payloads
         },
         disableSpeechToText() {
-            if (this.recordContext) {
-                console.log('disabling speech-to-text');
-                this.recordContext.close();
-                this.recordContext = null;
-                this.recordSource = null;
-                this.recordProcessor.onaudioprocess = null;
-                this.recordProcessor = null;
-            }
-        },
-        processAudio(e) {
-            // send record buffer to relay server for speech-to-text
-            let data = e.inputBuffer.getChannelData(0); // returns Float32Array
-            if (this.micData.cursor + data.byteLength > this.micData.buffer.byteLength) {
-                this.socket.emit('mic', { 
-                    session_id: this.sessionId, 
-                    client_id: this.userId, 
-                    client_name: this.firstName + " " + this.lastName, 
-                    buffer: this.micData.buffer, 
-                    sampleRate: this.recordContext.sampleRate 
-                });
-                this.micData.cursor = 0;
-            }
-            for (let i = 0; i < data.length; i++) {
-                this.micData.buffer.writeFloatLE(data[i], (i*4) + this.micData.cursor);
-            }
-            this.micData.cursor += data.byteLength;
+            // TODO(rob): toggle render flag -- or collapse into single toggle function
         },
         handleMessage(data) {
             console.log('received message:', data);
@@ -483,7 +477,7 @@ export default {
             })
         },
         soundNotification(){
-            this.audio.play();
+            this.callNotification.play();
         }
     }
 }

@@ -40,6 +40,7 @@
 <script>
 import io from "socket.io-client";
 import moment from "moment";
+import {Howl, Howler} from 'howler';
 
 export default {
   name: "TextChat",
@@ -51,6 +52,11 @@ export default {
   },
   data() {
     return {
+      audioManifest: null,
+      audioCache: [],
+      audioIndex: 0,
+      currentAudioPlaying: null,
+      loadedAudio: [],
       socket: null,
       userId: this.$store.getters.user.userId,
       text: "",
@@ -60,17 +66,67 @@ export default {
     }
   },
   mounted() {
-    this.socket = io("https://relay.komodo-dev.library.illinois.edu/chat"); 
-    // this.socket = io("http://localhost:3000/chat"); // TODO(rob): should use base url param
+    this.socket = io(`${process.env.VUE_APP_RELAY_BASE_URL}/chat`); 
     this.socket.emit("join", [this.sessionId, this.userId]);
     this.socket.on("micText", this.handleMicText);
+    this.socket.on("playbackAudioManifest", this.handleAudioManifest);
+    this.socket.on("playbackAudioData", this.handleplaybackAudioData);
+    this.socket.on("startPlaybackAudio", this.startPlaybackAudio);
   },
   methods: {
+    cleanup() {
+      if (this.currentAudioPlaying) {
+        console.log('stopping capture session audio playback')
+        this.loadedAudio[this.currentAudioPlaying].stop();
+      }
+      this.loadedAudio = null;
+      this.socket.disconnect();
+    },
     formatTime(ts) {
       return moment(ts).format('h:mm a');
     },
     handleMicText(record) {
       this.appendRecord(record).then( () => { this.updateScroll(); });
+    },
+    handleAudioManifest(data) {
+      this.audioManifest = data;
+    },
+    handleplaybackAudioData(data) {
+      console.log('audio replay data:', data);
+      this.audioCache.push(data);
+      if (this.audioCache.length == this.audioManifest.length) {
+        this.sortAudioCache();
+        this.preloadAudio();
+        this.scheduleAudio();
+      }
+    },
+    sortAudioCache() {
+      this.audioCache.sort((a, b) => (Number(a.seq) > Number(b.seq)) ? 1 : -1);
+    },
+    preloadAudio() {
+      this.audioCache.forEach(item => {
+        let buf = Buffer.from(item.data);
+        let blob = new Blob([buf], { type: "audio/wav" });
+        let url = URL.createObjectURL(blob);
+        let haudio = new Howl({ 
+          src: [url],
+          format: ['wav'],
+        });
+        this.loadedAudio.push(haudio);
+      })
+    },
+    scheduleAudio(){
+      this.loadedAudio.forEach((item, index, loadedAudio) => {
+        item.on('end', () => {
+          loadedAudio[index+1].play();
+          this.currentAudioPlaying++;
+        });
+      });
+    },
+    startPlaybackAudio() {
+      console.log('starting playback audio');
+      this.currentAudioPlaying = 0;
+      this.loadedAudio[0].play();
     },
     async appendRecord(record) {
       const {
