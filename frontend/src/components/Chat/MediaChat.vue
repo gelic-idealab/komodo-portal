@@ -156,13 +156,13 @@ export default {
         },
         createPeer() {
             // create new PeerJS connection, setup event handlers
-            let url = new URL(process.env.VUE_APP_RELAY_BASE_URL);
+            let url = new URL(process.env.VUE_APP_RTC_URL);
             let host = url.hostname;
             let port = url.port;
             let secure = url.protocol === "https:";
             this.peer = new Peer({
                 host: host,
-                port: 9000,
+                port: port,
                 path: '/call',
                 secure: secure,
                 config: {'iceServers': [
@@ -330,7 +330,8 @@ export default {
         },
         connectedToServer(id) {
             this.isconnectedToServer = true;
-            console.log('connected to Komodo relay PeerJS server, joining chat with peerId:', id);
+            console.log('Connected to Komodo RTC server, joining with peerId:', id);
+            // emit the `join` event to start peerjs signaling process with existing clients
             this.socket.emit('join', [this.sessionId, this.userId, id, this.firstName+' '+this.lastName]);
         },
         call(client_id, peer_id, client_name) {
