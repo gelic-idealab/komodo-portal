@@ -359,10 +359,11 @@ export default {
     }
   },
   mounted: function() {
+
     const { courseId, labId, captureId } = this.$route.params;
-    this.courseId = this.$route.params.courseId;
-    this.labId = this.$route.params.labId;
-    this.captureId = this.$route.params.captureId;
+    this.courseId = courseId;
+    this.labId = labId;
+    this.captureId = captureId;
     const { userId, role, firstName, lastName } = this.$store.getters.user;
     this.teacher = role === "student" ? 0 : 1;
     this.userId = userId;
@@ -391,16 +392,20 @@ export default {
       if (lab.build) { // set build as configured or else leave as base/stable
         this.buildScope = lab.build.split('/')[0];
         this.build = lab.build.split('/')[1];
+
+        // get build scopes from buildserver
+        axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}`).then( res => {
+          res.data.forEach(scope => {
+            this.buildScopes.push(scope.name)
+          });
+          this.getBuilds();
+        });
       }
     });
 
-    // get build scopes from buildserver
-    axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}`).then( res => {
-      res.data.forEach(scope => {
-        this.buildScopes.push(scope.name)
-      });
-      this.getBuilds();
-    });
+    // TODO(rob): if (captureId) { requestAudioCacheFromRelay(); } 
+    // preload the audio so that when playback starts we already have the audio data
+
   },
   // Navigation handler
   beforeRouteLeave(to, from, next){
