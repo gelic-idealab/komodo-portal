@@ -2,7 +2,7 @@
   <div class="">
     <v-row>
       <v-col>
-        <p class="display-1 my-2">
+        <p class="display-1">
           Welcome, {{ $store.getters.user.firstName }}
         </p>
       </v-col>

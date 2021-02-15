@@ -2,7 +2,7 @@
   <v-container class="px-10 py-6">
     <v-row>
       <v-col>
-        <p class="display-1 my-2">Lab Metric</p>
+        <p class="display-1">Lab Metric</p>
       </v-col>
     </v-row>
     <v-row>

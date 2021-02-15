@@ -11,7 +11,7 @@
       <v-col>
         <v-chip class="mr-1" color="primary" outlined label>{{ course.semester }}</v-chip>
         <v-chip class="mr-1" color="secondary" outlined label>{{ course.department }}</v-chip>
-        <p class="display-1 my-2">{{ `${course.courseNo}: ${course.courseName}` }}</p>
+        <p class="display-1">{{ `${course.courseNo}: ${course.courseName}` }}</p>
         <p class="body-1">
           <v-icon>mdi-account-circle</v-icon>
           Instructor: {{ course.instructorName }}
@@ -194,9 +194,6 @@ export default {
   }
 
   @media screen {
-    p.display-1.my-2 {
-      font-size: 6vh!important;
-    }
 
     .course-details {
       flex-grow: 3!important;

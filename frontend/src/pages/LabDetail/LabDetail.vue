@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="lab-basic-info mb-4 flex-column no-gutters">
-      <p class="display-1 my-2 text-capitalize">{{ labName }}</p>
+      <p class="display-1 text-capitalize">{{ labName }}</p>
       <p v-if="captureId"> CAPTURE ID: {{ captureId }}</p>
       <p class="mb-0">
         <span class="body-1 pointer" @click="goToCourse">{{ `${courseNo}: ${courseName}` }}</span>

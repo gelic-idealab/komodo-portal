@@ -12,8 +12,7 @@ import routes from "./routes/routes";
 // Plugins
 import GlobalComponents from "./plugins/globalComponents";
 import GlobalDirectives from "./plugins/globalDirectives";
-import Notifications from "./components/NotificationPlugin";
-// MaterialDashboard plugin
+// import Notifications from "./components/NotificationPlugin";
 
 import MaterialDashboard from "./plugins/material-dashboard";
 import vuetify from "./plugins/vuetify.js";
@@ -68,7 +67,7 @@ Vue.use(VueRouter);
 Vue.use(MaterialDashboard);
 Vue.use(GlobalComponents);
 Vue.use(GlobalDirectives);
-Vue.use(Notifications);
+// Vue.use(Notifications);
 Vue.component('file-upload', VueUploadComponent);
 Vue.component('apexchart', VueApexCharts);
 
