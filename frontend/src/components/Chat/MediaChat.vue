@@ -166,7 +166,11 @@ export default {
                 path: '/call',
                 secure: secure,
                 config: {'iceServers': [
-                    { url: 'stun:stun.l.google.com:19302' }
+                    { url: 'stun:stun.l.google.com:19302' },
+                    {
+                        url: 'turn:5b1896a45e48721867b43b4f6c11b57061242d056570d098ba39d4ce89d0ace6@global.turn.twilio.com:3478',
+                        credential: '7JezsHUgebmUtFFH13PZzDdfaZzMmmdwOG74DWO/q54='
+                    }
                 ]}
             });
             this.peer.on('open', this.connectedToServer);
@@ -221,7 +225,6 @@ export default {
             this.recorder.startRecording();
         },
         emitAudioBlob(blob) {
-            console.log('EMITTING AUDIO:', blob)
             this.socket.emit('mic', {
                 session_id: this.sessionId, 
                 client_id: this.userId, 
