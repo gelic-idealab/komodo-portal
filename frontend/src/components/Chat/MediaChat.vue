@@ -167,10 +167,21 @@ export default {
                 secure: secure,
                 config: {'iceServers': [
                     { url: 'stun:stun.l.google.com:19302' },
+                    { url: "stun:global.stun.twilio.com:3478?transport=udp" },
                     {
-                        url: 'turn:global.turn.twilio.com:3478',
-                        username: '5b1896a45e48721867b43b4f6c11b57061242d056570d098ba39d4ce89d0ace6',
-                        credential: '7JezsHUgebmUtFFH13PZzDdfaZzMmmdwOG74DWO/q54='
+                        url: "turn:global.turn.twilio.com:3478?transport=udp",
+                        username: "8560a5eb57824d2cb33e549cdf4b59429c16e7b9341870fbb77b4e1ff6443753",
+                        credential: "5XsSRXCbHN0Xgff2EpnsyqbCQKDJYZxdRl3fxelrFd0="
+                    },
+                    {
+                        url: "turn:global.turn.twilio.com:3478?transport=tcp",
+                        username: "8560a5eb57824d2cb33e549cdf4b59429c16e7b9341870fbb77b4e1ff6443753",
+                        credential: "5XsSRXCbHN0Xgff2EpnsyqbCQKDJYZxdRl3fxelrFd0="
+                    },
+                    {
+                        url: "turn:global.turn.twilio.com:443?transport=tcp",
+                        username: "8560a5eb57824d2cb33e549cdf4b59429c16e7b9341870fbb77b4e1ff6443753",
+                        credential: "5XsSRXCbHN0Xgff2EpnsyqbCQKDJYZxdRl3fxelrFd0="
                     }
                 ]}
             });
