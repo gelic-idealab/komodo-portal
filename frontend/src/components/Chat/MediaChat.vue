@@ -443,7 +443,6 @@ export default {
 
         },
         hangup() {
-            this.mute();
             this.disableVideo(false);
             this.stopShareScreen(false);
             this.disableSpeechToText();
