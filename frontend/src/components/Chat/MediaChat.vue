@@ -160,30 +160,38 @@ export default {
             let host = url.hostname;
             let port = url.port;
             let secure = url.protocol === "https:";
+
+            // HACK(rob): testing twilio TURN server with hardcoded creds
+            let config = {
+                'iceServers': [
+                    { url: 'stun:stun.l.google.com:19302' }, // public stun server
+                    { url: "stun:global.stun.twilio.com:3478?transport=udp" },
+                    {
+                        url: "turn:global.turn.twilio.com:3478?transport=udp",
+                        username: "e158920c0339ba1bcbef477463bd569e6357f6c96b0d56ff1491e358347db508",
+                        credential: "nVUkF0PrprAyTX4pxm8xAgvMhMnbgjLQcTnP/1+AZ/U="
+                    },
+                    {
+                        url: "turn:global.turn.twilio.com:3478?transport=tcp",
+                        username: "e158920c0339ba1bcbef477463bd569e6357f6c96b0d56ff1491e358347db508",
+                        credential: "nVUkF0PrprAyTX4pxm8xAgvMhMnbgjLQcTnP/1+AZ/U="
+                    },
+                    {
+                        url: "turn:global.turn.twilio.com:443?transport=tcp",
+                        username: "e158920c0339ba1bcbef477463bd569e6357f6c96b0d56ff1491e358347db508",
+                        credential: "nVUkF0PrprAyTX4pxm8xAgvMhMnbgjLQcTnP/1+AZ/U="
+                    }
+                ]
+            }
+
+            console.log("STUN/TURN config:", config);
+
             this.peer = new Peer({
                 host: host,
                 port: port,
                 path: '/call',
                 secure: secure,
-                config: {'iceServers': [
-                    { url: 'stun:stun.l.google.com:19302' },
-                    { url: "stun:global.stun.twilio.com:3478?transport=udp" },
-                    {
-                        url: "turn:global.turn.twilio.com:3478?transport=udp",
-                        username: "8560a5eb57824d2cb33e549cdf4b59429c16e7b9341870fbb77b4e1ff6443753",
-                        credential: "5XsSRXCbHN0Xgff2EpnsyqbCQKDJYZxdRl3fxelrFd0="
-                    },
-                    {
-                        url: "turn:global.turn.twilio.com:3478?transport=tcp",
-                        username: "8560a5eb57824d2cb33e549cdf4b59429c16e7b9341870fbb77b4e1ff6443753",
-                        credential: "5XsSRXCbHN0Xgff2EpnsyqbCQKDJYZxdRl3fxelrFd0="
-                    },
-                    {
-                        url: "turn:global.turn.twilio.com:443?transport=tcp",
-                        username: "8560a5eb57824d2cb33e549cdf4b59429c16e7b9341870fbb77b4e1ff6443753",
-                        credential: "5XsSRXCbHN0Xgff2EpnsyqbCQKDJYZxdRl3fxelrFd0="
-                    }
-                ]}
+                config: config
             });
             this.peer.on('open', this.connectedToServer);
             this.peer.on('call', this.answer);
