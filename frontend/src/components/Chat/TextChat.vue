@@ -93,7 +93,7 @@ export default {
     },
     handleplaybackAudioData(data) {
       console.log('audio replay data:', data);
-      this.audioCache.push(data);
+      this.audioCache.push(data); // TODO(rob): need to build cache per client!
       if (this.audioCache.length == this.audioManifest.length) {
         this.sortAudioCache();
         this.preloadAudio();
