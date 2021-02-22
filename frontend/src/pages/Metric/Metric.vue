@@ -24,7 +24,7 @@
     </v-row>
 
     <v-row>
-      <v-col>
+      <v-col v-if="sessionInteractionCountsMax">
         <GlobalBar v-if="sessionInteractionCountsMax > 0"
           :title="`Interactions By Session`"
           :series="[{ name: `Interactions`, data: sessionInteractionCounts }]"
@@ -36,7 +36,7 @@
         />
       </v-col>
 
-      <v-col>
+      <v-col v-if="interactionTypeCountsMax">
         <GlobalBar v-if="interactionTypeCountsMax > 0"
           :title="`Interactions By Type`"
           :series="[{ name: `Interactions`, data: interactionTypeCounts }]"
@@ -144,42 +144,44 @@ export default {
     }
   },
   created() {
-    this.getMetrics();
+    // this.getMetrics();
   },
   methods: {
     getMetrics() {
       getInteractionData().then(data => {
-        this.interactions = data.data;
-        this.interactions.forEach(row => {
-          if (!this.captureIds.includes(row.captureId)) {
-            this.captureIds.push(row.captureId);
-          }
-          if (!this.sessionIds.includes(row.sessionId)) {
-            this.sessionIds.push(row.sessionId);
-            this.sessionInteractionCounts.push(0);
-          }
-          if (!this.clientIds.includes(row.clientId)) {
-            this.clientIds.push(row.clientId);
-          }
-          if (!this.assetIds.includes(row.sourceId)) {
-            this.assetIds.push(row.sourceId);
-          }
-          if (!this.assetIds.includes(row.targetId)) {
-            this.assetIds.push(row.targetId);
-          }
-          if (!this.interactionTypes.includes(row.type)) {
-            this.interactionTypes.push(row.type);
-            this.interactionTypeCounts.push(0);
-          }
-          this.metrics.interactions.value += row.count;
-        });
-        this.metrics.captures.value = this.captureIds.length;
-        this.metrics.sessions.value = this.sessionIds.length;
-        this.metrics.clients.value = this.clientIds.length;
-        this.metrics.assets.value = this.assetIds.length;
+        if (data.data) {
+          this.interactions = data.data;
+          this.interactions.forEach(row => {
+            if (!this.captureIds.includes(row.captureId)) {
+              this.captureIds.push(row.captureId);
+            }
+            if (!this.sessionIds.includes(row.sessionId)) {
+              this.sessionIds.push(row.sessionId);
+              this.sessionInteractionCounts.push(0);
+            }
+            if (!this.clientIds.includes(row.clientId)) {
+              this.clientIds.push(row.clientId);
+            }
+            if (!this.assetIds.includes(row.sourceId)) {
+              this.assetIds.push(row.sourceId);
+            }
+            if (!this.assetIds.includes(row.targetId)) {
+              this.assetIds.push(row.targetId);
+            }
+            if (!this.interactionTypes.includes(row.type)) {
+              this.interactionTypes.push(row.type);
+              this.interactionTypeCounts.push(0);
+            }
+            this.metrics.interactions.value += row.count;
+          });
+          this.metrics.captures.value = this.captureIds.length;
+          this.metrics.sessions.value = this.sessionIds.length;
+          this.metrics.clients.value = this.clientIds.length;
+          this.metrics.assets.value = this.assetIds.length;
 
-        this.calcSessionCounts();
-        this.calcTypeCounts();
+          this.calcSessionCounts();
+          this.calcTypeCounts();
+        }
       });
     },
     calcSessionCounts() {

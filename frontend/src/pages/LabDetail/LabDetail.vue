@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row class="lab-basic-info mb-4 flex-column no-gutters">
+    <v-row v-if="!clientPath" class="lab-basic-info mb-4 flex-column no-gutters">
       <p class="display-1 text-capitalize">{{ labName }}</p>
       <p v-if="captureId"> CAPTURE ID: {{ captureId }}</p>
       <p class="mb-0">
@@ -8,10 +8,10 @@
       </p>
     </v-row>
     <!-- Start the lab view -->
-    <!-- Embedded VR Client and Chat -->
-    <v-row v-if="clientPath" height="800" class="vr-container">
-      <v-col :cols="9">
-        <v-card height="800" class="vr-container">
+    <!-- Embedded VR Client and Cha t -->
+    <v-row v-if="clientPath">
+      <v-col>
+        <v-card height="95vh" class="vr-container">
           <vr-client :src="clientPath"></vr-client>
         </v-card>
         <br>
@@ -442,6 +442,8 @@ export default {
     },
     // Start the session
     startSession() {
+      // TODO(rob): construct client path on mounted, and trigger update if build is changed
+      // TODO(rob): set global flag when session started
       if(this.captureId) {
         this.sessionId = 9999+this.sessionId;
         this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}&playback=${this.captureId}`;
