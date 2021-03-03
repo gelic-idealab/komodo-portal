@@ -7,12 +7,12 @@
                     <video muted controls autoplay playsinline width="100%" :srcObject.prop="localStream"></video>
                 </v-card>
                 <v-card v-else-if="localStream.getAudioTracks().length && !sharingScreen">
-                    <!-- <v-img
+                    <v-img
                     class="white--text align-end"
                     height="150px"
                     :src="require('@/assets/img/mic.jpg')"
-                    ></v-img> -->
-                    <v-row>
+                    ></v-img>
+                    <v-row justify="space-around">
                         <v-card-title>{{ firstName + ' ' + lastName }}</v-card-title>
                     </v-row>
                     <audio muted width="100%" :srcObject.prop="localStream"></audio>
@@ -75,11 +75,11 @@
                     <!-- else render audio placeholder -->
                     <template v-else-if="connection.stream.getAudioTracks().length">
                         <v-card>
-                            <!-- <v-img
+                            <v-img
                             class="white--text align-end"
                             height="150px"
                             :src="require('@/assets/img/mic.jpg')"
-                            ></v-img> -->
+                            ></v-img>
                             <v-row justify="space-around">
                                 <v-card-title>{{ connection.client_name }}</v-card-title>
                             </v-row>

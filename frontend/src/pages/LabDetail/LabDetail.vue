@@ -19,7 +19,7 @@
       </v-col>
       <v-col :cols="2">
         <!-- Lab details section -->
-        <SectionCard title="Voice & Video" class="mb-3">
+        <SectionCard title="Media" class="mb-3">
           <template v-slot:actions>
             <v-row
               align="center"
