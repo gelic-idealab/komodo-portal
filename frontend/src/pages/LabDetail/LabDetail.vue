@@ -17,151 +17,27 @@
         <br>
 
       </v-col>
-      <v-col :cols="3" class="lab-details">
+      <v-col :cols="2">
         <!-- Lab details section -->
-        <SectionCard title="LAB DETAILS" class="lab-detail">
+        <SectionCard title="Voice & Video" class="mb-3">
           <template v-slot:actions>
-            <v-btn v-if="!inCall" text small color="success" @click="startCall">
+            <v-row
+              align="center"
+              justify="space-around"
+            >
+            <v-btn v-if="!inCall" text color="success" @click="startCall">
               <v-icon left x-small>call</v-icon>Start Call
             </v-btn>
-            <v-btn v-if="inCall" text small color="error" @click="endCall">
+            <v-btn v-if="inCall" text color="error" @click="endCall">
               <v-icon left x-small>call_end</v-icon>End Call
             </v-btn>
+            </v-row>
           </template>
-          <!-- Media chat section -->
+          <!-- Chat section -->
           <MediaChat class="media-chat" ref="mediachat" :userId="userId" :sessionId="sessionId" :firstName="firstName" :lastName="lastName"></MediaChat>
-          <v-tabs
-            v-model="tabs"
-            show-arrows
-          >
-          <v-tab>
-            CHAT
-          </v-tab>
-          <v-tab-item>
-            <!-- Text chat section -->
-            <SectionCard>
-              <TextChat ref="textchat" :session-id="sessionId"/>
-            </SectionCard>
-          </v-tab-item>
-          <v-tab>
-            DETAILS
-          </v-tab>
-          <v-tab-item>
-            <SectionCard>
-              <template v-slot:actions>
-                <router-link :to="{ name: 'Lab Edit', params: { courseId, labId } }">
-                  <v-btn text small color="grey" v-if="user.role == `admin` || user.role == `instructor`">
-                    <v-icon left x-small>mdi-calendar</v-icon>Edit
-                  </v-btn>
-                </router-link>
-                <v-btn text small color="accent" @click="startSession">
-                  <v-icon left x-small>mdi-play</v-icon>Start Now
-                </v-btn>
-              </template>
-              <v-container class="py-0 details-content">
-                <v-row dense>
-                  <v-col>
-                    <v-chip outlined>Start Time</v-chip>
-                  </v-col>
-                  <v-col>
-                    {{ schedule.startTime }}
-                  </v-col>
-                  <v-col>
-                    <v-chip outlined>Duration</v-chip>
-                  </v-col>
-                  <v-col>
-                    {{ schedule.duration }}
-                  </v-col>
-                </v-row>
-                <v-row dense>
-                  <v-col>
-                    <v-chip outlined>End Time</v-chip>
-                  </v-col>
-                  <v-col>
-                    {{ schedule.endTime }}
-                  </v-col>
-                  <v-col>
-                    <v-chip outlined>Will Start</v-chip>
-                  </v-col>
-                  <v-col>
-                    {{ schedule.timeLeft }}
-                  </v-col>
-                </v-row>
-              </v-container>
-            </SectionCard>
-          </v-tab-item>
-          <!-- Settins section -->
-          <v-tab>
-            SETTINGS
-          </v-tab>
-          <v-tab-item>
-            <SectionCard>
-              <template v-slot:actions>
-                  <v-icon small>mdi-hammer-wrench</v-icon>
-              </template>
-              <v-row>
-                <v-col :cols="4" class="setting-label">
-                  <v-chip outlined>Version</v-chip>
-                </v-col>
-                <v-col>
-                  <v-select
-                  v-model="buildScope"
-                  :items="buildScopes"
-                  dense
-                  @change="getBuilds"
-                  ></v-select>
-                  <v-select
-                    v-model="build"
-                    :value="build"
-                    :items="builds"
-                    hint="Change the Komodo version for this session"
-                    persistent-hint
-                    dense
-                  ></v-select>
-                </v-col>
-              </v-row>
-            </SectionCard>
-          </v-tab-item>
-          <!-- Description section -->
-          <v-tab>
-            DESCRIPTION
-          </v-tab>
-          <v-tab-item>
-            <SectionCard>
-              <template v-slot:actions v-if="user.role == `admin` || user.role == `instructor`">
-                <router-link :to="{ name: 'Lab Edit', params: { courseId, labId } }">
-                  <v-btn text small color="grey">
-                    <v-icon left x-small>mdi-pencil</v-icon>Edit
-                  </v-btn>
-                </router-link>
-              </template>
-              {{ description }}
-            </SectionCard>
-          </v-tab-item>
-          <!-- Assets section -->
-          <v-tab>
-            ASSETS
-          </v-tab>
-          <v-tab-item>
-            <SectionCard>
-              <template v-slot:actions v-if="user.role == `admin` || user.role == `instructor`">
-                <!-- Redirect to the lab edit page -->
-                <router-link :to="{ name: 'Lab Edit', params: { courseId, labId } }">
-                  <v-btn text small color="grey">
-                    <v-icon left x-small>mdi-pencil</v-icon>Edit
-                  </v-btn>
-                </router-link>
-              </template>
-              <v-data-table
-                :headers="assetTableHeaders"
-                :items="assetList"
-                @click:row="onAssetClick"
-                item-key="assetId"
-                no-data-text="No asset added"
-              />
-            </SectionCard>
-          </v-tab-item>
-          </v-tabs>
+        </SectionCard>
+        <SectionCard title="Text">
+            <TextChat ref="textchat" :session-id="sessionId"/>
         </SectionCard>
       </v-col>
     </v-row>
@@ -402,10 +278,6 @@ export default {
         });
       }
     });
-
-    // TODO(rob): if (captureId) { requestAudioCacheFromRelay(); } 
-    // preload the audio so that when playback starts we already have the audio data
-
   },
   // Navigation handler
   beforeRouteLeave(to, from, next){
@@ -419,7 +291,7 @@ export default {
       if (!window.confirm("Are you sure you want to leave?")) {
         return;
       }
-      this.$refs.textchat.cleanup();
+      if (this.$refs.textchat) { this.$refs.textchat.cleanup(); }
     }
     next();
   },
@@ -511,12 +383,8 @@ export default {
       max-width: 100%!important;
     }
 
-    .lab-detail {
-      max-height: 800px;
-    }
-
     .chat-history-container {
-      max-height: 500px;
+      max-height: 725px;
     }
 
     .v-application--is-ltr .v-data-footer__select .v-select {
@@ -532,11 +400,6 @@ export default {
     .v-application--is-ltr .v-data-footer__pagination {
       margin: 0 15px 0 15px!important;
     }
-
-    .section-card__header {
-      padding-top: 12px;
-    }
-
 
   @media screen and (max-width: 800px) and (max-height: 450px){
     .col.col-4.setting-label{
@@ -567,14 +430,6 @@ export default {
     }
     .vr-container {
       height:350px!important;
-    }
-
-    .chat-history-container {
-      max-height: 200px;
-    }
-    .lab-detail {
-      overflow-y: scroll;
-      max-height: 350px;
     }
   }
 </style>

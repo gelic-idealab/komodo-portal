@@ -7,12 +7,12 @@
                     <video muted controls autoplay playsinline width="100%" :srcObject.prop="localStream"></video>
                 </v-card>
                 <v-card v-else-if="localStream.getAudioTracks().length && !sharingScreen">
-                    <v-img
+                    <!-- <v-img
                     class="white--text align-end"
                     height="150px"
                     :src="require('@/assets/img/mic.jpg')"
-                    ></v-img>
-                    <v-row justify="space-around">
+                    ></v-img> -->
+                    <v-row>
                         <v-card-title>{{ firstName + ' ' + lastName }}</v-card-title>
                     </v-row>
                     <audio muted width="100%" :srcObject.prop="localStream"></audio>
@@ -52,12 +52,12 @@
                             <v-btn class="mx-2" fab dark small color="error" v-show="sharingScreen" v-on:click="stopShareScreen">
                                 <v-icon dark>stop_screen_share</v-icon>
                             </v-btn>
-                            <v-btn class="mx-2" fab dark small color="primary" v-show="true" v-on:click="enableSpeechToText">
+                            <!-- <v-btn class="mx-2" fab dark small color="primary" v-show="true" v-on:click="toggleSpeechToText">
                                 <v-icon dark>record_voice_over</v-icon>
                             </v-btn>
-                            <v-btn class="mx-2" fab dark small color="error" v-show="false" v-on:click="disableSpeechToText">
+                            <v-btn class="mx-2" fab dark small color="error" v-show="false" v-on:click="toggleSpeechToText">
                                 <v-icon dark>voice_over_off</v-icon>
-                            </v-btn>
+                            </v-btn> -->
                         </div>                        
                     </v-col>
                 </v-row>
@@ -75,16 +75,16 @@
                     <!-- else render audio placeholder -->
                     <template v-else-if="connection.stream.getAudioTracks().length">
                         <v-card>
-                            <v-img
+                            <!-- <v-img
                             class="white--text align-end"
                             height="150px"
                             :src="require('@/assets/img/mic.jpg')"
-                            ></v-img>
+                            ></v-img> -->
                             <v-row justify="space-around">
                                 <v-card-title>{{ connection.client_name }}</v-card-title>
                             </v-row>
                         </v-card>
-                        <audio autoplay :srcObject.prop="connection.stream"></audio>
+                        <audio controls="controls" autoplay :srcObject.prop="connection.stream"></audio>
                     </template>
                 </template>
             </v-col>
@@ -110,6 +110,7 @@ export default {
         return {
             audioIsSupported: false,
             callNotification: new Audio(require("../../assets/sound_notification.mp4")),
+            chunks: [],
             connections: [],
             images: [],
             isconnectedToServer: false,
@@ -121,6 +122,7 @@ export default {
             sharingScreen: false,
             sharingVideo: false,
             socket: null,
+            speechToText: false,
             stock: "",
             videoIsSupported: false,
         }
@@ -223,7 +225,7 @@ export default {
                 }
                 console.log('local stream added:', this.localStream);
 
-                this.beginAudioStreaming();
+                // this.addStreamToRecording(stream);  TODO(rob): removing audio recording for now to focus on data playback. 
 
                 // renegotiate calls with new local stream
                 this.renegotiateCalls();
@@ -231,18 +233,46 @@ export default {
                 console.log('error getting local stream:', err);
             });
         },
-        beginAudioStreaming() {
-            this.recorder = RecordRTC(this.localStream, {
-                type: 'audio',
-                mimeType: 'audio/wav',
-                recorderType: RecordRTC.StereoAudioRecorder,
-                desiredSampRate: 16000,
-                numberOfAudioChannels: 1,
-                timeSlice: 2000,
-                ondataavailable: this.emitAudioBlob
-            });
+        addStreamToRecording(stream) { // TODO(rob): removing audio capture for now to focus on data playback. 
 
-            this.recorder.startRecording();
+            // let streams = new MediaStream([...stream.getTracks()]);
+            // this.recorder = new MediaRecorder(streams);
+            
+            // this.recorder.ondataavailable = (e) => {
+            //     this.chunks.push(e.data);
+            // }
+
+            // this.recorder.onstop = (e) => {
+            //     var a = document.createElement("a");
+            //     document.body.appendChild(a);
+            //     a.style = "display: none";
+            //     let url = window.URL.createObjectURL(e.data);
+            //     a.href = url;
+            //     a.download = 'test.webm';
+            //     a.click();
+            //     window.URL.revokeObjectURL(url);
+            // }
+            // this.recorder.start();
+
+            // if (!this.recorder) {
+            //     let options = {
+            //         type: 'audio',
+            //         // mimeType: 'audio/wav',
+            //         // desiredSampRate: 16000,
+            //         // numberOfAudioChannels: 1,
+            //         // timeSlice: 2000,
+            //         // ondataavailable: this.downloadBlob
+            //     }
+            //     this.recorder = new RecordRTC([stream], options);
+            //     this.recorder.stopRecording(function(blob) {
+            //         console.log("RECORDER BLOB =============", blob.size, blob);
+            //     });
+            //     this.recorder.startRecording();
+            //     console.log("adding stream to recorder:", this.recorder);
+
+            // } else {
+            //     this.recorder.getInternalRecorder().addStreams([stream]);
+            // }
         },
         emitAudioBlob(blob) {
             this.socket.emit('mic', {
@@ -340,7 +370,7 @@ export default {
                 });
             }
             this.muted = false;
-            this.recorder.startRecording();
+            // this.recorder.startRecording();
         },
         addNewPeer(data) {
             console.log('joined event:', data);
@@ -376,6 +406,7 @@ export default {
                         this.$set(connection, "stream", remoteStream);
                         this.$set(connection, "active", true);
                         console.log('added remote stream to connection:', connection);
+                        this.addStreamToRecording(remoteStream);
                     }                    
                 });
 
@@ -451,11 +482,12 @@ export default {
 
         },
         hangup() {
+
+            // this.recorder.stop();
+
             this.disableVideo(false);
             this.stopShareScreen(false);
-            this.disableSpeechToText();
             this.stopStream();
-            this.recorder.stopRecording();
             console.log('hanging up')
             for (let c = 0; c < this.connections.length; c++) {
                 console.log('closing connection:', this.connections[c]);
@@ -466,6 +498,7 @@ export default {
             this.peer.disconnect();
             this.isconnectedToServer = false;
             this.socket.disconnect();
+
         },
         stopStream(){
             if(this.localStream){
@@ -477,11 +510,8 @@ export default {
             });
             }
         },
-        enableSpeechToText() {
-            // TODO(rob): toggle render flag for speech to text payloads
-        },
-        disableSpeechToText() {
-            // TODO(rob): toggle render flag -- or collapse into single toggle function
+        toggleSpeechToText() {
+            this.speechToText = !this.speechToText;
         },
         handleMessage(data) {
             console.log('received message:', data);
