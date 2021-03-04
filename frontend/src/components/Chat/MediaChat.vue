@@ -96,7 +96,8 @@
 import io from 'socket.io-client';
 import Peer from 'peerjs';
 import axios from 'axios';
-import RecordRTC from 'recordrtc';
+// import RecordRTC from 'recordrtc';
+import twilio from 'twilio';
 
 export default {
     name: "MediaChat",
@@ -162,31 +163,24 @@ export default {
             let host = url.hostname;
             let port = url.port;
             let secure = url.protocol === "https:";
+            let config = { 'iceServers': [] }
 
-            // HACK(rob): testing twilio TURN server with hardcoded creds
-            let config = {
-                'iceServers': [
-                    { url: 'stun:stun.l.google.com:19302' }, // public stun server
-                    { url: "stun:global.stun.twilio.com:3478?transport=udp" },
-                    {
-                        url: "turn:global.turn.twilio.com:3478?transport=udp",
-                        username: "e158920c0339ba1bcbef477463bd569e6357f6c96b0d56ff1491e358347db508",
-                        credential: "nVUkF0PrprAyTX4pxm8xAgvMhMnbgjLQcTnP/1+AZ/U="
-                    },
-                    {
-                        url: "turn:global.turn.twilio.com:3478?transport=tcp",
-                        username: "e158920c0339ba1bcbef477463bd569e6357f6c96b0d56ff1491e358347db508",
-                        credential: "nVUkF0PrprAyTX4pxm8xAgvMhMnbgjLQcTnP/1+AZ/U="
-                    },
-                    {
-                        url: "turn:global.turn.twilio.com:443?transport=tcp",
-                        username: "e158920c0339ba1bcbef477463bd569e6357f6c96b0d56ff1491e358347db508",
-                        credential: "nVUkF0PrprAyTX4pxm8xAgvMhMnbgjLQcTnP/1+AZ/U="
-                    }
-                ]
-            }
 
-            console.log("STUN/TURN config:", config);
+            // TODO(rob): move this to backend. Twilio SDK doesn't like running on frontend. 
+
+            // Get Twilio TURN server creds
+            // const accountSid = process.env.VUE_APP_TWILIO_ACCOUNT_SID;
+            // const authToken = process.env.VUE_APP_TWILIO_AUTH_TOKEN;
+
+            // console.log(process.env)
+
+            // const client = twilio(accountSid, authToken);
+            // client.tokens.create().then(token => {
+            //     console.log(token.iceServers);
+            //     config.iceServers = token.iceServers;
+            // });
+
+            // console.log("STUN/TURN config:", config);
 
             this.peer = new Peer({
                 host: host,
