@@ -344,7 +344,7 @@ export default {
                 });
             }
             this.muted = true;
-            this.recorder.stopRecording();
+            // this.recorder.stopRecording();
         },
         unMute() {
             console.log('unmuting mic')
