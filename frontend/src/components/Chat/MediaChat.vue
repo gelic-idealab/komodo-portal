@@ -166,11 +166,9 @@ export default {
             let secure = url.protocol === "https:";
             let config = { 'iceServers': [] };
             
+            // Get TURN credentials from portal backend, connect to signaling server
             getTurnCredentials().then((res) => {
                 config.iceServers = res.data;
-
-                console.log("=== CONFIG ===", config)
-
                 this.peer = new Peer({
                     host: host,
                     port: port,
