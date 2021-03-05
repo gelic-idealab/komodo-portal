@@ -97,7 +97,8 @@ import io from 'socket.io-client';
 import Peer from 'peerjs';
 import axios from 'axios';
 // import RecordRTC from 'recordrtc';
-import twilio from 'twilio';
+import { getTurnCredentials } from "../../requests/turn";
+
 
 export default {
     name: "MediaChat",
@@ -163,34 +164,23 @@ export default {
             let host = url.hostname;
             let port = url.port;
             let secure = url.protocol === "https:";
-            let config = { 'iceServers': [] }
+            let config = { 'iceServers': [] };
+            
+            getTurnCredentials().then((res) => {
+                config.iceServers = res.data;
 
+                console.log("=== CONFIG ===", config)
 
-            // TODO(rob): move this to backend. Twilio SDK doesn't like running on frontend. 
-
-            // Get Twilio TURN server creds
-            // const accountSid = process.env.VUE_APP_TWILIO_ACCOUNT_SID;
-            // const authToken = process.env.VUE_APP_TWILIO_AUTH_TOKEN;
-
-            // console.log(process.env)
-
-            // const client = twilio(accountSid, authToken);
-            // client.tokens.create().then(token => {
-            //     console.log(token.iceServers);
-            //     config.iceServers = token.iceServers;
-            // });
-
-            // console.log("STUN/TURN config:", config);
-
-            this.peer = new Peer({
-                host: host,
-                port: port,
-                path: '/call',
-                secure: secure,
-                config: config
+                this.peer = new Peer({
+                    host: host,
+                    port: port,
+                    path: '/call',
+                    secure: secure,
+                    config: config
+                });
+                this.peer.on('open', this.connectedToServer);
+                this.peer.on('call', this.answer);
             });
-            this.peer.on('open', this.connectedToServer);
-            this.peer.on('call', this.answer);
         },
         handleMediaDevices(devices) {
             if (devices) {

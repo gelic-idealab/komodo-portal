@@ -3,7 +3,8 @@ const courseController = require("./course");
 const labController = require("./lab");
 const assetController = require("./asset");
 const publicController = require("./public");
-const dataController = require("./data")
+const dataController = require("./data");
+const turnController = require("./turn");
 
 module.exports = {
   userController,
@@ -11,5 +12,6 @@ module.exports = {
   labController,
   assetController,
   publicController,
-  dataController
+  dataController,
+  turnController
 };

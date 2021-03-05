@@ -84,7 +84,8 @@
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData } from "../../requests/data"
+import { getInteractionData } from "../../requests/data";
+
 export default {
   name: "Metric",
   components: {

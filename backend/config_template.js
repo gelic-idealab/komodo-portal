@@ -16,6 +16,8 @@ module.exports = {
         secretAccessKey: '',
         region: ''
     },
-    jwt: ''
+    jwt: '',
+    TWILIO_ACCOUNT_SID: '',
+    TWILIO_AUTH_TOKEN: ''
 };
 
