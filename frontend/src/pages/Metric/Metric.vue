@@ -156,7 +156,8 @@ export default {
   },
   methods: {
     exportData() {
-      getAllRaw().then(data => {
+      let labId = 2;
+      getAllRaw({ labId }).then(data => {
         console.log(data.data)
       })
     },

@@ -6,6 +6,7 @@ export const getInteractionData = () => {
 };
 
 // Get raw position and interaction data
-export const getAllRaw = () => {
-  return baseRequest.get("/data/export/raw");
+export const getAllRaw = params => {
+  const { labId } = params;
+  return baseRequest.get(`/data/export/raw/${labId}`);
 };
