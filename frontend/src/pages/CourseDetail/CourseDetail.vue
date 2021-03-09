@@ -148,7 +148,6 @@ export default {
         getCaptures({ courseId: this.course.courseId })
       ])
         .then(values => {
-          console.log('values:', values)
           this.course = {
             courseId: this.course.courseId,
             ...values[0].data

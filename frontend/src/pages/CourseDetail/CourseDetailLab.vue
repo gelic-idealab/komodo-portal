@@ -26,13 +26,15 @@
         <v-icon small class="mr-2">mdi-play</v-icon>
         <v-icon small class="mr-2">mdi-camera</v-icon>
         <v-icon small class="mr-2" v-if="user.role == `admin` || user.role == `instructor`">edit</v-icon>
-        <v-icon small v-if="user.role == `admin` || user.role == `instructor`" @click="deleteLabClick(item)">delete</v-icon>
+        <v-icon small class="mr-2" v-if="user.role == `admin` || user.role == `instructor`" @click.stop="deleteLabClick(item)">delete</v-icon>
       </template>
     </v-data-table>
   </v-tab-item>
 </template>
 
 <script>
+import { deleteLab } from "../../requests/course";
+
 export default {
   name: "CourseDetailLab",
   props: {
@@ -59,6 +61,19 @@ export default {
     }
   },
   methods: {
+    deleteLabClick(item) {
+      let res = confirm('Are you sure you want to delete this lab?');
+      if (res) {
+        deleteLab({labId: item.id})
+        .then(() => {
+          this.status = "success";
+          setTimeout(() => {
+            // Refresh page
+            this.$router.go();
+          }, 500);
+        })
+      }
+    },
     /**
      * Redirect to the lab deteail page for the selected lab
      */
