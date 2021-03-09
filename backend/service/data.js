@@ -8,6 +8,16 @@ const getAllInteractions = async() => {
   }
 }
 
+const getAllRaw = async() => {
+  const results = {}
+  results.pos = await pool.execute(dataQuery.getRawPos);
+  results.int = await pool.execute(dataQuery.getRawInt);
+  return {
+    data: results
+  }
+}
+
 module.exports = {
-  getAllInteractions
+  getAllInteractions,
+  getAllRaw
 };

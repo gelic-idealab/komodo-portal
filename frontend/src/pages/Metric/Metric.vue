@@ -1,5 +1,12 @@
 <template>
   <v-container :fluid="true">
+    <v-menu offset-y>
+      <template v-slot:activator="{ on }">
+        <v-btn color="primary" depressed v-on:click="exportData">
+          Export Data
+        </v-btn>
+      </template>
+    </v-menu>
     <v-row dense align="center" justify="center">
       <v-col 
         v-for="metric in metrics"
@@ -84,7 +91,7 @@
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData } from "../../requests/data";
+import { getInteractionData, getAllRaw } from "../../requests/data";
 
 export default {
   name: "Metric",
@@ -148,6 +155,11 @@ export default {
     // this.getMetrics();
   },
   methods: {
+    exportData() {
+      getAllRaw().then(data => {
+        console.log(data.data)
+      })
+    },
     getMetrics() {
       getInteractionData().then(data => {
         if (data.data) {
