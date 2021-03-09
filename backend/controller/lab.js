@@ -70,7 +70,6 @@ labController.put("/edit",
 labController.delete("/delete",
   async (req, res) => {
     const {labId} = req.body;
-    console.log(labId);
     const results = await deleteLab({labId});
     res.status(results.code || 200).json(results.data);
   }
