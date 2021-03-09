@@ -76,8 +76,17 @@
       </v-col>
       <!-- student list section -->
       <v-col class="student-details">
-        <SectionCard title="Students">
-          This is a student list.
+        <SectionCard title="Roster">
+          <v-list dense>
+            <v-list-item-group>
+              <v-list-item v-for="user in course.userList" :key="user.email">
+                <v-list-item-content>
+                  <v-list-item-title> {{ user.firstName + ` ` + user.lastName }} </v-list-item-title>
+                  <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
         </SectionCard>
       </v-col>
     </v-row>
