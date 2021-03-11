@@ -134,6 +134,7 @@ import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
 import { getInteractionData, getAllRaw } from "../../requests/data";
 import { getCourseListByInstructor, getCaptures } from "../../requests/course";
+import { Parser } from "json2csv";
 
 export default {
   name: "Metric",
@@ -225,9 +226,52 @@ export default {
     },
     exportData() {
       let captureId = this.captureSelected;
-      getAllRaw({ captureId }).then(data => {
-        console.log(data.data)
-      })
+      getAllRaw({ captureId }).then(res => {
+        if (res.status == 200) {
+          console.log(res.data)
+          let intData = res.data.int;
+          let posData = res.data.pos;
+
+          let intFields = [];
+          intData[1].forEach(field => {
+            intFields.push(field.name)
+          });
+          const intOpts = { intFields };
+          
+          let posFields = [];
+          posData[1].forEach(field => {
+            posFields.push(field.name)
+          });
+          const posOpts = { posFields };
+
+          try {
+            const encoding = "data:text/csv;charset=utf-8,";
+            // interactions csv
+            const intParser = new Parser(intOpts);
+            const intCsv = encoding+intParser.parse(intData[0]);
+            let encodedUri = encodeURI(intCsv);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${this.captureSelected}_interactions.csv`);
+            document.body.appendChild(link); // Required for FF
+            link.click();
+
+            // positions csv
+            const posParser = new Parser(posOpts);
+            const posCsv = encoding+posParser.parse(posData[0]);
+            encodedUri = encodeURI(posCsv);
+            link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${this.captureSelected}_positions.csv`);
+            document.body.appendChild(link); // Required for FF
+            link.click();
+          } catch (err) {
+            console.error(err);
+          }
+        } else {
+          console.log(res);
+        }
+      });
     },
     getMetrics() {
       getInteractionData().then(data => {
