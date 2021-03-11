@@ -32,6 +32,7 @@
         item-text="courseName"
         item-value="courseId"
         v-model="courseSelected"
+        v-on:change="getCapturesByCourseId"
         dense 
         class="ml-3">
         </v-select>
@@ -39,7 +40,13 @@
       <v-col>
         <v-select 
         v-if="courseSelected"
-        dense class="ml-3">
+        :items="captures"
+        item-text="captureId"
+        item-value="captureId"
+        v-model="captureSelected"
+        v-on:change="loadData"
+        dense class="ml-3"
+        >
         </v-select>
         <v-select
         v-else
@@ -139,6 +146,8 @@ export default {
       userId: null,
       courses: [],
       courseSelected: null,
+      captures: [],
+      captureSelected: null,
       dataLoaded: false,
       search: '',
       interactions: [],
@@ -201,15 +210,22 @@ export default {
         this.courses = data.data;
       })
     },
-    getCapturesByCourseId(e) {
-      console.log(e);
-      getCaptures().then(data => {
-        console.log(data)
+    getCapturesByCourseId() {
+      getCaptures({ courseId: this.courseSelected }).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          this.captures = res.data;
+        } else {
+          console.log(res)
+        }
       })
     },
+    loadData(e) {
+      this.dataLoaded = true;
+    },
     exportData() {
-      let labId = 2;
-      getAllRaw({ labId }).then(data => {
+      let captureId = this.captureSelected;
+      getAllRaw({ captureId }).then(data => {
         console.log(data.data)
       })
     },

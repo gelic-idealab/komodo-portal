@@ -14,10 +14,10 @@ dataController.get("/interactions",
     res.status(200).json(results.data);
   });
 
-dataController.get("/export/raw/:labId",
+dataController.get("/export/raw/:captureId",
 async (req, res) => {
-  const { labId } = req.params;
-  let results = await getAllRaw(labId);
+  const { captureId } = req.params;
+  let results = await getAllRaw(captureId);
   res.status(200).json(results.data);
 });
 

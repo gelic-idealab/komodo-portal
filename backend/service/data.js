@@ -8,10 +8,10 @@ const getAllInteractions = async() => {
   }
 }
 
-const getAllRaw = async(labId) => {
+const getAllRaw = async(captureId) => {
   const results = {}
-  results.pos = await pool.execute(dataQuery.getRawPos, [labId]);
-  results.int = await pool.execute(dataQuery.getRawInt, [labId]);
+  results.pos = await pool.execute(dataQuery.getRawPos, [captureId]);
+  results.int = await pool.execute(dataQuery.getRawInt, [captureId]);
   return {
     data: results
   }
