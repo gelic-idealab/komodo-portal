@@ -1,12 +1,5 @@
 <template>
-  <v-container :fluid="true">
-    <v-menu offset-y>
-      <template v-slot:activator="{ on }">
-        <v-btn color="primary" depressed v-on:click="exportData">
-          Export Data
-        </v-btn>
-      </template>
-    </v-menu>
+  <v-container fluid>
     <v-row dense align="center" justify="center">
       <v-col 
         v-for="metric in metrics"
@@ -28,6 +21,47 @@
           </div>
         </v-card>
       </v-col>
+    </v-row>
+    
+    <v-row>
+      <v-col>
+        <v-select
+        justify-center
+        label="Select Course"
+        :items="courses"
+        item-text="courseName"
+        item-value="courseId"
+        v-model="courseSelected"
+        dense 
+        class="ml-3">
+        </v-select>
+      </v-col>
+      <v-col>
+        <v-select 
+        v-if="courseSelected"
+        dense class="ml-3">
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>
+      </v-col>
+      <v-spacer>
+      </v-spacer>
+      <v-btn 
+      v-if="dataLoaded" 
+      color="primary" 
+      v-on:click="exportData">
+        Export Data
+      </v-btn>
+      <v-btn 
+      v-else
+      disabled
+      color="primary" 
+      v-on:click="exportData">
+        Export Data
+      </v-btn>
     </v-row>
 
     <v-row>
@@ -92,6 +126,7 @@
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
 import { getInteractionData, getAllRaw } from "../../requests/data";
+import { getCourseListByInstructor, getCaptures } from "../../requests/course";
 
 export default {
   name: "Metric",
@@ -101,6 +136,10 @@ export default {
   },
   data() {
     return {
+      userId: null,
+      courses: [],
+      courseSelected: null,
+      dataLoaded: false,
       search: '',
       interactions: [],
       interactionTableHeaders: [
@@ -152,9 +191,22 @@ export default {
     }
   },
   created() {
-    // this.getMetrics();
+    this.userId = this.$store.getters.user.userId;
+    this.getInstructorCourses();
   },
   methods: {
+    getInstructorCourses() {
+      getCourseListByInstructor(this.userId).then(data => {
+        console.log("Instructor courses:", data);
+        this.courses = data.data;
+      })
+    },
+    getCapturesByCourseId(e) {
+      console.log(e);
+      getCaptures().then(data => {
+        console.log(data)
+      })
+    },
     exportData() {
       let labId = 2;
       getAllRaw({ labId }).then(data => {

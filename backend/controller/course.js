@@ -1,6 +1,5 @@
 const express = require("express");
-const course = require("../service/course");
-const { getCourseList, getCourseDetail, getAllCourses, createCourse, editCourse, editMultipleCourse, getAllSemesters, deleteCourse } = require("../service/course");
+const { getCourseList, getCourseListByInstructor, getCourseDetail, getAllCourses, createCourse, editCourse, editMultipleCourse, getAllSemesters, deleteCourse } = require("../service/course");
 const courseController = express.Router();
 
 // Query course list by user id
@@ -8,6 +7,13 @@ courseController.get("/users/:userId",
   async (req, res) => {
     const { userId } = req.params;
     const results = await getCourseList(userId);
+    res.status(results.code || 200).json(results.data);
+  });
+
+  courseController.get("/instructors/:userId",
+  async (req, res) => {
+    const { userId } = req.params;
+    const results = await getCourseListByInstructor(userId);
     res.status(results.code || 200).json(results.data);
   });
 

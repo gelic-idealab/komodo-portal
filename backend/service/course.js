@@ -12,6 +12,12 @@ const getCourseList = async userId => {
   };
 };
 
+const getCourseListByInstructor = async userId => {
+  const results = await pool.execute(courseQuery.getCourseListByInstructor, [userId]);
+  const courseList = results[0];
+  return { data: courseList };
+};
+
 // Get course detailed information by course id
 const getCourseDetail = async courseId => {
   // Get course information
@@ -138,6 +144,7 @@ const deleteCourse = async({courseId}) => {
 
 module.exports = {
   getCourseList,
+  getCourseListByInstructor,
   getCourseDetail,
   getAllCourses,
   createCourse,

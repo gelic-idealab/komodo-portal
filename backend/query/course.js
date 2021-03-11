@@ -11,6 +11,11 @@ JOIN KP_Semester s
 WHERE c.course_id IN (SELECT r.course_id FROM KP_Registration r WHERE r.student_id = ?)
 `;
 
+const getCourseListByInstructor = `
+SELECT * FROM KP_Course c
+WHERE c.instructor_id = ?
+`
+
 const getCourseDetail = `
 SELECT
   c.*,
@@ -90,6 +95,7 @@ WHERE course_id = ?;
 `;
 module.exports = {
   getCourseList,
+  getCourseListByInstructor,
   getCourseDetail,
   getAllCourses,
   registerCourse,
