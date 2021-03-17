@@ -1,38 +1,36 @@
 <template>
   <div>
-      <SectionCard title="Recent Uploads">
-        <v-row>
-            <v-col v-for="(asset, index) in assets" :key="index">
-            <v-card>
-                <!-- Model Preview Section -->
-                <model-viewer
-                    v-if="asset.fileType === 'GLB' || asset.fileType === 'GLTF'"
-                    class="model-viewer"
-                    :src="asset.path"
-                    :alt="asset.assetName"
-                    auto-rotate
-                    camera-controls
-                    :exposure="0.5"
-                />
-                <v-card-title>{{ asset.assetName }}</v-card-title>
-                <v-card-text class="text--primary">
-                    <div>{{ asset.creatorName}}</div>
-                    <div>{{ asset.updateAt }}</div>
-                </v-card-text>
+    <v-row>
+      <v-col v-for="(asset, index) in assets" :key="index">
+        <v-card>
+          <!-- Model Preview Section -->
+          <model-viewer
+              v-if="asset.fileType === 'GLB' || asset.fileType === 'GLTF'"
+              class="model-viewer"
+              :src="asset.path"
+              :alt="asset.assetName"
+              auto-rotate
+              camera-controls
+              :exposure="0.5"
+          />
+          <v-card-title>{{ asset.assetName }}</v-card-title>
+          <v-card-text class="text--primary">
+              <div>{{ asset.creatorName}}</div>
+              <div>{{ asset.updateAt }}</div>
+          </v-card-text>
 
-                <v-card-actions>
-                    <v-btn
-                        color="primary"
-                        text
-                        @click="onAssetClick(asset)"
-                    >
-                        Inspect
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-col>
-        </v-row>
-      </SectionCard>
+          <v-card-actions>
+              <v-btn
+                  color="primary"
+                  text
+                  @click="onAssetClick(asset)"
+              >
+                  Inspect
+              </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
 
     <v-row>
         <v-col>
@@ -46,24 +44,19 @@
               </v-btn>
             </router-link>
           </template>
-          <v-container>
-            <v-card-title>
-              <v-col cols="10">
+          <v-container fluid>
+            <v-row>
               <v-text-field
+                class="ma-3"
+                clearable
+                dense
+                outlined
                 v-model="search"
                 append-icon="mdi-magnify"
                 label="Search"
                 single-line
               ></v-text-field>
-              </v-col>
-              <v-col cols="2">
-              <v-checkbox
-                @change="checkboxUpdate"
-                v-model="checkbox"
-                :label="`Published`"
-              ></v-checkbox>
-              </v-col>
-            </v-card-title>
+            </v-row>
             <v-data-table
               :search="search"
               :headers="headers"
@@ -75,7 +68,10 @@
               no-data-text="No asset added"
             >
             <template v-slot:item.updateAt="{ item }">
-              <span>{{moment(item.updateAt).format("L LT")}}</span>
+              <span>{{ moment(item.updateAt).format("L LT") }}</span>
+            </template>
+            <template v-slot:item.isPublic="{ item }">
+                <span> {{ item.isPublic ? `Public` : `Private`}} </span>
             </template>
             </v-data-table>
           </v-container>
@@ -87,9 +83,7 @@
 
 <script>
 import moment from "moment";
-import { getAssetList } from "../requests/asset"
-import { getAssetDetail } from "../requests/asset";
-
+import { getAssetList, getAssetDetail } from "../requests/asset"
 import SectionCard from "../components/Cards/SectionCard";
 
 export default {
@@ -104,20 +98,19 @@ export default {
         headers: [
             { text: "Name", value: "assetName" },
             { text: "Description", value: "description", sortable: false },
-            { text: "Updated", value: "updateAt"}
+            { text: "Updated", value: "updateAt"},
+            { text: "Visibility", value: "isPublic"}
         ],
         assets: [],
         unpublishedAsset: [],
         publishedAsset: [],
-        checkbox: true
+        showPublicAssets: false
     }
   },
   mounted() {
     // Initialize the asset list
     getAssetList().then(data => {
       this.assetList = data.data;
-      this.publishedAsset = this.assetList;
-      this.unpublishedAsset = this.assetList.filter(asset => asset.isPublic !== 1);
       let len = this.assetList.length - 1;
       for (let i = len; i > len - 3; i--) {
           this.getAsset(this.assetList[i].assetId);
@@ -147,13 +140,6 @@ export default {
             params: { assetId }
         });
       },
-      checkboxUpdate(){
-        if(this.checkbox){
-          this.assetList = this.publishedAsset;
-        } else {
-          this.assetList = this.unpublishedAsset
-        }
-      }
   }
 }
 </script>

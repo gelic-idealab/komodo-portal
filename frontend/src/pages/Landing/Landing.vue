@@ -39,7 +39,7 @@
               </v-btn>
             </router-link>
           </template>
-          <v-container>
+          <v-container fluid>
             <v-data-table
               :headers="assetTableHeaders"
               :items="assetList"
@@ -63,7 +63,6 @@
 <script>
 import SectionCard from "../../components/Cards/SectionCard";
 import LandingCourseCard from "./LandingCourseCard";
-import { getInteractionData } from "../../requests/data"
 import { getAssetList } from "../../requests/asset"
 
 export default {
