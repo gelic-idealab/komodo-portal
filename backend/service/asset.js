@@ -5,7 +5,7 @@ const AWS = require("aws-sdk");
 const config = require("../config");
 AWS.config.update(config.aws);
 const s3 = new AWS.S3();
-const BUCKET_NAME = "vrcat-assets";
+const BUCKET_NAME = config.aws.bucket;
 
 /**
  * Todo: add function description
