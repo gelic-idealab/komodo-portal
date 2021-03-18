@@ -20,7 +20,7 @@
     "express-session": "^1.17.0",
     "jsonfile": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.1",
     "mysql2": "^1.7.0",
     "swagger-ui-express": "^4.1.4",
     "twilio": "^3.57.0",

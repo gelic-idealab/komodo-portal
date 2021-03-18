@@ -1,8 +1,10 @@
+const moment = require("moment");
+const AWS = require("aws-sdk");
+const config = require("../config");
+
 const pool = require("./index");
 const assetQuery = require("../query/asset");
 
-const AWS = require("aws-sdk");
-const config = require("../config");
 AWS.config.update(config.aws);
 const s3 = new AWS.S3();
 const BUCKET_NAME = config.aws.bucket;
@@ -54,7 +56,7 @@ const presignAssetPost = async uuid => {
 const createAsset = async ({ uuid, assetName, description, creatorId, isPublic, isWholeObject, path, scale }) => {
   const results = await pool.execute(
     assetQuery.createAsset,
-    [uuid, assetName, description, creatorId, isPublic, isWholeObject, new Date().toISOString().slice(0, 19).replace('T', ' '), path, scale]
+    [uuid, assetName, description, creatorId, isPublic, isWholeObject, moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'), path, scale]
   );
   const assetId = results[0].insertId;
 
