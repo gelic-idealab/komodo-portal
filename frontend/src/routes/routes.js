@@ -9,7 +9,6 @@ import LabCreate from "../pages/LabCreate/LabCreate";
 import LabEdit from "../pages/LabEdit/LabEdit";
 import LabDetail from "../pages/LabDetail/LabDetail";
 import Metric from "../pages/Metric/Metric";
-import SessionMetric from "../pages/SessionMetric/SessionMetric";
 import Assets from "../pages/Assets.vue";
 import ResetPassword from "../pages/Account/ResetPassword";
 import About from "../pages/About.vue";
@@ -195,14 +194,14 @@ const routes = [
           requireLogin: true
         }
       },
-      {
-        path: "metrics/:sessionId",
-        name: "Session Metric",
-        component: SessionMetric,
-        meta: {
-          requireLogin: true
-        }
-      },
+      // {
+      //   path: "metrics/:sessionId",
+      //   name: "Session Metric",
+      //   component: SessionMetric,
+      //   meta: {
+      //     requireLogin: true
+      //   }
+      // },
       {
         path: "account",
         name: "Account",

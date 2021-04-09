@@ -1,166 +1,43 @@
 <template>
   <div>
-    <v-row class="lab-basic-info mb-4 flex-column no-gutters">
-      <p class="display-1 my-2 text-capitalize">{{ labName }}</p>
+    <v-row v-if="!clientPath" class="lab-basic-info mb-4 flex-column no-gutters">
+      <p class="display-1 text-capitalize">{{ labName }}</p>
+      <p v-if="captureId"> CAPTURE ID: {{ captureId }}</p>
       <p class="mb-0">
         <span class="body-1 pointer" @click="goToCourse">{{ `${courseNo}: ${courseName}` }}</span>
       </p>
     </v-row>
     <!-- Start the lab view -->
-    <!-- Embedded VR Client and Chat -->
-    <v-row v-if="clientPath" height="800" class="vr-container">
-      <v-col :cols="9">
-        <v-card height="800" class="vr-container">
+    <!-- Embedded VR Client and Cha t -->
+    <v-row v-if="clientPath">
+      <v-col>
+        <v-card height="95vh" class="vr-container">
           <vr-client :src="clientPath"></vr-client>
         </v-card>
         <br>
 
       </v-col>
-      <v-col :cols="3" class="lab-details">
+      <v-col :cols="2">
         <!-- Lab details section -->
-        <SectionCard title="LAB DETAILS" class="lab-detail">
+        <SectionCard title="Media" class="mb-3">
           <template v-slot:actions>
-            <v-btn v-if="!inCall" text small color="success" @click="startCall">
+            <v-row
+              align="center"
+              justify="space-around"
+            >
+            <v-btn v-if="!inCall" text color="success" @click="startCall">
               <v-icon left x-small>call</v-icon>Start Call
             </v-btn>
-            <v-btn v-if="inCall" text small color="error" @click="endCall">
+            <v-btn v-if="inCall" text color="error" @click="endCall">
               <v-icon left x-small>call_end</v-icon>End Call
             </v-btn>
+            </v-row>
           </template>
-          <!-- Media chat section -->
+          <!-- Chat section -->
           <MediaChat class="media-chat" ref="mediachat" :userId="userId" :sessionId="sessionId" :firstName="firstName" :lastName="lastName"></MediaChat>
-          <v-tabs
-            v-model="tabs"
-            show-arrows
-          >
-          <v-tab>
-            CHAT
-          </v-tab>
-          <v-tab-item>
-            <!-- Text chat section -->
-            <SectionCard>
-              <TextChat :session-id="sessionId"/>
-            </SectionCard>
-          </v-tab-item>
-          <v-tab>
-            DETAILS
-          </v-tab>
-          <v-tab-item>
-            <SectionCard>
-              <template v-slot:actions>
-                <router-link :to="{ name: 'Lab Edit', params: { courseId, labId } }">
-                  <v-btn text small color="grey" v-if="user.role == `admin` || user.role == `instructor`">
-                    <v-icon left x-small>mdi-calendar</v-icon>Edit
-                  </v-btn>
-                </router-link>
-                <v-btn text small color="accent" @click="startSession">
-                  <v-icon left x-small>mdi-play</v-icon>Start Now
-                </v-btn>
-              </template>
-              <v-container class="py-0 details-content">
-                <v-row dense>
-                  <v-col>
-                    <v-chip outlined>Start Time</v-chip>
-                  </v-col>
-                  <v-col>
-                    {{ schedule.startTime }}
-                  </v-col>
-                  <v-col>
-                    <v-chip outlined>Duration</v-chip>
-                  </v-col>
-                  <v-col>
-                    {{ schedule.duration }}
-                  </v-col>
-                </v-row>
-                <v-row dense>
-                  <v-col>
-                    <v-chip outlined>End Time</v-chip>
-                  </v-col>
-                  <v-col>
-                    {{ schedule.endTime }}
-                  </v-col>
-                  <v-col>
-                    <v-chip outlined>Will Start</v-chip>
-                  </v-col>
-                  <v-col>
-                    {{ schedule.timeLeft }}
-                  </v-col>
-                </v-row>
-              </v-container>
-            </SectionCard>
-          </v-tab-item>
-          <!-- Settins section -->
-          <v-tab>
-            SETTINGS
-          </v-tab>
-          <v-tab-item>
-            <SectionCard>
-              <template v-slot:actions>
-                  <v-icon small>mdi-hammer-wrench</v-icon>
-              </template>
-              <v-row>
-                <v-col :cols="4" class="setting-label">
-                  <v-chip outlined>Version</v-chip>
-                </v-col>
-                <v-col>
-                  <v-select
-                  v-model="buildScope"
-                  :items="buildScopes"
-                  dense
-                  @change="getBuilds"
-                  ></v-select>
-                  <v-select
-                    v-model="build"
-                    :value="build"
-                    :items="builds"
-                    hint="Change the Komodo version for this session"
-                    persistent-hint
-                    dense
-                  ></v-select>
-                </v-col>
-              </v-row>
-            </SectionCard>
-          </v-tab-item>
-          <!-- Description section -->
-          <v-tab>
-            DESCRIPTION
-          </v-tab>
-          <v-tab-item>
-            <SectionCard>
-              <template v-slot:actions v-if="user.role == `admin` || user.role == `instructor`">
-                <router-link :to="{ name: 'Lab Edit', params: { courseId, labId } }">
-                  <v-btn text small color="grey">
-                    <v-icon left x-small>mdi-pencil</v-icon>Edit
-                  </v-btn>
-                </router-link>
-              </template>
-              {{ description }}
-            </SectionCard>
-          </v-tab-item>
-          <!-- Assets section -->
-          <v-tab>
-            ASSETS
-          </v-tab>
-          <v-tab-item>
-            <SectionCard>
-              <template v-slot:actions v-if="user.role == `admin` || user.role == `instructor`">
-                <!-- Redirect to the lab edit page -->
-                <router-link :to="{ name: 'Lab Edit', params: { courseId, labId } }">
-                  <v-btn text small color="grey">
-                    <v-icon left x-small>mdi-pencil</v-icon>Edit
-                  </v-btn>
-                </router-link>
-              </template>
-              <v-data-table
-                :headers="assetTableHeaders"
-                :items="assetList"
-                @click:row="onAssetClick"
-                item-key="assetId"
-                no-data-text="No asset added"
-              />
-            </SectionCard>
-          </v-tab-item>
-          </v-tabs>
+        </SectionCard>
+        <SectionCard title="Text">
+            <TextChat ref="textchat" :session-id="sessionId"/>
         </SectionCard>
       </v-col>
     </v-row>
@@ -331,6 +208,7 @@ export default {
       lastName: "",
       labName: "",
       labId: "",
+      captureId:"",
       courseId: "",
       courseNo: "",
       courseName: "",
@@ -357,9 +235,11 @@ export default {
     }
   },
   mounted: function() {
-    const { courseId, labId } = this.$route.params;
-    this.courseId = this.$route.params.courseId;
-    this.labId = this.$route.params.labId;
+
+    const { courseId, labId, captureId } = this.$route.params;
+    this.courseId = courseId;
+    this.labId = labId;
+    this.captureId = captureId;
     const { userId, role, firstName, lastName } = this.$store.getters.user;
     this.teacher = role === "student" ? 0 : 1;
     this.userId = userId;
@@ -388,34 +268,32 @@ export default {
       if (lab.build) { // set build as configured or else leave as base/stable
         this.buildScope = lab.build.split('/')[0];
         this.build = lab.build.split('/')[1];
-      }
-    });
 
-    // get build scopes from buildserver
-    axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}`).then( res => {
-      res.data.forEach(scope => {
-        this.buildScopes.push(scope.name)
-      });
-      this.getBuilds();
+        // get build scopes from buildserver
+        axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}`).then( res => {
+          res.data.forEach(scope => {
+            this.buildScopes.push(scope.name)
+          });
+          this.getBuilds();
+        });
+      }
     });
   },
   // Navigation handler
   beforeRouteLeave(to, from, next){
-    if(this.inCall){
-      if(!window.confirm("Are you sure you want to leave?")){
+    if (this.inCall) {
+      if (!window.confirm("Are you sure you want to leave?")) {
         return;
       }
       this.$refs.mediachat.hangup();
     }
-    next();
-  },
-  created(){
-    // Before unload handler
-    window.addEventListener('beforeunload', (event) => {
-      if(this.inCall){
-        event.returnValue = `Are you sure you want to leave?`
+    if (this.captureId) {
+      if (!window.confirm("Are you sure you want to leave?")) {
+        return;
       }
-    });
+      if (this.$refs.textchat) { this.$refs.textchat.cleanup(); }
+    }
+    next();
   },
   methods: {
     getBuilds() {
@@ -436,7 +314,14 @@ export default {
     },
     // Start the session
     startSession() {
-      this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}`;
+      // TODO(rob): construct client path on mounted, and trigger update if build is changed
+      // TODO(rob): set global flag when session started
+      if(this.captureId) {
+        this.sessionId = 9999+this.sessionId;
+        this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}&playback=${this.captureId}`;
+      } else {
+        this.clientPath = `${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/${this.build}/?client=${this.userId}&session=${this.sessionId}&teacher=${this.teacher}`;
+      }
       console.log('Starting session with client:', this.clientPath);
     },
     // Redirect to the asset detail page
@@ -498,12 +383,8 @@ export default {
       max-width: 100%!important;
     }
 
-    .lab-detail {
-      max-height: 800px;
-    }
-
     .chat-history-container {
-      max-height: 500px;
+      max-height: 725px;
     }
 
     .v-application--is-ltr .v-data-footer__select .v-select {
@@ -519,11 +400,6 @@ export default {
     .v-application--is-ltr .v-data-footer__pagination {
       margin: 0 15px 0 15px!important;
     }
-
-    .section-card__header {
-      padding-top: 12px;
-    }
-
 
   @media screen and (max-width: 800px) and (max-height: 450px){
     .col.col-4.setting-label{
@@ -554,14 +430,6 @@ export default {
     }
     .vr-container {
       height:350px!important;
-    }
-
-    .chat-history-container {
-      max-height: 200px;
-    }
-    .lab-detail {
-      overflow-y: scroll;
-      max-height: 350px;
     }
   }
 </style>

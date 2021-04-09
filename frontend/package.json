@@ -1,10 +1,10 @@
 {
   "name": "komodo",
-  "version": "0.1.1",
+  "version": "0.1.8",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --mode production --open",
-    "dev": "vue-cli-service serve --mode development --open",
+    "serve": "vue-cli-service serve --mode production",
+    "dev": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -14,10 +14,13 @@
     "crypto-js": "^4.0.0",
     "eslint": "^5.16.0",
     "eslint-loader": "^2.1.2",
+    "howler": "^2.2.1",
     "js-cookie": "^2.2.1",
+    "json2csv": "^5.0.6",
     "moment": "^2.24.0",
     "peerjs": "^1.2.0",
     "querystring": "^0.2.0",
+    "recordrtc": "^5.6.1",
     "socket.io-client": "^2.3.0",
     "three": "^0.116.1",
     "uuid": "^7.0.2",

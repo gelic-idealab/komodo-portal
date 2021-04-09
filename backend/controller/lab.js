@@ -1,5 +1,5 @@
 const express = require("express");
-const { getLabList, getLabDetail, getLabAssetList, createLab, editLab, deleteLab } = require("../service/lab");
+const { getLabList, getLabDetail, getLabAssetList, createLab, editLab, deleteLab, getCaptures } = require("../service/lab");
 const labController = express.Router();
 
 // Get lab list for specific course by course id
@@ -8,6 +8,16 @@ labController.get("/",
     const { courseId } = req.query;
 
     const results = await getLabList({
+      courseId,
+    });
+    res.status(results.code || 200).json(results.data);
+  });
+
+// get list of Lab captures
+labController.get("/captures",
+  async (req, res) => {
+  const { courseId } = req.query;
+    const results = await getCaptures({
       courseId,
     });
     res.status(results.code || 200).json(results.data);
@@ -60,10 +70,10 @@ labController.put("/edit",
 labController.delete("/delete",
   async (req, res) => {
     const {labId} = req.body;
-    console.log(labId);
     const results = await deleteLab({labId});
     res.status(results.code || 200).json(results.data);
   }
 );
+
 
 module.exports = labController;

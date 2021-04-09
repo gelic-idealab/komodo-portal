@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col>
-        <p class="display-1 my-2">
+        <p class="display-1">
           ADMIN VIEW
         </p>
       </v-col>

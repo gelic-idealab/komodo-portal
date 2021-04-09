@@ -1,5 +1,5 @@
 <template>
-  <v-container :fluid="true">
+  <v-container fluid>
     <v-row dense align="center" justify="center">
       <v-col 
         v-for="metric in metrics"
@@ -22,9 +22,57 @@
         </v-card>
       </v-col>
     </v-row>
-
+    
     <v-row>
       <v-col>
+        <v-select
+        justify-center
+        label="Select Course"
+        :items="courses"
+        item-text="courseName"
+        item-value="courseId"
+        v-model="courseSelected"
+        v-on:change="getCapturesByCourseId"
+        dense 
+        class="ml-3">
+        </v-select>
+      </v-col>
+      <v-col>
+        <v-select 
+        v-if="courseSelected"
+        :items="captures"
+        item-text="captureId"
+        item-value="captureId"
+        v-model="captureSelected"
+        v-on:change="loadData"
+        dense class="ml-3"
+        >
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>
+      </v-col>
+      <v-spacer>
+      </v-spacer>
+      <v-btn 
+      v-if="dataLoaded" 
+      color="primary" 
+      v-on:click="exportData">
+        Export Data
+      </v-btn>
+      <v-btn 
+      v-else
+      disabled
+      color="primary" 
+      v-on:click="exportData">
+        Export Data
+      </v-btn>
+    </v-row>
+
+    <v-row>
+      <v-col v-if="sessionInteractionCountsMax">
         <GlobalBar v-if="sessionInteractionCountsMax > 0"
           :title="`Interactions By Session`"
           :series="[{ name: `Interactions`, data: sessionInteractionCounts }]"
@@ -36,7 +84,7 @@
         />
       </v-col>
 
-      <v-col>
+      <v-col v-if="interactionTypeCountsMax">
         <GlobalBar v-if="interactionTypeCountsMax > 0"
           :title="`Interactions By Type`"
           :series="[{ name: `Interactions`, data: interactionTypeCounts }]"
@@ -84,7 +132,10 @@
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData } from "../../requests/data"
+import { getInteractionData, getAllRaw } from "../../requests/data";
+import { getCourseListByInstructor, getCaptures } from "../../requests/course";
+import { Parser } from "json2csv";
+
 export default {
   name: "Metric",
   components: {
@@ -93,6 +144,12 @@ export default {
   },
   data() {
     return {
+      userId: null,
+      courses: [],
+      courseSelected: null,
+      captures: [],
+      captureSelected: null,
+      dataLoaded: false,
       search: '',
       interactions: [],
       interactionTableHeaders: [
@@ -144,42 +201,113 @@ export default {
     }
   },
   created() {
-    this.getMetrics();
+    this.userId = this.$store.getters.user.userId;
+    this.getInstructorCourses();
   },
   methods: {
+    getInstructorCourses() {
+      getCourseListByInstructor(this.userId).then(data => {
+        console.log("Instructor courses:", data);
+        this.courses = data.data;
+      })
+    },
+    getCapturesByCourseId() {
+      getCaptures({ courseId: this.courseSelected }).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          this.captures = res.data;
+        } else {
+          console.log(res)
+        }
+      })
+    },
+    loadData(e) {
+      this.dataLoaded = true;
+    },
+    exportData() {
+      let captureId = this.captureSelected;
+      getAllRaw({ captureId }).then(res => {
+        if (res.status == 200) {
+          console.log(res.data)
+          let intData = res.data.int;
+          let posData = res.data.pos;
+
+          let intFields = [];
+          intData[1].forEach(field => {
+            intFields.push(field.name)
+          });
+          const intOpts = { intFields };
+          
+          let posFields = [];
+          posData[1].forEach(field => {
+            posFields.push(field.name)
+          });
+          const posOpts = { posFields };
+
+          try {
+            const encoding = "data:text/csv;charset=utf-8,";
+            // interactions csv
+            const intParser = new Parser(intOpts);
+            const intCsv = encoding+intParser.parse(intData[0]);
+            let encodedUri = encodeURI(intCsv);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${this.captureSelected}_interactions.csv`);
+            document.body.appendChild(link); // Required for FF
+            link.click();
+
+            // positions csv
+            const posParser = new Parser(posOpts);
+            const posCsv = encoding+posParser.parse(posData[0]);
+            encodedUri = encodeURI(posCsv);
+            link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${this.captureSelected}_positions.csv`);
+            document.body.appendChild(link); // Required for FF
+            link.click();
+          } catch (err) {
+            console.error(err);
+          }
+        } else {
+          console.log(res);
+        }
+      });
+    },
     getMetrics() {
       getInteractionData().then(data => {
-        this.interactions = data.data;
-        this.interactions.forEach(row => {
-          if (!this.captureIds.includes(row.captureId)) {
-            this.captureIds.push(row.captureId);
-          }
-          if (!this.sessionIds.includes(row.sessionId)) {
-            this.sessionIds.push(row.sessionId);
-            this.sessionInteractionCounts.push(0);
-          }
-          if (!this.clientIds.includes(row.clientId)) {
-            this.clientIds.push(row.clientId);
-          }
-          if (!this.assetIds.includes(row.sourceId)) {
-            this.assetIds.push(row.sourceId);
-          }
-          if (!this.assetIds.includes(row.targetId)) {
-            this.assetIds.push(row.targetId);
-          }
-          if (!this.interactionTypes.includes(row.type)) {
-            this.interactionTypes.push(row.type);
-            this.interactionTypeCounts.push(0);
-          }
-          this.metrics.interactions.value += row.count;
-        });
-        this.metrics.captures.value = this.captureIds.length;
-        this.metrics.sessions.value = this.sessionIds.length;
-        this.metrics.clients.value = this.clientIds.length;
-        this.metrics.assets.value = this.assetIds.length;
+        if (data.data) {
+          this.interactions = data.data;
+          this.interactions.forEach(row => {
+            if (!this.captureIds.includes(row.captureId)) {
+              this.captureIds.push(row.captureId);
+            }
+            if (!this.sessionIds.includes(row.sessionId)) {
+              this.sessionIds.push(row.sessionId);
+              this.sessionInteractionCounts.push(0);
+            }
+            if (!this.clientIds.includes(row.clientId)) {
+              this.clientIds.push(row.clientId);
+            }
+            if (!this.assetIds.includes(row.sourceId)) {
+              this.assetIds.push(row.sourceId);
+            }
+            if (!this.assetIds.includes(row.targetId)) {
+              this.assetIds.push(row.targetId);
+            }
+            if (!this.interactionTypes.includes(row.type)) {
+              this.interactionTypes.push(row.type);
+              this.interactionTypeCounts.push(0);
+            }
+            this.metrics.interactions.value += row.count;
+          });
+          this.metrics.captures.value = this.captureIds.length;
+          this.metrics.sessions.value = this.sessionIds.length;
+          this.metrics.clients.value = this.clientIds.length;
+          this.metrics.assets.value = this.assetIds.length;
 
-        this.calcSessionCounts();
-        this.calcTypeCounts();
+          this.calcSessionCounts();
+          this.calcTypeCounts();
+        }
       });
     },
     calcSessionCounts() {

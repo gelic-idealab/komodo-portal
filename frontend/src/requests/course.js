@@ -5,6 +5,11 @@ export const getCourseList = userId => {
   return baseRequest.get(`/courses/users/${userId}`);
 };
 
+// Get instructor's course list by id
+export const getCourseListByInstructor = userId => {
+  return baseRequest.get(`/courses/instructors/${userId}`);
+};
+
 // Get course details by course id
 export const getCourseDetail = params => {
   const { courseId } = params;
@@ -100,5 +105,13 @@ export const deleteCourse = params => {
     {
       data: params
     }
+  );
+}
+
+// Get list of captures by course id
+export const getCaptures = params => {
+  return baseRequest.get(
+    "/labs/captures",
+    { params }
   );
 }

@@ -1,7 +1,14 @@
-const mysql = require('mysql2');
 const config = require("./config");
 const aws = require("./aws");
+
+const mysql = require('mysql2');
 const cookieParser = require('cookie-parser');
+const express = require('express');
+const session = require('express-session');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./openapi.json');
 
 // create the connection to database
 const pool = mysql.createPool({
@@ -11,14 +18,9 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-const express = require('express');
-const session = require('express-session');
-const cors = require('cors');
-const bodyParser = require('body-parser');
 const app = express();
 const port = config.web.port;
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./openapi.json');
+
 app.use(cookieParser());
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors({
@@ -47,7 +49,8 @@ const {
   labController,
   assetController,
   publicController,
-  dataController
+  dataController,
+  turnController
 } = require("./controller");
 
 app.use("/users", userController);
@@ -56,9 +59,7 @@ app.use("/labs", labController);
 app.use("/assets", assetController);
 app.use("/data", dataController);
 app.use("/public", publicController);
-
-const ExampleConfig = {};
-
+app.use("/turn", turnController);
 
 app.get('/', (req, res) => res.send('Hello Komodo!'));
 

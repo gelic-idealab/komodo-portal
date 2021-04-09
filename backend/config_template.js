@@ -14,8 +14,11 @@ module.exports = {
     aws: {
         accessKeyId: '',
         secretAccessKey: '',
-        region: ''
+        region: '',
+        bucket: ''
     },
-    jwt: ''
+    jwt: '',
+    TWILIO_ACCOUNT_SID: '',
+    TWILIO_AUTH_TOKEN: ''
 };
 

@@ -35,11 +35,20 @@ DELETE FROM KP_Lab
 WHERE session_id = ?;
 `;
 
+const capturesQuery = `
+SELECT *
+FROM KP_Lab l
+JOIN captures c
+WHERE l.session_id = c.session_id
+AND l.course_id = ?
+`
+
 module.exports = {
   getLabList,
   getLabDetail,
   createLab,
   editLabQuery,
   getLabUsers,
-  deleteLabQuery
+  deleteLabQuery,
+  capturesQuery
 };

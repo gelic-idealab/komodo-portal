@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="lab-basic-info mb-4 flex-column no-gutters">
-      <p class="display-1 my-2 text-capitalize">{{ asset.assetName }}</p>
+      <p class="display-1 text-capitalize">{{ asset.assetName }}</p>
     </v-row>
     <v-row>
       <v-col :cols="8">

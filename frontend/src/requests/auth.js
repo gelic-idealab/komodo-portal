@@ -11,7 +11,7 @@ export const login = params => {
 // Reset the password
 export const resetPassword = params => {
   return baseRequest.post(
-    "/userspassword",
+    "/users/password",
     params
   )
 }

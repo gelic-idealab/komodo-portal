@@ -33,7 +33,7 @@ export default {
 
   .main-content {
     /* overflow-y: scroll; */
-    padding: 5.5vh 8.3vh;
+    padding: 2.5vh 2.5vw;
     transition-duration: .2s;
     transition-timing-function: cubic-bezier(.4,0,.2,1);
   }

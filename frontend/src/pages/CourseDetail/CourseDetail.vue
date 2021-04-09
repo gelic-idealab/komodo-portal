@@ -11,7 +11,7 @@
       <v-col>
         <v-chip class="mr-1" color="primary" outlined label>{{ course.semester }}</v-chip>
         <v-chip class="mr-1" color="secondary" outlined label>{{ course.department }}</v-chip>
-        <p class="display-1 my-2">{{ `${course.courseNo}: ${course.courseName}` }}</p>
+        <p class="display-1">{{ `${course.courseNo}: ${course.courseName}` }}</p>
         <p class="body-1">
           <v-icon>mdi-account-circle</v-icon>
           Instructor: {{ course.instructorName }}
@@ -62,19 +62,31 @@
             </v-tab>
             <v-tab>
               Captures
-              <v-chip class="ml-2 px-1" outlined label x-small>0</v-chip>
+              <v-chip class="ml-2 px-1" outlined label x-small>
+                {{ captures.length }}
+              </v-chip>
             </v-tab>
           </v-tabs>
           <v-tabs-items v-model="currentTab" class="full-width">
             <CourseDetailDescription :description="course.description" />
-            <CourseDetailLab :course-id="course.courseId" :lab-list="labList" />
+            <CourseDetailLab :course-id="course.courseId" :lab-list="labList" v-show="currentTab == 1"/>
+            <CaptureLabList :course-id="course.courseId" :captures="captures" v-show="currentTab == 2"/>
           </v-tabs-items>
         </div>
       </v-col>
       <!-- student list section -->
       <v-col class="student-details">
-        <SectionCard title="Students">
-          This is a student list.
+        <SectionCard title="Roster">
+          <v-list dense>
+            <v-list-item-group>
+              <v-list-item v-for="user in course.userList" :key="user.email">
+                <v-list-item-content>
+                  <v-list-item-title> {{ user.firstName + ` ` + user.lastName }} </v-list-item-title>
+                  <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
         </SectionCard>
       </v-col>
     </v-row>
@@ -83,19 +95,21 @@
 
 <script>
 import moment from "moment";
-import { getCourseDetail, getLabList } from "../../requests/course";
+import { getCourseDetail, getLabList, getCaptures } from "../../requests/course";
 
 import SectionCard from "../../components/Cards/SectionCard";
 
 import CourseDetailDescription from "./CourseDetailDescription";
 import CourseDetailLab from "./CourseDetailLab";
+import CaptureLabList from "../Capture/CaptureLabList";
 
 export default {
   name: "CourseDetail",
   components: {
     SectionCard,
     CourseDetailDescription,
-    CourseDetailLab
+    CourseDetailLab,
+    CaptureLabList
   },
   data() {
     return {
@@ -110,10 +124,12 @@ export default {
         description: "",
       },
       currentTab: 1,
-      labList: []
+      labList: [],
+      captures: []
     }
   },
   mounted: function() {
+    this.course.courseId = this.$route.params.courseId;
     this.getData();
   },
   watch: {
@@ -125,11 +141,11 @@ export default {
      */
     getData() {
       // Get course id from the url
-      this.course.courseId = this.$route.params.courseId;
       Promise.all([
         // Get course detailed information and lab list
         getCourseDetail({ courseId: this.course.courseId }),
-        getLabList({ courseId: this.course.courseId })
+        getLabList({ courseId: this.course.courseId }),
+        getCaptures({ courseId: this.course.courseId })
       ])
         .then(values => {
           this.course = {
@@ -145,6 +161,18 @@ export default {
               date: startTime.format("L"),
               time: `${startTime.format("LT")} - ${endTime.format("LT")}`,
               duration: moment.duration(startTime.diff(endTime)).humanize()
+            }
+          });
+          this.captures = values[2].data.map(capture => {
+            const start = moment(capture.start);
+            const end = moment(capture.end);
+            return {
+              id: capture.sessionId,
+              captureId: capture.captureId,
+              labName: capture.sessionName,
+              date: start.format("L"),
+              time: `${start.format("LT")}`,
+              duration: moment.duration(start.diff(end)).humanize()
             }
           });
         });
@@ -174,9 +202,6 @@ export default {
   }
 
   @media screen {
-    p.display-1.my-2 {
-      font-size: 6vh!important;
-    }
 
     .course-details {
       flex-grow: 3!important;
