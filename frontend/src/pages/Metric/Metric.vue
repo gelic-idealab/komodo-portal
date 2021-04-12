@@ -61,6 +61,7 @@
       <v-col>
         <v-select 
         v-if="labSelected"
+        label="Select Capture"
         :items="captures"
         item-text="captureId"
         item-value="captureId"
