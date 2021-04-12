@@ -33,7 +33,9 @@
         v-model="courseSelected"
         v-on:change="getLabsByCourseId"
         dense 
-        class="ml-3">
+        class="ml-3"
+        clearable
+        >
         </v-select>
       </v-col>
       <v-col>
@@ -46,7 +48,9 @@
         v-model="labSelected"
         v-on:change="getCapturesByLabId"
         dense 
-        class="ml-3">
+        class="ml-3"
+        clearable
+        >
         </v-select>
         <v-select
         v-else
@@ -63,6 +67,7 @@
         v-model="captureSelected"
         v-on:change="loadData"
         dense class="ml-3"
+        clearable
         >
         </v-select>
         <v-select
@@ -229,6 +234,7 @@ export default {
       })
     },
     getLabsByCourseId() {
+      this.labSelected = null;
       getLabList({ courseId: this.courseSelected }).then(res => {
         console.log(res);
         if (res.status == 200) {
@@ -239,6 +245,7 @@ export default {
       })
     },
     getCapturesByLabId() {
+      this.captureSelected = null;
       getCaptureList({ labId: this.labSelected }).then(res => {
         console.log(res);
         if (res.status == 200) {
@@ -303,25 +310,30 @@ export default {
 
       try {
         const encoding = "data:text/csv;charset=utf-8,";
+
         // interactions csv
-        const intParser = new Parser(intOpts);
-        const intCsv = encoding+intParser.parse(intData[0]);
-        let encodedUri = encodeURI(intCsv);
-        let link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `${this.captureSelected || this.labSelected || this.courseSelected}_interactions.csv`);
-        document.body.appendChild(link); // Required for FF
-        link.click();
+        if (intData[0].length) {
+          const intParser = new Parser(intOpts);
+          const intCsv = encoding+intParser.parse(intData[0]);
+          let encodedUri = encodeURI(intCsv);
+          let link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", `${this.captureSelected || this.labSelected || this.courseSelected}_interactions.csv`);
+          document.body.appendChild(link); // Required for FF
+          link.click();
+        }
 
         // positions csv
-        const posParser = new Parser(posOpts);
-        const posCsv = encoding+posParser.parse(posData[0]);
-        encodedUri = encodeURI(posCsv);
-        link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `${this.captureSelected || this.labSelected || this.courseSelected}_positions.csv`);
-        document.body.appendChild(link); // Required for FF
-        link.click();
+        if (posData[0].length) {
+          const posParser = new Parser(posOpts);
+          const posCsv = encoding+posParser.parse(posData[0]);
+          let encodedUri = encodeURI(posCsv);
+          let link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", `${this.captureSelected || this.labSelected || this.courseSelected}_positions.csv`);
+          document.body.appendChild(link); // Required for FF
+          link.click();
+        }
       } catch (err) {
         console.error(err);
       }
