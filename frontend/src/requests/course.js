@@ -109,7 +109,7 @@ export const deleteCourse = params => {
 }
 
 // Get list of captures by course id
-export const getCaptures = params => {
+export const getCaptureList = params => {
   return baseRequest.get(
     "/labs/captures",
     { params }

@@ -37,10 +37,8 @@ WHERE session_id = ?;
 
 const capturesQuery = `
 SELECT *
-FROM KP_Lab l
-JOIN captures c
-WHERE l.session_id = c.session_id
-AND l.course_id = ?
+FROM captures
+WHERE session_id = ?;
 `
 
 module.exports = {

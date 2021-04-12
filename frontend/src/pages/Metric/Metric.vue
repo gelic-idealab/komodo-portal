@@ -26,20 +26,37 @@
     <v-row>
       <v-col>
         <v-select
-        justify-center
         label="Select Course"
         :items="courses"
         item-text="courseName"
         item-value="courseId"
         v-model="courseSelected"
-        v-on:change="getCapturesByCourseId"
+        v-on:change="getLabsByCourseId"
         dense 
         class="ml-3">
         </v-select>
       </v-col>
       <v-col>
-        <v-select 
+        <v-select
         v-if="courseSelected"
+        label="Select Lab"
+        :items="labs"
+        item-text="sessionName"
+        item-value="sessionId"
+        v-model="labSelected"
+        v-on:change="getCapturesByLabId"
+        dense 
+        class="ml-3">
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>
+      </v-col>
+      <v-col>
+        <v-select 
+        v-if="labSelected"
         :items="captures"
         item-text="captureId"
         item-value="captureId"
@@ -54,8 +71,7 @@
         dense class="ml-3">
         </v-select>
       </v-col>
-      <v-spacer>
-      </v-spacer>
+
       <v-btn 
       v-if="dataLoaded" 
       color="primary" 
@@ -133,7 +149,7 @@
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
 import { getInteractionData, getAllRaw } from "../../requests/data";
-import { getCourseListByInstructor, getCaptures } from "../../requests/course";
+import { getCourseListByInstructor, getLabList, getCaptureList } from "../../requests/course";
 import { Parser } from "json2csv";
 
 export default {
@@ -147,6 +163,8 @@ export default {
       userId: null,
       courses: [],
       courseSelected: null,
+      labs: [],
+      labSelected: null,
       captures: [],
       captureSelected: null,
       dataLoaded: false,
@@ -211,13 +229,23 @@ export default {
         this.courses = data.data;
       })
     },
-    getCapturesByCourseId() {
-      getCaptures({ courseId: this.courseSelected }).then(res => {
+    getLabsByCourseId() {
+      getLabList({ courseId: this.courseSelected }).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          this.labs = res.data;
+        } else {
+          console.log(res);
+        }
+      })
+    },
+    getCapturesByLabId() {
+      getCaptureList({ labId: this.labSelected }).then(res => {
         console.log(res);
         if (res.status == 200) {
           this.captures = res.data;
         } else {
-          console.log(res)
+          console.log(res);
         }
       })
     },

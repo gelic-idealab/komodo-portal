@@ -145,7 +145,8 @@ export default {
         // Get course detailed information and lab list
         getCourseDetail({ courseId: this.course.courseId }),
         getLabList({ courseId: this.course.courseId }),
-        getCaptures({ courseId: this.course.courseId })
+        // getCaptures({ courseId: this.course.courseId })
+        // TODO(rob): need to fetch captures by lab id
       ])
         .then(values => {
           this.course = {
