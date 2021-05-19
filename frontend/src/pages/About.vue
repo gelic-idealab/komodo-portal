@@ -202,8 +202,9 @@
         <br>David Tamayo
       </v-col>
       <v-col :cols="3">
-        <br>Professor Chiara Vincenzi
+        Professor Chiara Vincenzi
         <br>Robert Wallace
+        <br>Xiaohan Yin
         <br>Chengyi Zhang
       </v-col>
     </v-row>
