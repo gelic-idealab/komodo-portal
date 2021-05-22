@@ -16,7 +16,7 @@
     <v-row>
       <v-col :cols="6" class="">
         <div class="deep-purple lighten-5 pa-2 rounded d-flex justify-center align-baseline">
-          <span class="ma-1 text-body-1">We're looking for beta testers!</span>
+          <span class="ma-1 text-body-1">Sign up to express interest!</span>
           <v-btn 
             small 
             color="primary" 
@@ -78,7 +78,7 @@
     <h2>Development Status</h2>
     <v-row>
       <v-col :cols="12">
-        In Fall 2020, we will test and deploy two Illinois-specific extensions of Komodo, or “Domain Modules.”  One is a materials science module, and the other a fashion illustration module.​
+        In Fall 2020 and Spring 2021 we have been developing and deployibng  Illinois-specific extensions of Komodo, or “Domain Modules.”  One is a materials science module, and the other a fashion illustration module.​
       </v-col>
     </v-row>
 
@@ -92,7 +92,7 @@
         ></v-img>
       </v-col>
       <v-col :cols="6">
-        Professor Chiara Vincenzi has successfully piloted cutting-edge curriculum in Fashion Illustration by <a href="https://vr.illinois.edu/2019/11/20/fashion-illustration-students-explore-vr/">teaching students to ideate with Tilt Brush</a>. She has dreamt  up industry-and-academia-changing possibilities for fashion and XR. We believe social VR fashion critiques with these Tilt Brush garments is the best next step.
+        Professor Chiara Vincenzi has successfully piloted cutting-edge curriculum in Fashion Illustration by <a href="https://vr.illinois.edu/2019/11/20/fashion-illustration-students-explore-vr/">teaching students to ideate with Tilt Brush</a>. She has dreamt up industry-and-academia-changing possibilities for fashion and XR. We believe social VR fashion critiques with these Tilt Brush garments is the best next step.
       </v-col>
       <v-col :cols="4">
         <v-img
