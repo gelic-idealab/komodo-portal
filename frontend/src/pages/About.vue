@@ -106,7 +106,7 @@
     <h2>Development Status</h2>
     <v-row>
       <v-col :cols="12">
-        In Fall 2020 and Spring 2021 we have been developing and deployibng  Illinois-specific extensions of Komodo, or “Domain Modules.”  One is a materials science module, and the other a fashion illustration module.​
+        In Fall 2020 and Spring 2021 we have been developing and deploying  Illinois-specific extensions of Komodo, or “Domain Modules.”  One is a materials science module, and the other a fashion illustration module.​
       </v-col>
     </v-row>
 
@@ -152,6 +152,8 @@
         ></v-img>
       </v-col>
     </v-row>
+
+    <!-- TODO -- add bit about James -->
 
     <h2 class="font-weight-bold">Future Educational VR Ecosystem Catalyzer.</h2>
     <v-row>
