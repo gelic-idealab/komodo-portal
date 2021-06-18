@@ -2,8 +2,8 @@
 <template>
   <v-container>
     <v-img
-      :src="require('../assets/img/komodo-logo-wordmark-v1.1.png')"
-      alt="Title Project Komodo, with a purple, smiling, cartoon Komodo dragon wearing a virtual reality headset and pointing with a teaching stick or laser beam."
+      :src="require('../assets/img/komodo-logo-wordmark-rusa-award.jpg')"
+      alt="Title Project Komodo, with a gray, smiling, cartoon Komodo dragon wearing a virtual reality headset and pointing with a teaching stick or laser beam. Beneath it is the text, 'ALA • References and User Services Association • Emerging Technologies Section​ -- 2021 Best Emerging Technology Application Award​'"
     ></v-img>
     <v-row>
       <v-col :cols="12">
@@ -16,13 +16,13 @@
     <v-row>
       <v-col :cols="6" class="">
         <div class="deep-purple lighten-5 pa-2 rounded d-flex justify-center align-baseline">
-          <span class="ma-1 text-body-1">Sign up to express interest!</span>
+          <span class="ma-1 text-body-1">Follow our progress: </span>
           <v-btn 
             small 
             color="primary" 
-            class="ma-1"
-            href="https://forms.gle/sNo8btXpbD4E39zr6">Sign up →</v-btn> 
-        </div>
+            class="ma-1" 
+            href="https://publish.illinois.edu/graingeridealab/">IDEA Lab Blog →
+          </v-btn>
       </v-col>
       <v-col :cols="6" class="">
         <div class="deep-purple lighten-5 pa-2 rounded d-flex justify-center align-baseline">
@@ -54,6 +54,20 @@
         <span class="font-weight-bold">Analyze student, asset, and session statistics.​</span> Komodo automatically networks and tracks interactions with content. Our data pipeline shows flexible metrics views in the web portal.​
       </v-col>
     </v-row>
+    <v-row>
+      <v-col :cols="6" class="">
+      </v-col>
+      <v-col :cols="6" class="">
+        <div class="deep-purple lighten-5 pa-2 rounded d-flex justify-center align-baseline">
+          <span class="ma-1 text-body-1">Sign up to express interest!</span>
+          <v-btn 
+            small 
+            color="primary" 
+            class="ma-1"
+            href="https://forms.gle/sNo8btXpbD4E39zr6">Sign up →</v-btn> 
+        </div>
+      </v-col>
+    </v-row>
 
     <v-row>
       <v-col :cols="12">
@@ -72,6 +86,20 @@
       </v-col>
       <v-col :cols="4">
         <span class="font-weight-bold">Build and upload.​</span> Build your module and serve it with our Komodo build server.  In the web portal, customize data analytics for both your scene content and user-uploaded assets.
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col :cols="6" class="">
+      </v-col>
+      <v-col :cols="6" class="">
+        <div class="deep-purple lighten-5 pa-2 rounded d-flex justify-center align-baseline">
+          <span class="ma-1 text-body-1">Check out the repos: </span>
+          <v-btn 
+            small 
+            color="primary" 
+            class="ma-1" 
+            href="https://github.com/gelic-idealab/komodo/blob/e6500eb1b53dfbd1d2f21d76ec9e91b52454ed0b/ABOUT.md">GitHub →
+          </v-btn>
       </v-col>
     </v-row>
 
