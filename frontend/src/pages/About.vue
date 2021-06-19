@@ -269,15 +269,15 @@
       </v-col>
       <v-col :cols="3">
         Jamie Nelson
-        <br>Jim Wentworth
         <br>Dennis Piehl
         <br>James Planey
         <br>Dr. Andre Schleife
+        <br>David Tamayo
       </v-col>
       <v-col :cols="3">
-        David Tamayo
-        <br>Professor Chiara Vincenzi
+        Professor Chiara Vincenzi
         <br>Robert Wallace
+        <br>Jim Wentworth
         <br>Xiaohan Yin
         <br>Chengyi Zhang
       </v-col>
