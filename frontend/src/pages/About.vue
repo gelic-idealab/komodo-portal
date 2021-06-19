@@ -255,27 +255,30 @@
     <v-row>
       <v-col :cols="3">
         Yifan Bao
+        <br>Megan Baird
         <br>Elisandro Cabada
         <br>Xianzhuo (Patrick) Cao
         <br>Brandon Dang
-        <br>Mihir Joshi
       </v-col>
       <v-col :cols="3">
-        Welisa Lewis
+        Mihir Joshi
+        <br>Welisa Lewis
         <br>Zhe Liu
         <br>Nishi Mehta
         <br>William H. Mischo
-        <br>Dennis Piehl
       </v-col>
       <v-col :cols="3">
-        James Planey
+        Jamie Nelson
+        <br>Jim Wentworth
+        <br>Dennis Piehl
+        <br>James Planey
         <br>Dr. Andre Schleife
-        <br>David Tamayo
+      </v-col>
+      <v-col :cols="3">
+        David Tamayo
         <br>Professor Chiara Vincenzi
         <br>Robert Wallace
-      </v-col>
-      <v-col :cols="3">
-        Xiaohan Yin
+        <br>Xiaohan Yin
         <br>Chengyi Zhang
       </v-col>
     </v-row>
