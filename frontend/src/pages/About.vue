@@ -30,6 +30,7 @@
             class="ma-1" 
             href="https://publish.illinois.edu/graingeridealab/">IDEA Lab Blog →
           </v-btn>
+        </div>
       </v-col>
       <v-col :cols="6" class="">
         <div class="deep-purple lighten-5 pa-2 rounded d-flex justify-center align-baseline">
@@ -113,6 +114,7 @@
             class="ma-1" 
             href="https://github.com/gelic-idealab/komodo/blob/e6500eb1b53dfbd1d2f21d76ec9e91b52454ed0b/ABOUT.md">GitHub →
           </v-btn>
+        </div>
       </v-col>
     </v-row>
 

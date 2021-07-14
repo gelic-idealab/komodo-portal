@@ -59,13 +59,13 @@
                   small 
                   color="primary" 
                   class="ma-1" 
-                  href="https://komodo-dev.library.illinois.edu/about">Learn More →</v-btn>
+                  href="https://komodo-dev.library.illinois.edu/about">
+                  Learn More →
+                  </v-btn>
               </div>
             </div>
           </v-col>
         </v-row>
-        <v-row class="">
-        <v-row>
       </v-container>
     </v-card>
   </v-row>

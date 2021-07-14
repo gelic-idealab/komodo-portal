@@ -35,8 +35,8 @@
         :append-icon-name="showCourses ? 'mdi-menu-down' : 'mdi-menu-left'"
         @click.native="switchShowCourses"
       />
+      <!-- TODO -- wrap the following so that menu items only show if showCourses is true -->
       <SideBarMenuItem
-        v-if="showCourses"
         v-for="course in courseList"
         :key="course.courseId"
         :title="course.courseNo"
