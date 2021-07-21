@@ -37,6 +37,7 @@
       />
       <!-- TODO -- wrap the following so that menu items only show if showCourses is true -->
       <SideBarMenuItem
+        v-show="showSideBarCourseList"
         v-for="course in courseList"
         :key="course.courseId"
         :title="course.courseNo"
@@ -67,12 +68,14 @@ export default {
       user: this.$store.getters.user,
       logoPath: require("../../assets/img/komodo-logo-white.svg"),
       courseList: this.$store.getters.courses.sort((a, b) => (a.courseNo > b.courseNo) ? 1 : -1),
-      showCourses: false
+      showCourses: false,
+      showSideBarCourseList: false
     }
   },
   methods: {
     switchShowCourses() {
       this.showCourses = !this.showCourses;
+      this.showSideBarCourseList = !this.showSideBarCourseList;
     },
     goToAccountPage() {
       this.$router.push({
