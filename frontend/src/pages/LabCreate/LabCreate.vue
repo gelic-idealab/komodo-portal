@@ -329,8 +329,8 @@ export default {
         courseId: this.courseId,
         title: this.title,
         description: this.description,
-        startTime: moment(this.date + " " + this.startTime).utc().format(),
-        endTime: moment(this.date + " " + this.endTime).utc().format(),
+        startTime: moment.utc(this.date + " " + this.startTime).local(),
+        endTime: moment.utc(this.date + " " + this.endTime).local(),
         assetList: this.selectedAssetList.map(asset => asset.assetId),
         build: this.buildScope + '/' + this.build
       })
