@@ -47,7 +47,7 @@
             <div class="landing-img">
               <div class="landing-logo">
                 <p class="title1 display-2 white--text">
-                  Welcome to Komodo ...
+                  Welcome to Komodo
                 </p>
                 <p class="title2 headline white--text font-italic">
                   A new way of learning with VR
@@ -55,6 +55,13 @@
                 <p class="white--text">
                   Developed at the University of Illinois Urbana-Champaign
                 </p>
+                <v-btn 
+                  small 
+                  color="primary" 
+                  class="ma-1" 
+                  href="https://komodo-dev.library.illinois.edu/about">
+                  Learn More →
+                  </v-btn>
               </div>
             </div>
           </v-col>

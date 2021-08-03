@@ -16,9 +16,9 @@ labController.get("/",
 // get list of Lab captures
 labController.get("/captures",
   async (req, res) => {
-  const { courseId } = req.query;
+  const { labId } = req.query;
     const results = await getCaptures({
-      courseId,
+      labId,
     });
     res.status(results.code || 200).json(results.data);
   });

@@ -8,16 +8,37 @@ const getAllInteractions = async() => {
   }
 }
 
-const getAllRaw = async(captureId) => {
+const getAllRawCapture = async(id) => {
   const results = {}
-  results.pos = await pool.execute(dataQuery.getRawPos, [captureId]);
-  results.int = await pool.execute(dataQuery.getRawInt, [captureId]);
+  results.pos = await pool.execute(dataQuery.getRawPosCapture, [id]);
+  results.int = await pool.execute(dataQuery.getRawIntCapture, [id]);
   return {
     data: results
   }
 }
 
+const getAllRawLab = async(id) => {
+  const results = {}
+  results.pos = await pool.execute(dataQuery.getRawPosLab, [id]);
+  results.int = await pool.execute(dataQuery.getRawIntLab, [id]);
+  return {
+    data: results
+  }
+}
+
+const getAllRawCourse = async(id) => {
+  const results = {}
+  results.pos = await pool.execute(dataQuery.getRawPosCourse, [id]);
+  results.int = await pool.execute(dataQuery.getRawIntCourse, [id]);
+  return {
+    data: results
+  }
+}
+
+
 module.exports = {
   getAllInteractions,
-  getAllRaw
+  getAllRawCapture,
+  getAllRawLab,
+  getAllRawCourse
 };

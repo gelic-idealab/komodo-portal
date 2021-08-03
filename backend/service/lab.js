@@ -125,11 +125,11 @@ const deleteLab = async({labId}) => {
   }
 }
 
-// Get captures for the specific course id
-const getCaptures = async ({ courseId }) => {
+// Get captures for the specific lab id
+const getCaptures = async ({ labId }) => {
   const results = await pool.execute(
     labQuery.capturesQuery,
-    [courseId || 0]
+    [labId || 0]
   );
   const captures = results[0];
   return {

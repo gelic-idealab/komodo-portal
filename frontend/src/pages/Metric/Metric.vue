@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row dense align="center" justify="center">
+    <!-- <v-row dense align="center" justify="center">
       <v-col 
         v-for="metric in metrics"
         :key="metric.displayName"
@@ -21,31 +21,35 @@
           </div>
         </v-card>
       </v-col>
-    </v-row>
+    </v-row> -->
     
     <v-row>
       <v-col>
         <v-select
-        justify-center
         label="Select Course"
         :items="courses"
         item-text="courseName"
         item-value="courseId"
         v-model="courseSelected"
-        v-on:change="getCapturesByCourseId"
+        v-on:change="getLabsByCourseId"
         dense 
-        class="ml-3">
+        class="ml-3"
+        clearable
+        >
         </v-select>
       </v-col>
       <v-col>
-        <v-select 
+        <v-select
         v-if="courseSelected"
-        :items="captures"
-        item-text="captureId"
-        item-value="captureId"
-        v-model="captureSelected"
-        v-on:change="loadData"
-        dense class="ml-3"
+        label="Select Lab"
+        :items="labs"
+        item-text="sessionName"
+        item-value="sessionId"
+        v-model="labSelected"
+        v-on:change="getCapturesByLabId"
+        dense 
+        class="ml-3"
+        clearable
         >
         </v-select>
         <v-select
@@ -54,10 +58,28 @@
         dense class="ml-3">
         </v-select>
       </v-col>
-      <v-spacer>
-      </v-spacer>
+      <v-col>
+        <v-select 
+        v-if="labSelected"
+        label="Select Capture"
+        :items="captures"
+        item-text="captureId"
+        item-value="captureId"
+        v-model="captureSelected"
+        v-on:change="loadData"
+        dense class="ml-3"
+        clearable
+        >
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>
+      </v-col>
+
       <v-btn 
-      v-if="dataLoaded" 
+      v-if="courseSelected" 
       color="primary" 
       v-on:click="exportData">
         Export Data
@@ -108,13 +130,12 @@
               hide-details
             ></v-text-field>
           </template>
-          <v-container>
+          <v-container fluid>
             <v-data-table
                   :headers="interactionTableHeaders"
                   :items="interactions"
                   :sort-by="['captureStart']"
                   :sort-desc="[true]"
-                  no-data-text="No data"
                   dense
                   :search="search"
                 >
@@ -132,8 +153,8 @@
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData, getAllRaw } from "../../requests/data";
-import { getCourseListByInstructor, getCaptures } from "../../requests/course";
+import { getInteractionData, getAllRawCourse, getAllRawLab, getAllRawCapture } from "../../requests/data";
+import { getCourseListByInstructor, getLabList, getCaptureList } from "../../requests/course";
 import { Parser } from "json2csv";
 
 export default {
@@ -147,6 +168,8 @@ export default {
       userId: null,
       courses: [],
       courseSelected: null,
+      labs: [],
+      labSelected: null,
       captures: [],
       captureSelected: null,
       dataLoaded: false,
@@ -211,13 +234,25 @@ export default {
         this.courses = data.data;
       })
     },
-    getCapturesByCourseId() {
-      getCaptures({ courseId: this.courseSelected }).then(res => {
+    getLabsByCourseId() {
+      this.labSelected = null;
+      getLabList({ courseId: this.courseSelected }).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          this.labs = res.data;
+        } else {
+          console.log(res);
+        }
+      })
+    },
+    getCapturesByLabId() {
+      this.captureSelected = null;
+      getCaptureList({ labId: this.labSelected }).then(res => {
         console.log(res);
         if (res.status == 200) {
           this.captures = res.data;
         } else {
-          console.log(res)
+          console.log(res);
         }
       })
     },
@@ -225,53 +260,84 @@ export default {
       this.dataLoaded = true;
     },
     exportData() {
+      let courseId = this.courseSelected;
+      let labId = this.labSelected;
       let captureId = this.captureSelected;
-      getAllRaw({ captureId }).then(res => {
-        if (res.status == 200) {
-          console.log(res.data)
-          let intData = res.data.int;
-          let posData = res.data.pos;
 
-          let intFields = [];
-          intData[1].forEach(field => {
-            intFields.push(field.name)
-          });
-          const intOpts = { intFields };
-          
-          let posFields = [];
-          posData[1].forEach(field => {
-            posFields.push(field.name)
-          });
-          const posOpts = { posFields };
-
-          try {
-            const encoding = "data:text/csv;charset=utf-8,";
-            // interactions csv
-            const intParser = new Parser(intOpts);
-            const intCsv = encoding+intParser.parse(intData[0]);
-            let encodedUri = encodeURI(intCsv);
-            let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `${this.captureSelected}_interactions.csv`);
-            document.body.appendChild(link); // Required for FF
-            link.click();
-
-            // positions csv
-            const posParser = new Parser(posOpts);
-            const posCsv = encoding+posParser.parse(posData[0]);
-            encodedUri = encodeURI(posCsv);
-            link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `${this.captureSelected}_positions.csv`);
-            document.body.appendChild(link); // Required for FF
-            link.click();
-          } catch (err) {
-            console.error(err);
+      if (courseId && labId && captureId) {
+        getAllRawCapture({ captureId }).then(res => {
+          if (res.status == 200) {
+            console.log(res.data)
+            this.formatAndDownload(res);
+          } else {
+            console.log(res);
           }
-        } else {
-          console.log(res);
-        }
+        });
+      } else if (courseId && labId) {
+        getAllRawLab({ labId }).then(res => {
+          if (res.status == 200) {
+            console.log(res.data)
+            this.formatAndDownload(res);
+          } else {
+            console.log(res);
+          }
+        });
+      } else if (courseId) {
+        getAllRawCourse({ courseId }).then(res => {
+          if (res.status == 200) {
+            console.log(res.data)
+            this.formatAndDownload(res);
+          } else {
+            console.log(res);
+          }
+        });
+      }
+    },
+    formatAndDownload(res) {
+      let intData = res.data.int;
+      let posData = res.data.pos;
+
+      let intFields = [];
+      intData[1].forEach(field => {
+        intFields.push(field.name)
       });
+      const intOpts = { intFields };
+      
+      let posFields = [];
+      posData[1].forEach(field => {
+        posFields.push(field.name)
+      });
+      const posOpts = { posFields };
+
+      try {
+        const encoding = "data:text/csv;charset=utf-8,";
+
+        // interactions csv
+        if (intData[0].length) {
+          const intParser = new Parser(intOpts);
+          const intCsv = encoding+intParser.parse(intData[0]);
+          let encodedUri = encodeURI(intCsv);
+          let link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", `${this.captureSelected || this.labSelected || this.courseSelected}_interactions.csv`);
+          document.body.appendChild(link); // Required for FF
+          link.click();
+        }
+
+        // positions csv
+        if (posData[0].length) {
+          const posParser = new Parser(posOpts);
+          const posCsv = encoding+posParser.parse(posData[0]);
+          let encodedUri = encodeURI(posCsv);
+          let link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", `${this.captureSelected || this.labSelected || this.courseSelected}_positions.csv`);
+          document.body.appendChild(link); // Required for FF
+          link.click();
+        }
+      } catch (err) {
+        console.error(err);
+      }
     },
     getMetrics() {
       getInteractionData().then(data => {

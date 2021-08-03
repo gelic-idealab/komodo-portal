@@ -143,9 +143,10 @@ export default {
       // Get course id from the url
       Promise.all([
         // Get course detailed information and lab list
-        getCourseDetail({ courseId: this.course.courseId }),
-        getLabList({ courseId: this.course.courseId }),
-        getCaptures({ courseId: this.course.courseId })
+        getCourseDetail({ courseId: this.$route.params.courseId }),
+        getLabList({ courseId: this.$route.params.courseId }),
+        // getCaptures({ courseId: this.course.courseId })
+        // TODO(rob): need to fetch captures by lab id
       ])
         .then(values => {
           this.course = {
