@@ -11,6 +11,12 @@ FROM KP_Asset
 WHERE creator_id = ? OR is_public = TRUE
 `;
 
+const getUserAssetList = `
+SELECT *
+FROM KP_Asset
+WHERE creator_id = ?
+`;
+
 const getAssetDetail = `
 SELECT
   a.asset_id, a.uuid, a.asset_name, a.description, a.creator_id,
@@ -62,6 +68,7 @@ module.exports = {
   createSessionAsset,
   deleteSessionAssetBySessionId,
   deleteSessionAssetByAssetId,
-  deleteAssetQuery
+  deleteAssetQuery,
+  getUserAssetList
 };
 

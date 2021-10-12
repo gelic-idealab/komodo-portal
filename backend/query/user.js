@@ -8,10 +8,10 @@ WHERE email = ?
   AND password = ?;
 `;
 
-const resetPassword = `
+const resetUser = `
 UPDATE KP_User
 SET
-    password = ?
+    first_name = ?, last_name = ?, email = ?, password = ?
 WHERE
     user_id = ?;
 `;
@@ -92,7 +92,7 @@ WHERE user_id = ?;
 `;
 module.exports = {
   login,
-  resetPassword,
+  resetUser,
   findUser,
   getUserList,
   createUser,

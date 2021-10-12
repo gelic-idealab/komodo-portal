@@ -10,14 +10,8 @@
     <v-list>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="title">
+          <v-list-item-title class="title" :tabindex="8" @focus.native="focusProfileLink" @click="goToProfilePage" style="cursor: pointer; margin-bottom: 10px;">
             {{ `${user.firstName} ${user.lastName}` }}
-          <v-btn 
-            icon
-            @click="goToAccountPage"
-          >
-            <v-icon>mdi-account-edit-outline</v-icon>
-          </v-btn>
           </v-list-item-title>
           <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
 
@@ -77,9 +71,9 @@ export default {
       this.showCourses = !this.showCourses;
       this.showSideBarCourseList = !this.showSideBarCourseList;
     },
-    goToAccountPage() {
+    goToProfilePage() {
       this.$router.push({
-        name: "Account"
+        name: "UserProfilePage"
       });
     }
   }

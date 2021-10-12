@@ -15,7 +15,7 @@
           <v-row dense>
             <v-col v-for="course in courseList" :key="course.courseId" :cols="4">
               <!-- Initialize the course card-->
-              <LandingCourseCard :course="course" />
+               <LandingCourseCard :course="course" />
             </v-col>
           </v-row>
         </SectionCard>
@@ -39,21 +39,6 @@
               </v-btn>
             </router-link>
           </template>
-          <v-container fluid>
-            <v-data-table
-              :headers="assetTableHeaders"
-              :items="assetList"
-              :sort-by="['updateAt']"
-              :sort-desc="[true]"
-              @click:row="onAssetClick"
-              item-key="assetId"
-              no-data-text="No asset added"
-            >
-            <template v-slot:item.updateAt="{ item }">
-              <span>{{moment(item.updateAt).format("L LT")}}</span>
-            </template>
-            </v-data-table>
-          </v-container>
         </SectionCard>
       </v-col>
     </v-row>

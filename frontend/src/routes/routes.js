@@ -10,7 +10,7 @@ import LabEdit from "../pages/LabEdit/LabEdit";
 import LabDetail from "../pages/LabDetail/LabDetail";
 import Metric from "../pages/Metric/Metric";
 import Assets from "../pages/Assets.vue";
-import ResetPassword from "../pages/Account/ResetPassword";
+import resetUser from "../pages/Account/ResetUser";
 import About from "../pages/About.vue";
 import Admin from "../pages/Admin/Admin.vue";
 import UserCreate from "../pages/UserCreate/UserCreate.vue";
@@ -19,6 +19,7 @@ import MultipleUsersEdit from "../pages/MultipleUsersEdit/MultipleUsersEdit.vue"
 import CourseCreate from "../pages/CourseCreate/CourseCreate.vue";
 import CourseEdit from "../pages/CourseEdit/CourseEdit.vue";
 import MultipleCoursesEdit from "../pages/MultipleCoursesEdit/MultipleCoursesEdit.vue";
+import UserProfilePage from "../pages/UserProfile/UserProfile.vue";
 const routes = [
   // User login
   {
@@ -205,11 +206,20 @@ const routes = [
       {
         path: "account",
         name: "Account",
-        component: ResetPassword,
+        component: resetUser,
+        meta: {
+          requireLogin: true
+        },
+      },
+      // User Profile page
+      {
+        path: "/profile",
+        name: "UserProfilePage",
+        component: UserProfilePage,
         meta: {
           requireLogin: true
         }
-      }
+      },
     ]
   }
 ];

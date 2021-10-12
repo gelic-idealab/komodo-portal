@@ -9,12 +9,6 @@
     <div class="text--secondary">{{ course.department }}</div>
     <p class="text--secondary">{{ `Instructor: ${course.instructorName}` }}</p>
     <div v-if="user.role == `admin` || user.role == `instructor`">
-      <router-link :to="{ name: 'Lab Create', params: { courseId: course.courseId } }">
-        <v-btn small outlined color="success">
-          <v-icon left small>mdi-plus</v-icon>
-          New Lab
-        </v-btn>
-      </router-link>
     </div>
   </router-link>
 </template>

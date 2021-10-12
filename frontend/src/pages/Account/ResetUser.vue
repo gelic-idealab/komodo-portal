@@ -6,9 +6,24 @@
         <v-row class="full-height" no-gutters>
           <v-col class="pa-6 card-content-wrapper">
             <v-card-title class="headline">
-              Reset Password
+              Edit User information
             </v-card-title>
             <v-card-text>
+              <v-text-field
+                v-model="firstName"
+                label="First Name"
+                required
+              />
+              <v-text-field
+                v-model="lastName"
+                label="Last Name"
+                required
+              />
+              <v-text-field
+                v-model="email"
+                label="email"
+                required
+              />
               <v-text-field
                 v-model="password"
                 label="New Password"
@@ -42,11 +57,14 @@
 </template>
 <script>
 import sha1 from "crypto-js/sha1";
-import { resetPassword } from "../../requests/auth";
+import { resetUser } from "../../requests/auth";
 
 export default {
   data: () => ({
     user: null,
+    firstName: "",
+    lastName: "",
+    email: "",
     password: "",
     passwordConfirm: "",
     showDialog: false,
@@ -55,6 +73,9 @@ export default {
   }),
   mounted() {
     this.user = this.$store.getters.user;
+    this.firstName = this.$store.getters.user.firstName;
+    this.lastName = this.$store.getters.user.lastName;
+    this.password = this.$store.getters.user.email;
   },
   methods: {
     showInfo(message, type) {
@@ -70,8 +91,11 @@ export default {
         this.showInfo("Please set and confirm a valid password", "error");
         return;
       }
-      resetPassword({
+      resetUser({
         user_id: this.user.userId,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
         password: sha1(this.password).toString()
       })
         .then(res => {

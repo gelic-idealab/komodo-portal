@@ -1,6 +1,7 @@
 const pool = require("./index");
 const userQuery = require("../query/user");
 const courseQuery = require("../query/course");
+const assetQuery = require("../query/asset");
 
 /**
  * User Login
@@ -29,8 +30,8 @@ const login = async (email, password) => {
  * @param {integer} user_id
  * @param {string} password
  */
-const resetPassword = async (user_id, password) => {
-  const results = await pool.execute(userQuery.resetPassword, [password, user_id]);
+const resetUser = async (user_id, firstName, lastName, email, password) => {
+  const results = await pool.execute(userQuery.resetUser, [firstName, lastName, email, password, user_id]);
   const success = results[0];
   if (!success.changedRows) {
     return {
@@ -123,6 +124,21 @@ const getUserDetail = async userId => {
 
   return {
     data: {...user, courseList}
+  }
+}
+
+/**
+ * Get user detailed information and assets by user id
+ * @param {integer} userId 
+ */
+ const getUserDetailWithAssets = async userId => {
+  const results = await pool.execute(userQuery.getUserDetail, [userId]);
+  const user = results[0][0];
+  const assetResults = await pool.execute(assetQuery.getUserAssetList, [userId]);
+  const assetList = assetResults[0];
+
+  return {
+    data: {...user, assetList}
   }
 }
 
@@ -238,11 +254,12 @@ const deleteUser = async({userId}) => {
 }
 module.exports = {
   login,
-  resetPassword,
+  resetUser,
   findUser,
   getUserList,
   createUser,
   getUserDetail,
+  getUserDetailWithAssets,
   editUser,
   editMultipleUsers,
   getUserListByCourse,
