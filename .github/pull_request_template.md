@@ -1,10 +1,10 @@
 
 # Description
 
-Please include a summary of the change(s) and which issue(s) are fixed. Please also include relevant motivation and context.
+_REPLACE ME: summary of the change(s)_
+_REPLACE ME: motivation and context_
 
-Fixes # (issue)
-e.g., Fixes #14
+_REPLACE ME: Fixes #9999999_
 
 ## Type of change
 
@@ -16,14 +16,16 @@ e.g., Fixes #14
 
 # How Has This Been Tested?
 
-Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration
+_REPLACE ME: Page: Action to take -> Expected result. Example: user account page: press edit button -> should route you to account/edit_ 
+
+_REPLACE ME: any relevant details for your test configuration_
 
 - [ ] Manual Test
 - [ ] Unit Test
 - [ ] Integration / End-to-End Test
 
 **Test Configuration**:
-* Browser vendor and version: e.g., Chrome Version 91.0.4472.164 (Official Build) (64-bit)
+* _REPLACE ME: Browser vendor and version: e.g., Chrome Version 91.0.4472.164 (Official Build) (64-bit)_
 
 # Checklist:
 
