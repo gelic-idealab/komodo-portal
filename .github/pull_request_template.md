@@ -2,6 +2,7 @@
 # Description
 
 _REPLACE ME: summary of the change(s)_
+
 _REPLACE ME: motivation and context_
 
 _REPLACE ME: Fixes #9999999_
@@ -25,6 +26,7 @@ _REPLACE ME: any relevant details for your test configuration_
 - [ ] Integration / End-to-End Test
 
 **Test Configuration**:
+
 * _REPLACE ME: Browser vendor and version: e.g., Chrome Version 91.0.4472.164 (Official Build) (64-bit)_
 
 # Checklist:
