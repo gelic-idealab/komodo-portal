@@ -84,7 +84,7 @@
                 </v-card-text>
                 <v-card-actions class="justify-center">
                   <v-btn class="mr-3" color="accent" @click="goBack" large>Cancel</v-btn>
-                  <v-btn class="mr-4 formButton" color="primary" type="submit" :disabled="invalid" large>Reset</v-btn>
+                  <v-btn class="mr-4 formButton" color="primary" type="submit" :disabled="invalid" large>Submit</v-btn>
                 </v-card-actions>
               </v-col>s
             </v-row>
