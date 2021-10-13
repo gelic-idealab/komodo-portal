@@ -15,7 +15,7 @@
           <v-row dense>
             <v-col v-for="course in courseList" :key="course.courseId" :cols="4">
               <!-- Initialize the course card-->
-               <LandingCourseCard :course="course" />
+              <LandingCourseCard :course="course" />
             </v-col>
           </v-row>
         </SectionCard>

@@ -24,6 +24,7 @@
     "socket.io-client": "^2.3.0",
     "three": "^0.116.1",
     "uuid": "^7.0.2",
+    "vee-validate": "^3.4.13",
     "vue": "2.6.10",
     "vue-apexcharts": "^1.5.2",
     "vue-clickaway": "2.2.2",
