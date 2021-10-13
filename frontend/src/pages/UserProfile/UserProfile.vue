@@ -113,8 +113,6 @@ export default {
             { text: "Visibility", value: "isPublic"}
         ],
         assets: [],
-        unpublishedAsset: [],
-        publishedAsset: [],
         showPublicAssets: false
     }
   },

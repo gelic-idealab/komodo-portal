@@ -128,7 +128,7 @@ userController.get("/detail/:userId",
 )
 
 // Query user detailed information and asset list by user id
-userController.get("/profile/:userId",
+userController.get("/account/:userId",
   async (req, res) => {
     const {userId} = req.params;
     const results = await getUserDetailWithAssets(userId);

@@ -66,7 +66,7 @@ export const getUserDetail = params => {
 export const getUserDetailWithAssets = params => {
   const { userId } = params;
   return baseRequest.get(
-    `/users/profile/${userId}`
+    `/users/account/${userId}`
   )
 };
 

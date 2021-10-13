@@ -204,7 +204,7 @@ const routes = [
       //   }
       // },
       {
-        path: "account",
+        path: "/account/reset",
         name: "Account",
         component: resetUser,
         meta: {
@@ -213,7 +213,7 @@ const routes = [
       },
       // User Profile page
       {
-        path: "/profile",
+        path: "/account",
         name: "UserProfilePage",
         component: UserProfilePage,
         meta: {
