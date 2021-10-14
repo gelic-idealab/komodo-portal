@@ -9,7 +9,7 @@ export const login = params => {
 };
 
 // Reset the password
-export const resetPassword = params => {
+export const resetUser = params => {
   return baseRequest.post(
     "/users/password",
     params
@@ -59,6 +59,14 @@ export const getUserDetail = params => {
   const { userId } = params;
   return baseRequest.get(
     `/users/detail/${userId}`
+  )
+};
+
+// Get the user details and asset list by user id
+export const getUserDetailWithAssets = params => {
+  const { userId } = params;
+  return baseRequest.get(
+    `/users/account/${userId}`
   )
 };
 

@@ -1,5 +1,5 @@
 const express = require("express");
-const { login, resetPassword, findUser, getUserList, createUser, getUserDetail, editUser, editMultipleUsers, getUserListByCourse, deleteUser } = require("../service/user");
+const { login, resetUser, findUser, getUserList, createUser, getUserDetail, getUserDetailWithAssets, editUser, editMultipleUsers, getUserListByCourse, deleteUser } = require("../service/user");
 const jwt = require('jsonwebtoken');
 const {promisify} = require('util');
 const userController = express.Router();
@@ -61,10 +61,10 @@ userController.post("/login",
   }
   );
 
-// Reset the password by user id and new password
+// Reset user information by user id and new password
 userController.post("/password",
   async (req, res) => {
-    const {user_id, password} = req.body;
+    const {user_id,firstName,lastName,email, password} = req.body;
     if (!user_id || !password.length) {
       res.status(400).send({message: "Invalid user or password."});
       return;
@@ -73,7 +73,7 @@ userController.post("/password",
     if(req.cookies.jwt) {
       res.clearCookie('jwt');
     }
-    const results = await resetPassword(user_id, password);
+    const results = await resetUser(user_id, firstName, lastName, email, password);
     res.status(results.code || 200).json(results.data);
   })
 
@@ -123,6 +123,15 @@ userController.get("/detail/:userId",
   async (req, res) => {
     const {userId} = req.params;
     const results = await getUserDetail(userId);
+    res.status(results.code || 200).json(results.data);
+  }
+)
+
+// Query user detailed information and asset list by user id
+userController.get("/account/:userId",
+  async (req, res) => {
+    const {userId} = req.params;
+    const results = await getUserDetailWithAssets(userId);
     res.status(results.code || 200).json(results.data);
   }
 )

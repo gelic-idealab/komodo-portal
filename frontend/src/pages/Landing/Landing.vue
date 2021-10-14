@@ -39,21 +39,6 @@
               </v-btn>
             </router-link>
           </template>
-          <v-container fluid>
-            <v-data-table
-              :headers="assetTableHeaders"
-              :items="assetList"
-              :sort-by="['updateAt']"
-              :sort-desc="[true]"
-              @click:row="onAssetClick"
-              item-key="assetId"
-              no-data-text="No asset added"
-            >
-            <template v-slot:item.updateAt="{ item }">
-              <span>{{moment(item.updateAt).format("L LT")}}</span>
-            </template>
-            </v-data-table>
-          </v-container>
         </SectionCard>
       </v-col>
     </v-row>
