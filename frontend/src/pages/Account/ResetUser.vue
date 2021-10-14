@@ -130,7 +130,7 @@ export default {
     this.user = this.$store.getters.user;
     this.FirstName = this.$store.getters.user.firstName;
     this.LastName = this.$store.getters.user.lastName;
-    this.email = this.$store.getters.user.email
+    this.Email = this.$store.getters.user.email
   },
   methods: {
     showInfo(message, type) {
