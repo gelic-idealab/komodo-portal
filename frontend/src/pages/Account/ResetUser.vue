@@ -1,7 +1,7 @@
 <template>
 <!-- Reset the password page -->
   <v-row align="center" justify="center" style="height: 100vh">
-    <v-card class="radius-3" width="70%" height="70%">
+    <v-card class="radius-3" width="70%" height="80%">
       <v-container class="pa-0 full-height radius-3">
         <v-form @submit.prevent="submit" ref="form" lazy-validation>
           <validation-observer
@@ -48,6 +48,7 @@
                       label="email"
                     />
                   </validation-provider>
+                  <div class="subtitle-2">To change your information without changing your password, please input and confirm your current password:</div>
                   <validation-provider
                     v-slot="{ errors }"
                     name="Password"
@@ -86,7 +87,7 @@
                   <v-btn class="mr-3" color="accent" @click="goBack" large>Cancel</v-btn>
                   <v-btn class="mr-4 formButton" color="primary" type="submit" :disabled="invalid" large>Submit</v-btn>
                 </v-card-actions>
-              </v-col>s
+              </v-col>
             </v-row>
           </validation-observer>
         </v-form>
