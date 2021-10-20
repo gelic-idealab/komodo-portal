@@ -8,7 +8,12 @@
       method="post"
       enctype="multipart/form-data"
     >
-      <p class="headline">Upload New Asset</p>
+      <v-list-item class="headline">
+        Upload New 3D Model
+      </v-list-item>
+      <v-list-item class="subtitle">
+        Only the .GLB file type is supported for now.
+      </v-list-item>
       <v-file-input
         name="file"
         v-model="file"
@@ -51,14 +56,25 @@
       <v-row>
         <v-switch
           v-model="asset.isPublic"
-          :label="asset.isPublic ? 'Public' : 'Private'"
-        />
-        <v-switch
-          v-model="asset.isWholeObject"
           class="ml-3"
-          :label="asset.isWholeObject ? 'Treat as one object' : 'Treat as multiple objects'"
+          :label="'Public'"
         />
-        <v-col cols=4>
+      </v-row>
+      <v-card
+        class="mx-auto"
+        outlined
+      >
+        <v-list-item class="text-h3">
+          Advanced Settings
+        </v-list-item>
+        <v-list-item>
+          <v-switch
+            v-model="asset.isWholeObject"
+            class="ml-3"
+            :label="'3D Model (Turn off to set as model pack)'"
+          />
+        </v-list-item>
+        <v-list-item>
           <v-text-field 
             prepend-icon="mdi-resize" 
             class="ml-3" 
@@ -66,10 +82,11 @@
             :rules="asset.scaleRules"
             type="number" 
             label="Scale" 
-            outlined dense 
+            outlined
+            dense 
           />
-        </v-col>
-      </v-row>
+        </v-list-item>
+      </v-card>
 
       <v-row justify="center">
         <v-btn class="mr-3" color="accent" @click="goBack">
