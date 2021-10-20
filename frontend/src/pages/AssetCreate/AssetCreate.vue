@@ -51,7 +51,7 @@
       <v-row>
         <v-switch
           v-model="asset.isPublic"
-          :label="asset.isPublic ? 'Public' : 'Private'"
+          :label="'Public'"
         />
         <v-switch
           v-model="asset.isWholeObject"
