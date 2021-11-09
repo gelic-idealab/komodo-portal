@@ -77,10 +77,10 @@
           </v-row>
           <v-row dense>
             <v-col :cols="4">
-              <v-chip outlined>Whole Object</v-chip>
+              <v-chip outlined>Type</v-chip>
             </v-col>
             <v-col :cols="8" align-self="center">
-              {{ asset.isWholeObject ? 'Yes' : 'No' }}
+              {{ asset.isWholeObject ? '3D Model' : '3D Model Pack' }}
             </v-col>
           </v-row>
           <v-row dense>
