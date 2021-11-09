@@ -35,10 +35,25 @@ const getAllRawCourse = async(id) => {
   }
 }
 
+const exportMetricCsv = async(data) => {
+  let request = [data.captureId, data.clientId, data.type, 0, data]
+  results = await pool.execute(dataQuery.insertRequest,request);
+}
+
+const getAllCsvExport = async(data) => {
+  let userId = data.userId;
+  results = await pool.execute(dataQuery.getAllDataRequest,[userId]);
+  return {
+    data: results[0]
+  };
+}
+
 
 module.exports = {
   getAllInteractions,
   getAllRawCapture,
   getAllRawLab,
-  getAllRawCourse
+  getAllRawCourse,
+  getAllCsvExport,
+  exportMetricCsv
 };
