@@ -28,3 +28,28 @@ createPresignedPost = function(name, callback){
     });
 
 }
+
+createUploadDataRequestResult = function(name, callback){
+    s3.getObject({
+        Bucket : BUCKET_NAME,
+        Key: name,
+    }, function(err, data) {
+        if (!err) {
+            callback("already exist", null);
+        } else {
+            s3.createUploadDataRequestResult({Bucket: BUCKET_NAME,
+                key: config.aws.accessKeyId,
+                Conditions: [
+                    ['starts-with', '$key', name + "/"]
+                ]
+            }, function (err, data) {
+                if(err){
+                    callback(err, null);
+                } else {
+                    callback(null, JSON.stringify(data));
+                }
+            });
+        }
+    });
+
+}

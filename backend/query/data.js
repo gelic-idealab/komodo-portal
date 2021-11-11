@@ -22,6 +22,11 @@ INSERT INTO data_requests
 VALUES
     (?,?,?,?,?);`
 
+const getDownloadLink = ` 
+SELECT url,file_location FROM data_requests
+    WHERE request_id = ?;
+`
+
 module.exports = { 
     getAllInteractions, 
     getRawPosCapture, 
@@ -31,5 +36,6 @@ module.exports = {
     getRawPosCourse,
     getRawIntCourse,
     getAllDataRequest,
-    insertRequest
+    insertRequest,
+    getDownloadLink
 }

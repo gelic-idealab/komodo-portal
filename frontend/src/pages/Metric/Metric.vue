@@ -267,20 +267,46 @@
     <v-col>
       <SectionCard title="data request history">
         <v-container fluid>
+        <template>
         <v-data-table
           :headers="csvHeaders"
           :items="csvRecord"
         >
-          <template v-slot:item.actions="{ item }">
+          <template v-slot:item.action="{ item }">
             <v-icon
               small
               class="mr-2"
               @click="download(item)"
             >
-              mdi-pencil
+              mdi-cloud-download
             </v-icon>
           </template>
+<template v-slot:top>
+  <div class="text-center">
+    <v-dialog
+      v-model="dialog"
+      max-width="500"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          file processing, please come back later
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="dialog = false"
+          >
+            close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
         </v-data-table>
+        </template>
         </v-container>
       </SectionCard>
       </v-col>
@@ -291,7 +317,7 @@
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData, getAllRawCourse, getAllRawLab, getAllRawCapture, getAllDataRequest, exportMetricCsv } from "../../requests/data";
+import { getInteractionData, getAllRawCourse, getAllRawLab, getAllRawCapture, getAllDataRequest, exportMetricCsv, getDownloadLink } from "../../requests/data";
 import { getCourseListByInstructor, getLabList, getCaptureList } from "../../requests/course";
 import { Parser } from "json2csv";
 
@@ -387,23 +413,32 @@ export default {
       ],
       entitySelected:null,
       csvHeaders: [
-        { text: 'course', value: 'course_name' },
-        { text: 'lab', value: 'session_name' },
-        { text: 'aggregation type', value: 'aggregation_function' }
+        { text: 'course', value: 'courseName' },
+        { text: 'lab', value: 'sessionName' },
+        { text: 'aggregation type', value: 'aggregationFunction' },
+        { text: 'interaction_type', value: 'interaction_type'},
+        { text: 'entity_type', value: 'entity_type'},
+        { text: "Actions", value: "action", sortable: false }
       ],
       csvRecord: [],
+      dialog: false,
     }
   },
-  created() {
+  mounted() {
     this.userId = this.$store.getters.user.userId;
     this.getInstructorCourses();
-  },
-  mounted() {
-    getAllDataRequest({"userId":this.userId}).then(res => {
-      console.log(res);
-    })
+    this.getAllRequest();
   },
   methods: {
+    getAllRequest() {
+      getAllDataRequest({"userId":this.userId}).then(data => {
+        this.csvRecord = data.data;
+        for(let i=0;i<this.csvRecord.length;i++){
+          this.csvRecord[i].interaction_type = this.interaction_type.find(o => o.value === this.csvRecord[i].message.interactionType).text;
+          this.csvRecord[i].entity_type = this.entity_type.find(o => o.value === this.csvRecord[i].message.entityType).text;
+        }
+      })
+    },
     getInstructorCourses() {
       getCourseListByInstructor(this.userId).then(data => {
         this.courses = data.data;
@@ -434,7 +469,6 @@ export default {
     getCapturesByLabId() {
       this.captureSelected = null;
       getCaptureList({ labId: this.labSelected }).then(res => {
-        console.log(res);
         if (res.status == 200) {
           this.csvCaptures = res.data;
         } else {
@@ -445,7 +479,6 @@ export default {
     getCsvCapturesByLabId() {
       this.csvCaptureSelected = null;
       getCaptureList({ labId: this.csvLabSelected }).then(res => {
-        console.log(res);
         if (res.status == 200) {
           this.captures = res.data;
         } else {
@@ -602,8 +635,20 @@ export default {
         "interactionType": this.interactionSelected,
         "entityType": this.entitySelected
       }
-      console.log(data);
-      exportMetricCsv(data);
+      exportMetricCsv(data).then(res => {
+        if (res.status == 200) {
+          location.reload();
+        } else {
+          console.log(res);
+        }
+      });
+    },
+    download(item){
+      getDownloadLink(item).then(result =>{
+        if(result.data.status == "processing"){
+          this.dialog = true;
+        }
+      })
     }
   }
 }
