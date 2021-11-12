@@ -46,7 +46,6 @@ dataController.post("/request",
 async (req, res) => {
   const data = req.body;
   let results = await getAllCsvExport(data);
-  //console.log(results.data);
   res.status(200).json(results.data);
 });
 
@@ -54,7 +53,6 @@ dataController.post("/download",
 async (req, res) => {
   const data = req.body;
   let results = await getDownloadLink(data);
-  console.log(results.data);
   res.status(200).json(results.data);
 });
 

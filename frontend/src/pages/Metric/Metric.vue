@@ -222,7 +222,7 @@
     <v-row>
       <v-col>
         <v-select
-        v-if="typeSelected"
+        v-if="typeSelected =='user energy' || typeSelected =='aggregate interaction'"
         label="Select interaction type"
         :items="interaction_type"
         item-text="text"
@@ -240,7 +240,7 @@
       </v-col>
       <v-col>
         <v-select
-        v-if="typeSelected='user energy'"
+        v-if="typeSelected =='user energy'"
         label="Select entity type"
         :items="entity_type"
         item-text="text"
@@ -257,7 +257,15 @@
         dense class="ml-3">
         </v-select>
       </v-col>
-      <v-btn 
+      <v-btn
+      v-if="(csvCaptureSelected && interactionSelected && entitySelected && typeSelected =='user energy') || (typeSelected =='aggregate interaction' && interactionSelected && csvCaptureSelected) || (typeSelected =='aggregate user' && csvCaptureSelected)"
+      color="primary" 
+      v-on:click="getCsv">
+        Export csv file
+      </v-btn>
+      <v-btn
+      v-else
+      disabled
       color="primary" 
       v-on:click="getCsv">
         Export csv file
@@ -432,11 +440,16 @@ export default {
   methods: {
     getAllRequest() {
       getAllDataRequest({"userId":this.userId}).then(data => {
-        this.csvRecord = data.data;
-        for(let i=0;i<this.csvRecord.length;i++){
-          this.csvRecord[i].interaction_type = this.interaction_type.find(o => o.value === this.csvRecord[i].message.interactionType).text;
-          this.csvRecord[i].entity_type = this.entity_type.find(o => o.value === this.csvRecord[i].message.entityType).text;
+        for(let i=0;i<data.data.length;i++){
+          console.log(this.interaction_type.find(o => o.value === data.data[i].message.interactionType));
+          if(data.data[i].message.interactionType !== null){
+            data.data[i].interaction_type = this.interaction_type.find(o => o.value === data.data[i].message.interactionType).text;
+          }
+          if(data.data[i].message.entityType !== null){
+            data.data[i].entity_type = this.entity_type.find(o => o.value === data.data[i].message.entityType).text;
+          }
         }
+        this.csvRecord = data.data;
       })
     },
     getInstructorCourses() {

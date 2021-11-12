@@ -14,7 +14,8 @@ SELECT r.*, s.course_name, l.session_name FROM data_requests r
 JOIN captures c ON c.capture_id = r.processed_capture_id 
 JOIN KP_Lab l ON l.session_id = c.session_id
 JOIN KP_Course s ON s.course_id = l.course_id
-WHERE who_requested = ?`
+WHERE who_requested = ?
+ORDER BY request_id DESC; `
 
 const insertRequest = `
 INSERT INTO data_requests

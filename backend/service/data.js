@@ -1,39 +1,12 @@
-const AWS = require("aws-sdk");
+const fs = require('fs');
+const AWS = require('aws-sdk');
 const config = require("../config");
-const pool = require("./index");
-const dataQuery = require("../query/data");
-
 AWS.config.update(config.aws);
 const s3 = new AWS.S3();
 const BUCKET_NAME = config.aws.bucket;
 
-const uploadDataRequestOutput = async fileLocation => {
-  let results;
-  s3.createUploadDataRequestResult(
-    {
-      Bucket: BUCKET_NAME,
-      Conditions: [
-        ["starts-with", "$key", fileLocation + "/"]
-      ]
-    },
-    (err, data) => {
-      if (err) {
-        results = {
-          code: 403,
-          message: `upload data request output file encountered an error, ${err}`
-        }
-      }
-
-      data.fields = {
-        key: fileLocation + "/${filename}",
-        ...data.fields
-      };
-      results = {
-        data
-      }
-    });
-  return results;
-};
+const pool = require("./index");
+const dataQuery = require("../query/data");
 
 const getAllInteractions = async() => {
   const results = await pool.execute(dataQuery.getAllInteractions);
@@ -102,7 +75,12 @@ const getDownloadLink = async(request) => {
   }else{
     if(results[0][0].url == null){
       //upload file to s3
-      //const results = await uploadDataRequestOutput(fileLocation);
+      const fileContent = fs.readFileSync("C://Users//shiuan//Documents//testfile.csv");
+      const { url, fields } = await s3.createPresignedPost({
+        Bucket: BUCKET_NAME,
+        Key: "testfile.csv",
+      });
+      console.log(url, fields);
     }else{
       return({
         data: {
