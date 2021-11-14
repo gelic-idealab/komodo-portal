@@ -74,13 +74,33 @@ const getDownloadLink = async(request) => {
     })
   }else{
     if(results[0][0].url == null){
-      //upload file to s3
+      // Read content from the file
       const fileContent = fs.readFileSync("C://Users//shiuan//Documents//testfile.csv");
-      const { url, fields } = await s3.createPresignedPost({
-        Bucket: BUCKET_NAME,
-        Key: "testfile.csv",
-      });
-      console.log(url, fields);
+      // Setting up S3 upload parameters
+      const params = {
+          Bucket: BUCKET_NAME+"/dataRequest/",
+          Key: Date.now()+'testfile.csv', // File name you want to save as in S3
+          Body: fileContent
+      };
+      // Uploading files to the bucket
+      let fileLocation;
+      let s3upload = s3.upload(params, async function(err, data) {
+        if (err) {
+          console.log(err);
+        }else{
+          fileLocation = data.Location;
+        }
+      }).promise();
+      return s3upload
+      .then(async result =>{
+        pool.execute(dataQuery.updateDownloadLink,[result.Location,requestId]);
+        return({
+          data: {
+            status: "success",
+            url: result.Location
+          }
+        })
+      })
     }else{
       return({
         data: {
