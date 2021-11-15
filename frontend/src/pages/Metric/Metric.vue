@@ -186,22 +186,6 @@
       <v-col>
         <v-select 
         v-if="csvLabSelected"
-        label="type"
-        :items="type"
-        v-model="typeSelected"
-        dense class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select 
-        v-if="csvLabSelected"
         label="Select Capture"
         :items="captures"
         item-text="captureId"
@@ -216,6 +200,22 @@
         disabled
         dense class="ml-3">
         </v-select>      
+      </v-col>
+      <v-col>
+        <v-select 
+        v-if="csvLabSelected"
+        label="type"
+        :items="type"
+        v-model="typeSelected"
+        dense class="ml-3"
+        clearable
+        >
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>
       </v-col>
     </v-row>
 
