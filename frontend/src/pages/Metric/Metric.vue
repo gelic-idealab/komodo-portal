@@ -441,7 +441,6 @@ export default {
     getAllRequest() {
       getAllDataRequest({"userId":this.userId}).then(data => {
         for(let i=0;i<data.data.length;i++){
-          console.log(this.interaction_type.find(o => o.value === data.data[i].message.interactionType));
           if(data.data[i].message.interactionType !== null){
             data.data[i].interaction_type = this.interaction_type.find(o => o.value === data.data[i].message.interactionType).text;
           }
@@ -658,7 +657,9 @@ export default {
     },
     download(item){
       getDownloadLink(item).then(result =>{
-        if(result.data.status == "processing"){
+        if(result.data.status == "success"){
+          window.open(result.data.url);
+        }else{
           this.dialog = true;
         }
       })
