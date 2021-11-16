@@ -147,13 +147,185 @@
         </SectionCard>
       </v-col>
     </v-row>
+
+    <v-row>
+      <v-col>
+        <v-select
+        label="Select Course"
+        :items="courses"
+        item-text="courseName"
+        item-value="courseId"
+        v-model="csvCourseSelected"
+        v-on:change="getcsvLabsByCourseId"
+        dense 
+        class="ml-3"
+        clearable
+        >
+        </v-select>
+      </v-col>
+      <v-col>
+        <v-select
+        v-if="csvCourseSelected"
+        label="Select Lab"
+        :items="csvlabs"
+        item-text="sessionName"
+        item-value="sessionId"
+        v-model="csvLabSelected"
+        v-on:change="getCsvCapturesByLabId"
+        dense 
+        class="ml-3"
+        clearable
+        >
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>
+      </v-col>
+      <v-col>
+        <v-select 
+        v-if="csvLabSelected"
+        label="Select Capture"
+        :items="captures"
+        item-text="captureId"
+        item-value="captureId"
+        v-model="csvCaptureSelected"
+        dense class="ml-3"
+        clearable
+        >
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>      
+      </v-col>
+      <v-col>
+        <v-select 
+        v-if="csvLabSelected"
+        label="type"
+        :items="type"
+        v-model="typeSelected"
+        dense class="ml-3"
+        clearable
+        >
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <v-select
+        v-if="typeSelected =='user energy' || typeSelected =='aggregate interaction'"
+        label="Select interaction type"
+        :items="interaction_type"
+        item-text="text"
+        item-value="value"
+        v-model="interactionSelected"
+        dense class="ml-3"
+        clearable
+        >
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>
+      </v-col>
+      <v-col>
+        <v-select
+        v-if="typeSelected =='user energy'"
+        label="Select entity type"
+        :items="entity_type"
+        item-text="text"
+        item-value="value"
+        v-model="entitySelected"
+        dense 
+        class="ml-3"
+        clearable
+        >
+        </v-select>
+        <v-select
+        v-else
+        disabled
+        dense class="ml-3">
+        </v-select>
+      </v-col>
+      <v-btn
+      v-if="(csvCaptureSelected && interactionSelected && entitySelected && typeSelected =='user energy') || (typeSelected =='aggregate interaction' && interactionSelected && csvCaptureSelected) || (typeSelected =='aggregate user' && csvCaptureSelected)"
+      color="primary" 
+      v-on:click="getCsv">
+        Export csv file
+      </v-btn>
+      <v-btn
+      v-else
+      disabled
+      color="primary" 
+      v-on:click="getCsv">
+        Export csv file
+      </v-btn>
+    </v-row>
+    <v-row>
+    <v-col>
+      <SectionCard title="data request history">
+        <v-container fluid>
+        <template>
+        <v-data-table
+          :headers="csvHeaders"
+          :items="csvRecord"
+        >
+          <template v-slot:item.action="{ item }">
+            <v-icon
+              small
+              class="mr-2"
+              @click="download(item)"
+            >
+              mdi-cloud-download
+            </v-icon>
+          </template>
+<template v-slot:top>
+  <div class="text-center">
+    <v-dialog
+      v-model="dialog"
+      max-width="500"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          file processing, please come back later
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="dialog = false"
+          >
+            close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+        </v-data-table>
+        </template>
+        </v-container>
+      </SectionCard>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData, getAllRawCourse, getAllRawLab, getAllRawCapture } from "../../requests/data";
+import { getInteractionData, getAllRawCourse, getAllRawLab, getAllRawCapture, getAllDataRequest, exportMetricCsv, getDownloadLink } from "../../requests/data";
 import { getCourseListByInstructor, getLabList, getCaptureList } from "../../requests/course";
 import { Parser } from "json2csv";
 
@@ -168,10 +340,14 @@ export default {
       userId: null,
       courses: [],
       courseSelected: null,
+      csvCourseSelected: null,
       labs: [],
+      csvlabs: [],
       labSelected: null,
+      csvLabSelected: null,
       captures: [],
       captureSelected: null,
+      csvCaptureSelected: null,
       dataLoaded: false,
       search: '',
       interactions: [],
@@ -220,17 +396,63 @@ export default {
           icon: 'mdi-gesture-double-tap',
           value: 0
         }
-      }
+      },
+      type:["aggregate interaction", "aggregate user", "user energy"],
+      typeSelected:null,
+      interaction_type:[
+        {text:"look",value:0},
+        {text:"look end",value:1},
+        {text:"render",value:2},
+        {text:"render end",value:3},
+        {text:"grab",value:4},
+        {text:"grab end",value:5},
+        {text:"scene change",value:6},
+        {text:"unset",value:7},
+        {text:"lock",value:8},
+        {text:"lock end",value:9}
+      ],
+      interactionSelected: null,
+      entity_type:[
+        {text:"head",value:0},
+        {text:"left hand",value:1},
+        {text:"right hand",value:2},
+        {text:"spawned entity",value:3},
+        {text:"main player",value:5}
+      ],
+      entitySelected:null,
+      csvHeaders: [
+        { text: 'course', value: 'courseName' },
+        { text: 'lab', value: 'sessionName' },
+        { text: 'aggregation type', value: 'aggregationFunction' },
+        { text: 'interaction_type', value: 'interaction_type'},
+        { text: 'entity_type', value: 'entity_type'},
+        { text: "Actions", value: "action", sortable: false }
+      ],
+      csvRecord: [],
+      dialog: false,
     }
   },
-  created() {
+  mounted() {
     this.userId = this.$store.getters.user.userId;
     this.getInstructorCourses();
+    this.getAllRequest();
   },
   methods: {
+    getAllRequest() {
+      getAllDataRequest({"userId":this.userId}).then(data => {
+        for(let i=0;i<data.data.length;i++){
+          if(data.data[i].message.interactionType !== null){
+            data.data[i].interaction_type = this.interaction_type.find(o => o.value === data.data[i].message.interactionType).text;
+          }
+          if(data.data[i].message.entityType !== null){
+            data.data[i].entity_type = this.entity_type.find(o => o.value === data.data[i].message.entityType).text;
+          }
+        }
+        this.csvRecord = data.data;
+      })
+    },
     getInstructorCourses() {
       getCourseListByInstructor(this.userId).then(data => {
-        console.log("Instructor courses:", data);
         this.courses = data.data;
       })
     },
@@ -245,16 +467,36 @@ export default {
         }
       })
     },
+    getcsvLabsByCourseId() {
+      this.csvlabSelected = null;
+      getLabList({ courseId: this.csvCourseSelected }).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          this.csvlabs = res.data;
+        } else {
+          console.log(res);
+        }
+      })
+    },
     getCapturesByLabId() {
       this.captureSelected = null;
       getCaptureList({ labId: this.labSelected }).then(res => {
-        console.log(res);
+        if (res.status == 200) {
+          this.csvCaptures = res.data;
+        } else {
+          console.log(res);
+        }
+      })
+    },
+    getCsvCapturesByLabId() {
+      this.csvCaptureSelected = null;
+      getCaptureList({ labId: this.csvLabSelected }).then(res => {
         if (res.status == 200) {
           this.captures = res.data;
         } else {
           console.log(res);
         }
-      })
+      })      
     },
     loadData(e) {
       this.dataLoaded = true;
@@ -395,6 +637,32 @@ export default {
         }
       });
       this.interactionTypeCountsMax = Math.max(...this.interactionTypeCounts);
+    },
+    getCsv() {
+      let data = {
+        "sessionId": this.csvLabSelected,
+        "clientId": this.userId,
+        "captureId": this.csvCaptureSelected,
+        "type": this.typeSelected,
+        "interactionType": this.interactionSelected,
+        "entityType": this.entitySelected
+      }
+      exportMetricCsv(data).then(res => {
+        if (res.status == 200) {
+          location.reload();
+        } else {
+          console.log(res);
+        }
+      });
+    },
+    download(item){
+      getDownloadLink(item).then(result =>{
+        if(result.data.status == "success"){
+          window.open(result.data.url);
+        }else{
+          this.dialog = true;
+        }
+      })
     }
   }
 }

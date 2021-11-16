@@ -22,3 +22,18 @@ export const getAllRawCapture = params => {
   const { captureId } = params;
   return baseRequest.get(`/data/export/raw/capture/${captureId}`);
 };
+
+//post params to get csv file for metric page
+export const exportMetricCsv = params => {
+  return baseRequest.post("/data/", params);
+}
+
+//Get data request by user id
+export const getAllDataRequest = params => {
+  return baseRequest.post("/data/request", params);
+}
+
+//Get download link by request id
+export const getDownloadLink = params => {
+  return baseRequest.post("/data/download", params);
+}

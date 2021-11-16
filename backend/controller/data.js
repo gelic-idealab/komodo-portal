@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllInteractions, getAllRawCapture, getAllRawLab, getAllRawCourse } = require("../service/data");
+const { getAllInteractions, getAllRawCapture, getAllRawLab, getAllRawCourse, getAllCsvExport, exportMetricCsv, getDownloadLink } = require("../service/data");
 const dataController = express.Router();
 
 
@@ -32,6 +32,27 @@ dataController.get("/export/raw/course/:courseId",
 async (req, res) => {
   const { courseId } = req.params;
   let results = await getAllRawCourse(courseId);
+  res.status(200).json(results.data);
+});
+
+dataController.post("/",
+async (req, res) => {
+  const data = req.body;
+  let results = await exportMetricCsv(data);
+  res.status(200).json(results.data);
+});
+
+dataController.post("/request",
+async (req, res) => {
+  const data = req.body;
+  let results = await getAllCsvExport(data);
+  res.status(200).json(results.data);
+});
+
+dataController.post("/download",
+async (req, res) => {
+  const data = req.body;
+  let results = await getDownloadLink(data);
   res.status(200).json(results.data);
 });
 

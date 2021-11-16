@@ -9,6 +9,31 @@ const getRawIntLab = `SELECT * FROM interactions WHERE session_id = ?`;
 const getRawPosCourse = `SELECT * FROM positions p JOIN KP_Lab l ON p.session_id = l.session_id WHERE l.course_id = ?`;
 const getRawIntCourse = `SELECT * FROM interactions i JOIN KP_Lab l ON i.session_id = l.session_id WHERE l.course_id = ?;`;
 
+const getAllDataRequest = `
+SELECT r.*, s.course_name, l.session_name FROM data_requests r 
+JOIN captures c ON c.capture_id = r.processed_capture_id 
+JOIN KP_Lab l ON l.session_id = c.session_id
+JOIN KP_Course s ON s.course_id = l.course_id
+WHERE who_requested = ?
+ORDER BY request_id DESC; `
+
+const insertRequest = `
+INSERT INTO data_requests
+    (processed_capture_id, who_requested, aggregation_function, is_it_fulfilled, message)
+VALUES
+    (?,?,?,?,?);`
+
+const getDownloadLink = ` 
+SELECT request_id,url,file_location FROM data_requests
+    WHERE request_id = ?;
+`
+
+const updateDownloadLink = ` 
+UPDATE data_requests
+SET url = ?
+WHERE request_id = ?;
+`  
+
 module.exports = { 
     getAllInteractions, 
     getRawPosCapture, 
@@ -16,5 +41,9 @@ module.exports = {
     getRawPosLab,
     getRawIntLab,
     getRawPosCourse,
-    getRawIntCourse
+    getRawIntCourse,
+    getAllDataRequest,
+    insertRequest,
+    getDownloadLink,
+    updateDownloadLink
 }
