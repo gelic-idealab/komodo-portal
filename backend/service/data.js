@@ -75,11 +75,12 @@ const getDownloadLink = async(request) => {
   }else{
     if(results[0][0].url == null){
       // Read content from the file
-      const fileContent = fs.readFileSync("C://Users//shiuan//Documents//testfile.csv");
+      let fileName = results[0][0].file_location.split('/');
+      const fileContent = fs.readFileSync(results[0][0].file_location);
       // Setting up S3 upload parameters
       const params = {
           Bucket: BUCKET_NAME+"/dataRequest/",
-          Key: Date.now()+'testfile.csv', // File name you want to save as in S3
+          Key: Date.now()+fileName[fileName.length-1], // File name you want to save as in S3
           Body: fileContent
       };
       // Uploading files to the bucket

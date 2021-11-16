@@ -24,7 +24,7 @@ VALUES
     (?,?,?,?,?);`
 
 const getDownloadLink = ` 
-SELECT url,file_location FROM data_requests
+SELECT request_id,url,file_location FROM data_requests
     WHERE request_id = ?;
 `
 
