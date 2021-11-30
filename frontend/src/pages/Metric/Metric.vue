@@ -25,6 +25,11 @@
     
     <v-row>
       <v-col>
+        <SectionCard title="Capture Data">
+                <v-container fluid>
+          <template>
+    <v-row>
+      <v-col>
         <v-select
         label="Select Course"
         :items="courses"
@@ -118,18 +123,20 @@
         />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <SectionCard title="Capture Data">
-          <template v-slot:actions>
+            <v-row>
             <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
+                class="ma-3"
+                clearable
+                dense
+                outlined
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
             ></v-text-field>
+            </v-row>
           </template>
+          </v-container fluid>
           <v-container fluid>
             <v-data-table
                   :headers="interactionTableHeaders"
@@ -149,133 +156,133 @@
     </v-row>
 
     <v-row>
-      <v-col>
-        <v-select
-        label="Select Course"
-        :items="courses"
-        item-text="courseName"
-        item-value="courseId"
-        v-model="csvCourseSelected"
-        v-on:change="getcsvLabsByCourseId"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select
-        v-if="csvCourseSelected"
-        label="Select Lab"
-        :items="csvlabs"
-        item-text="sessionName"
-        item-value="sessionId"
-        v-model="csvLabSelected"
-        v-on:change="getCsvCapturesByLabId"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select 
-        v-if="csvLabSelected"
-        label="Select Capture"
-        :items="captures"
-        item-text="captureId"
-        item-value="captureId"
-        v-model="csvCaptureSelected"
-        dense class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>      
-      </v-col>
-      <v-col>
-        <v-select 
-        v-if="csvLabSelected"
-        label="type"
-        :items="type"
-        v-model="typeSelected"
-        dense class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col>
-        <v-select
-        v-if="typeSelected =='user energy' || typeSelected =='aggregate interaction'"
-        label="Select interaction type"
-        :items="interaction_type"
-        item-text="text"
-        item-value="value"
-        v-model="interactionSelected"
-        dense class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select
-        v-if="typeSelected =='user energy'"
-        label="Select entity type"
-        :items="entity_type"
-        item-text="text"
-        item-value="value"
-        v-model="entitySelected"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-      <v-btn
-      v-if="(csvCaptureSelected && interactionSelected && entitySelected && typeSelected =='user energy') || (typeSelected =='aggregate interaction' && interactionSelected && csvCaptureSelected) || (typeSelected =='aggregate user' && csvCaptureSelected)"
-      color="primary" 
-      v-on:click="getCsv">
-        Export csv file
-      </v-btn>
-      <v-btn
-      v-else
-      disabled
-      color="primary" 
-      v-on:click="getCsv">
-        Export csv file
-      </v-btn>
-    </v-row>
-    <v-row>
     <v-col>
-      <SectionCard title="data request history">
+      <SectionCard title="data request">
         <v-container fluid>
         <template>
+          <v-row>
+            <v-col>
+              <v-select
+              label="Select Course"
+              :items="courses"
+              item-text="courseName"
+              item-value="courseId"
+              v-model="csvCourseSelected"
+              v-on:change="getcsvLabsByCourseId"
+              dense 
+              class="ml-3"
+              clearable
+              >
+              </v-select>
+            </v-col>
+            <v-col>
+              <v-select
+              v-if="csvCourseSelected"
+              label="Select Lab"
+              :items="csvlabs"
+              item-text="sessionName"
+              item-value="sessionId"
+              v-model="csvLabSelected"
+              v-on:change="getCsvCapturesByLabId"
+              dense 
+              class="ml-3"
+              clearable
+              >
+              </v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>
+            </v-col>
+            <v-col>
+              <v-select 
+              v-if="csvLabSelected"
+              label="Select Capture"
+              :items="captures"
+              item-text="captureId"
+              item-value="captureId"
+              v-model="csvCaptureSelected"
+              dense class="ml-3"
+              clearable
+              >
+              </v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>      
+            </v-col>
+            <v-col>
+              <v-select 
+              v-if="csvLabSelected"
+              label="type"
+              :items="type"
+              v-model="typeSelected"
+              dense class="ml-3"
+              clearable
+              >
+              </v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <v-select
+              v-if="typeSelected =='user energy' || typeSelected =='aggregate interaction'"
+              label="Select interaction type"
+              :items="interaction_type"
+              item-text="text"
+              item-value="value"
+              v-model="interactionSelected"
+              dense class="ml-3"
+              clearable
+              >
+              </v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>
+            </v-col>
+            <v-col>
+              <v-select
+              v-if="typeSelected =='user energy'"
+              label="Select entity type"
+              :items="entity_type"
+              item-text="text"
+              item-value="value"
+              v-model="entitySelected"
+              dense 
+              class="ml-3"
+              clearable
+              >
+              </v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>
+            </v-col>
+            <v-btn
+            v-if="(csvCaptureSelected && interactionSelected && entitySelected && typeSelected =='user energy') || (typeSelected =='aggregate interaction' && interactionSelected && csvCaptureSelected) || (typeSelected =='aggregate user' && csvCaptureSelected)"
+            color="primary" 
+            v-on:click="getCsv">
+              Export csv file
+            </v-btn>
+            <v-btn
+            v-else
+            disabled
+            color="primary" 
+            v-on:click="getCsv">
+              Export csv file
+            </v-btn>
+          </v-row>
         <v-data-table
           :headers="csvHeaders"
           :items="csvRecord"
@@ -289,30 +296,30 @@
               mdi-cloud-download
             </v-icon>
           </template>
-<template v-slot:top>
-  <div class="text-center">
-    <v-dialog
-      v-model="dialog"
-      max-width="500"
-    >
-      <v-card>
-        <v-card-title class="text-h5">
-          file processing, please come back later
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="dialog = false"
-          >
-            close
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
-</template>
+          <template v-slot:top>
+            <div class="text-center">
+              <v-dialog
+                v-model="dialog"
+                max-width="500"
+              >
+                <v-card>
+                  <v-card-title class="text-h5">
+                    file processing, please come back later
+                  </v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="primary"
+                      text
+                      @click="dialog = false"
+                    >
+                      close
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </div>
+          </template>
         </v-data-table>
         </template>
         </v-container>
