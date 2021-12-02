@@ -26,116 +26,119 @@
     <v-row>
       <v-col>
         <SectionCard title="Capture Data">
-                <v-container fluid>
-          <template>
-    <v-row>
-      <v-col>
-        <v-select
-        label="Select Course"
-        :items="courses"
-        item-text="courseName"
-        item-value="courseId"
-        v-model="courseSelected"
-        v-on:change="getLabsByCourseId"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select
-        v-if="courseSelected"
-        label="Select Lab"
-        :items="labs"
-        item-text="sessionName"
-        item-value="sessionId"
-        v-model="labSelected"
-        v-on:change="getCapturesByLabId"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select 
-        v-if="labSelected"
-        label="Select Capture"
-        :items="captures"
-        item-text="captureId"
-        item-value="captureId"
-        v-model="captureSelected"
-        v-on:change="loadData"
-        dense class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
+          <v-container fluid>
+            <template>
+              <v-row>
+                <div style="padding-left:12;">hint for capture data</div>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-select
+                  label="Select Course"
+                  :items="courses"
+                  item-text="courseName"
+                  item-value="courseId"
+                  v-model="courseSelected"
+                  v-on:change="getLabsByCourseId"
+                  dense 
+                  class="ml-3"
+                  clearable
+                  >
+                  </v-select>
+                </v-col>
+                <v-col>
+                  <v-select
+                  v-if="courseSelected"
+                  label="Select Lab"
+                  :items="labs"
+                  item-text="sessionName"
+                  item-value="sessionId"
+                  v-model="labSelected"
+                  v-on:change="getCapturesByLabId"
+                  dense 
+                  class="ml-3"
+                  clearable
+                  >
+                  </v-select>
+                  <v-select
+                  v-else
+                  disabled
+                  dense class="ml-3">
+                  </v-select>
+                </v-col>
+                <v-col>
+                  <v-select 
+                  v-if="labSelected"
+                  label="Select Capture"
+                  :items="captures"
+                  item-text="captureId"
+                  item-value="captureId"
+                  v-model="captureSelected"
+                  v-on:change="loadData"
+                  dense class="ml-3"
+                  clearable
+                  >
+                  </v-select>
+                  <v-select
+                  v-else
+                  disabled
+                  dense class="ml-3">
+                  </v-select>
+                </v-col>
 
-      <v-btn 
-      v-if="courseSelected" 
-      color="primary" 
-      v-on:click="exportData">
-        Export Data
-      </v-btn>
-      <v-btn 
-      v-else
-      disabled
-      color="primary" 
-      v-on:click="exportData">
-        Export Data
-      </v-btn>
-    </v-row>
+                <v-btn 
+                v-if="courseSelected" 
+                color="primary" 
+                v-on:click="exportData">
+                  Export Data
+                </v-btn>
+                <v-btn 
+                v-else
+                disabled
+                color="primary" 
+                v-on:click="exportData">
+                  Export Data
+                </v-btn>
+              </v-row>
 
-    <v-row>
-      <v-col v-if="sessionInteractionCountsMax">
-        <GlobalBar v-if="sessionInteractionCountsMax > 0"
-          :title="`Interactions By Session`"
-          :series="[{ name: `Interactions`, data: sessionInteractionCounts }]"
-          :xcategories="sessionIds" 
-          :xtitle="`Session`" 
-          :ytitle="`Count`"
-          :ymin="0"
-          :ymax="sessionInteractionCountsMax"
-        />
-      </v-col>
+              <v-row>
+                <v-col v-if="sessionInteractionCountsMax">
+                  <GlobalBar v-if="sessionInteractionCountsMax > 0"
+                    :title="`Interactions By Session`"
+                    :series="[{ name: `Interactions`, data: sessionInteractionCounts }]"
+                    :xcategories="sessionIds" 
+                    :xtitle="`Session`" 
+                    :ytitle="`Count`"
+                    :ymin="0"
+                    :ymax="sessionInteractionCountsMax"
+                  />
+                </v-col>
 
-      <v-col v-if="interactionTypeCountsMax">
-        <GlobalBar v-if="interactionTypeCountsMax > 0"
-          :title="`Interactions By Type`"
-          :series="[{ name: `Interactions`, data: interactionTypeCounts }]"
-          :xcategories="interactionTypes" 
-          :xtitle="`Type`" 
-          :ytitle="`Count`"
-          :ymin="0"
-          :ymax="interactionTypeCountsMax"
-        />
-      </v-col>
-    </v-row>
-            <v-row>
-            <v-text-field
-                class="ma-3"
-                clearable
-                dense
-                outlined
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-            ></v-text-field>
-            </v-row>
-          </template>
+                <v-col v-if="interactionTypeCountsMax">
+                  <GlobalBar v-if="interactionTypeCountsMax > 0"
+                    :title="`Interactions By Type`"
+                    :series="[{ name: `Interactions`, data: interactionTypeCounts }]"
+                    :xcategories="interactionTypes" 
+                    :xtitle="`Type`" 
+                    :ytitle="`Count`"
+                    :ymin="0"
+                    :ymax="interactionTypeCountsMax"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-text-field
+                    class="ma-3"
+                    clearable
+                    dense
+                    outlined
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    single-line
+                ></v-text-field>
+              </v-row>
+            </template>
           </v-container fluid>
           <v-container fluid>
             <v-data-table
@@ -160,6 +163,9 @@
       <SectionCard title="data request">
         <v-container fluid>
         <template>
+          <v-row>
+            <div style="padding-left:12;">hint for data request</div>
+          </v-row>
           <v-row>
             <v-col>
               <v-select
@@ -213,6 +219,8 @@
               dense class="ml-3">
               </v-select>      
             </v-col>
+          </v-row>
+          <v-row>
             <v-col>
               <v-select 
               v-if="csvLabSelected"
@@ -221,6 +229,7 @@
               v-model="typeSelected"
               dense class="ml-3"
               clearable
+              @change="changeFunctionType"
               >
               </v-select>
               <v-select
@@ -230,7 +239,6 @@
               </v-select>
             </v-col>
           </v-row>
-
           <v-row>
             <v-col>
               <v-select
@@ -670,6 +678,10 @@ export default {
           this.dialog = true;
         }
       })
+    },
+    changeFunctionType(){
+        this.interactionSelected=null;
+        this.entitySelected=null;
     }
   }
 }
