@@ -698,7 +698,6 @@ export default {
       }
     },
     changeRequest(){
-      console.log(this.csvCaptureSelected,this.typeSelected,this.entitySelected,this.interactionSelected);
       if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && (this.csvCaptureSelected!==null && this.csvCaptureSelected!==undefined) && (this.interactionSelected!==null && this.interactionSelected!==undefined) && (this.entitySelected!==null && this.entitySelected!==undefined) && this.typeSelected =='user energy'){
         this.submitDataRequest = false;
       }
