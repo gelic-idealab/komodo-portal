@@ -29,7 +29,7 @@
           <v-container fluid>
             <template>
               <v-row>
-                <div style="padding-left:12;">hint for capture data</div>
+                <div>select lab to get capture:</div>
               </v-row>
               <v-row>
                 <v-col>
@@ -164,7 +164,7 @@
         <v-container fluid>
         <template>
           <v-row>
-            <div style="padding-left:12;">hint for data request</div>
+            <div style="padding-left:12;">select all type of data summary to send request:</div>
           </v-row>
           <v-row>
             <v-col>
@@ -178,6 +178,7 @@
               dense 
               class="ml-3"
               clearable
+              @change="changeRequest"
               >
               </v-select>
             </v-col>
@@ -193,6 +194,7 @@
               dense 
               class="ml-3"
               clearable
+              @change="changeRequest"
               >
               </v-select>
               <v-select
@@ -203,7 +205,7 @@
             </v-col>
             <v-col>
               <v-select 
-              v-if="csvLabSelected"
+              v-if="csvLabSelected && csvCourseSelected"
               label="Select Capture"
               :items="captures"
               item-text="captureId"
@@ -211,6 +213,7 @@
               v-model="csvCaptureSelected"
               dense class="ml-3"
               clearable
+              @change="changeRequest"
               >
               </v-select>
               <v-select
@@ -223,7 +226,7 @@
           <v-row>
             <v-col>
               <v-select 
-              v-if="csvLabSelected"
+              v-if="csvLabSelected && csvCourseSelected"
               label="type"
               :items="type"
               v-model="typeSelected"
@@ -242,7 +245,7 @@
           <v-row>
             <v-col>
               <v-select
-              v-if="typeSelected =='user energy' || typeSelected =='aggregate interaction'"
+              v-if="csvLabSelected && csvCourseSelected && (typeSelected =='user energy' || typeSelected =='aggregate interaction')"
               label="Select interaction type"
               :items="interaction_type"
               item-text="text"
@@ -250,6 +253,7 @@
               v-model="interactionSelected"
               dense class="ml-3"
               clearable
+              @change="changeRequest"
               >
               </v-select>
               <v-select
@@ -260,7 +264,7 @@
             </v-col>
             <v-col>
               <v-select
-              v-if="typeSelected =='user energy'"
+              v-if="csvCourseSelected && csvLabSelected && typeSelected =='user energy'"
               label="Select entity type"
               :items="entity_type"
               item-text="text"
@@ -269,8 +273,8 @@
               dense 
               class="ml-3"
               clearable
-              >
-              </v-select>
+              @change="changeRequest"
+              ></v-select>
               <v-select
               v-else
               disabled
@@ -278,16 +282,9 @@
               </v-select>
             </v-col>
             <v-btn
-            v-if="(csvCaptureSelected && interactionSelected && entitySelected && typeSelected =='user energy') || (typeSelected =='aggregate interaction' && interactionSelected && csvCaptureSelected) || (typeSelected =='aggregate user' && csvCaptureSelected)"
             color="primary" 
-            v-on:click="getCsv">
-              Export csv file
-            </v-btn>
-            <v-btn
-            v-else
-            disabled
-            color="primary" 
-            v-on:click="getCsv">
+            v-on:click="getCsv"
+            :disabled="submitDataRequest">
               Export csv file
             </v-btn>
           </v-row>
@@ -445,6 +442,9 @@ export default {
       ],
       csvRecord: [],
       dialog: false,
+      submitDataRequest: true,
+      interactionDisable: true,
+      entityDisable: true
     }
   },
   mounted() {
@@ -484,14 +484,21 @@ export default {
     },
     getcsvLabsByCourseId() {
       this.csvlabSelected = null;
-      getLabList({ courseId: this.csvCourseSelected }).then(res => {
-        console.log(res);
-        if (res.status == 200) {
-          this.csvlabs = res.data;
-        } else {
+      this.csvCaptureSelected = null;
+      this.submitDataRequest = true;
+      this.typeSelected = null;
+      this.entitySelected = null;
+      this.interactionSelected = null;
+      if(this.csvCourseSelected!==null && this.csvCourseSelected!==undefined){
+        getLabList({ courseId: this.csvCourseSelected }).then(res => {
           console.log(res);
-        }
-      })
+          if (res.status == 200) {
+            this.csvlabs = res.data;
+          } else {
+            console.log(res);
+          }
+        })
+      }
     },
     getCapturesByLabId() {
       this.captureSelected = null;
@@ -505,6 +512,7 @@ export default {
     },
     getCsvCapturesByLabId() {
       this.csvCaptureSelected = null;
+      this.submitDataRequest = true;
       getCaptureList({ labId: this.csvLabSelected }).then(res => {
         if (res.status == 200) {
           this.captures = res.data;
@@ -680,8 +688,29 @@ export default {
       })
     },
     changeFunctionType(){
-        this.interactionSelected=null;
-        this.entitySelected=null;
+      this.interactionSelected=null;
+      this.entitySelected=null;
+      if(this.typeSelected == "aggregate user"){
+        this.submitDataRequest = false;
+      }
+      else{
+        this.submitDataRequest = true;
+      }
+    },
+    changeRequest(){
+      console.log(this.csvCaptureSelected,this.typeSelected,this.entitySelected,this.interactionSelected);
+      if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && (this.csvCaptureSelected!==null && this.csvCaptureSelected!==undefined) && (this.interactionSelected!==null && this.interactionSelected!==undefined) && (this.entitySelected!==null && this.entitySelected!==undefined) && this.typeSelected =='user energy'){
+        this.submitDataRequest = false;
+      }
+      else if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && this.typeSelected =='aggregate interaction' && this.interactionSelected!==null && (this.csvCaptureSelected!==null && this.csvCaptureSelected!==undefined)){
+        this.submitDataRequest = false;
+      }
+      else if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && this.typeSelected =='aggregate user' && (this.csvCaptureSelected!==null || this.csvCaptureSelected!==undefined)){
+        this.submitDataRequest = false;
+      }
+      else{
+        this.submitDataRequest = true;
+      }
     }
   }
 }
