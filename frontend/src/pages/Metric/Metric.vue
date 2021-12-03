@@ -25,111 +25,121 @@
     
     <v-row>
       <v-col>
-        <v-select
-        label="Select Course"
-        :items="courses"
-        item-text="courseName"
-        item-value="courseId"
-        v-model="courseSelected"
-        v-on:change="getLabsByCourseId"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select
-        v-if="courseSelected"
-        label="Select Lab"
-        :items="labs"
-        item-text="sessionName"
-        item-value="sessionId"
-        v-model="labSelected"
-        v-on:change="getCapturesByLabId"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select 
-        v-if="labSelected"
-        label="Select Capture"
-        :items="captures"
-        item-text="captureId"
-        item-value="captureId"
-        v-model="captureSelected"
-        v-on:change="loadData"
-        dense class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-
-      <v-btn 
-      v-if="courseSelected" 
-      color="primary" 
-      v-on:click="exportData">
-        Export Data
-      </v-btn>
-      <v-btn 
-      v-else
-      disabled
-      color="primary" 
-      v-on:click="exportData">
-        Export Data
-      </v-btn>
-    </v-row>
-
-    <v-row>
-      <v-col v-if="sessionInteractionCountsMax">
-        <GlobalBar v-if="sessionInteractionCountsMax > 0"
-          :title="`Interactions By Session`"
-          :series="[{ name: `Interactions`, data: sessionInteractionCounts }]"
-          :xcategories="sessionIds" 
-          :xtitle="`Session`" 
-          :ytitle="`Count`"
-          :ymin="0"
-          :ymax="sessionInteractionCountsMax"
-        />
-      </v-col>
-
-      <v-col v-if="interactionTypeCountsMax">
-        <GlobalBar v-if="interactionTypeCountsMax > 0"
-          :title="`Interactions By Type`"
-          :series="[{ name: `Interactions`, data: interactionTypeCounts }]"
-          :xcategories="interactionTypes" 
-          :xtitle="`Type`" 
-          :ytitle="`Count`"
-          :ymin="0"
-          :ymax="interactionTypeCountsMax"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
         <SectionCard title="Capture Data">
-          <template v-slot:actions>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-            ></v-text-field>
-          </template>
+          <v-container fluid>
+            <template>
+              <v-row>
+                <div>select lab to get capture:</div>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-select
+                  label="Select Course"
+                  :items="courses"
+                  item-text="courseName"
+                  item-value="courseId"
+                  v-model="courseSelected"
+                  v-on:change="getLabsByCourseId"
+                  dense 
+                  class="ml-3"
+                  clearable
+                  >
+                  </v-select>
+                </v-col>
+                <v-col>
+                  <v-select
+                  v-if="courseSelected"
+                  label="Select Lab"
+                  :items="labs"
+                  item-text="sessionName"
+                  item-value="sessionId"
+                  v-model="labSelected"
+                  v-on:change="getCapturesByLabId"
+                  dense 
+                  class="ml-3"
+                  clearable
+                  >
+                  </v-select>
+                  <v-select
+                  v-else
+                  disabled
+                  dense class="ml-3">
+                  </v-select>
+                </v-col>
+                <v-col>
+                  <v-select 
+                  v-if="labSelected"
+                  label="Select Capture"
+                  :items="captures"
+                  item-text="captureId"
+                  item-value="captureId"
+                  v-model="captureSelected"
+                  v-on:change="loadData"
+                  dense class="ml-3"
+                  clearable
+                  >
+                  </v-select>
+                  <v-select
+                  v-else
+                  disabled
+                  dense class="ml-3">
+                  </v-select>
+                </v-col>
+
+                <v-btn 
+                v-if="courseSelected" 
+                color="primary" 
+                v-on:click="exportData">
+                  Export Data
+                </v-btn>
+                <v-btn 
+                v-else
+                disabled
+                color="primary" 
+                v-on:click="exportData">
+                  Export Data
+                </v-btn>
+              </v-row>
+
+              <v-row>
+                <v-col v-if="sessionInteractionCountsMax">
+                  <GlobalBar v-if="sessionInteractionCountsMax > 0"
+                    :title="`Interactions By Session`"
+                    :series="[{ name: `Interactions`, data: sessionInteractionCounts }]"
+                    :xcategories="sessionIds" 
+                    :xtitle="`Session`" 
+                    :ytitle="`Count`"
+                    :ymin="0"
+                    :ymax="sessionInteractionCountsMax"
+                  />
+                </v-col>
+
+                <v-col v-if="interactionTypeCountsMax">
+                  <GlobalBar v-if="interactionTypeCountsMax > 0"
+                    :title="`Interactions By Type`"
+                    :series="[{ name: `Interactions`, data: interactionTypeCounts }]"
+                    :xcategories="interactionTypes" 
+                    :xtitle="`Type`" 
+                    :ytitle="`Count`"
+                    :ymin="0"
+                    :ymax="interactionTypeCountsMax"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-text-field
+                    class="ma-3"
+                    clearable
+                    dense
+                    outlined
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    single-line
+                ></v-text-field>
+              </v-row>
+            </template>
+          </v-container fluid>
           <v-container fluid>
             <v-data-table
                   :headers="interactionTableHeaders"
@@ -149,133 +159,135 @@
     </v-row>
 
     <v-row>
-      <v-col>
-        <v-select
-        label="Select Course"
-        :items="courses"
-        item-text="courseName"
-        item-value="courseId"
-        v-model="csvCourseSelected"
-        v-on:change="getcsvLabsByCourseId"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select
-        v-if="csvCourseSelected"
-        label="Select Lab"
-        :items="csvlabs"
-        item-text="sessionName"
-        item-value="sessionId"
-        v-model="csvLabSelected"
-        v-on:change="getCsvCapturesByLabId"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select 
-        v-if="csvLabSelected"
-        label="Select Capture"
-        :items="captures"
-        item-text="captureId"
-        item-value="captureId"
-        v-model="csvCaptureSelected"
-        dense class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>      
-      </v-col>
-      <v-col>
-        <v-select 
-        v-if="csvLabSelected"
-        label="type"
-        :items="type"
-        v-model="typeSelected"
-        dense class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col>
-        <v-select
-        v-if="typeSelected =='user energy' || typeSelected =='aggregate interaction'"
-        label="Select interaction type"
-        :items="interaction_type"
-        item-text="text"
-        item-value="value"
-        v-model="interactionSelected"
-        dense class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-      <v-col>
-        <v-select
-        v-if="typeSelected =='user energy'"
-        label="Select entity type"
-        :items="entity_type"
-        item-text="text"
-        item-value="value"
-        v-model="entitySelected"
-        dense 
-        class="ml-3"
-        clearable
-        >
-        </v-select>
-        <v-select
-        v-else
-        disabled
-        dense class="ml-3">
-        </v-select>
-      </v-col>
-      <v-btn
-      v-if="(csvCaptureSelected && interactionSelected && entitySelected && typeSelected =='user energy') || (typeSelected =='aggregate interaction' && interactionSelected && csvCaptureSelected) || (typeSelected =='aggregate user' && csvCaptureSelected)"
-      color="primary" 
-      v-on:click="getCsv">
-        Export csv file
-      </v-btn>
-      <v-btn
-      v-else
-      disabled
-      color="primary" 
-      v-on:click="getCsv">
-        Export csv file
-      </v-btn>
-    </v-row>
-    <v-row>
     <v-col>
-      <SectionCard title="data request history">
+      <SectionCard title="data request">
         <v-container fluid>
         <template>
+          <v-row>
+            <div style="padding-left:12;">select all type of data summary to send request:</div>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-select
+              label="Select Course"
+              :items="courses"
+              item-text="courseName"
+              item-value="courseId"
+              v-model="csvCourseSelected"
+              v-on:change="getcsvLabsByCourseId"
+              dense 
+              class="ml-3"
+              clearable
+              @change="changeRequest"
+              >
+              </v-select>
+            </v-col>
+            <v-col>
+              <v-select
+              v-if="csvCourseSelected"
+              label="Select Lab"
+              :items="csvlabs"
+              item-text="sessionName"
+              item-value="sessionId"
+              v-model="csvLabSelected"
+              v-on:change="getCsvCapturesByLabId"
+              dense 
+              class="ml-3"
+              clearable
+              @change="changeRequest"
+              >
+              </v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>
+            </v-col>
+            <v-col>
+              <v-select 
+              v-if="csvLabSelected && csvCourseSelected"
+              label="Select Capture"
+              :items="captures"
+              item-text="captureId"
+              item-value="captureId"
+              v-model="csvCaptureSelected"
+              dense class="ml-3"
+              clearable
+              @change="changeRequest"
+              >
+              </v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>      
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-select 
+              v-if="csvLabSelected && csvCourseSelected"
+              label="type"
+              :items="type"
+              v-model="typeSelected"
+              dense class="ml-3"
+              clearable
+              @change="changeFunctionType"
+              >
+              </v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-select
+              v-if="csvLabSelected && csvCourseSelected && (typeSelected =='user energy' || typeSelected =='aggregate interaction')"
+              label="Select interaction type"
+              :items="interaction_type"
+              item-text="text"
+              item-value="value"
+              v-model="interactionSelected"
+              dense class="ml-3"
+              clearable
+              @change="changeRequest"
+              >
+              </v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>
+            </v-col>
+            <v-col>
+              <v-select
+              v-if="csvCourseSelected && csvLabSelected && typeSelected =='user energy'"
+              label="Select entity type"
+              :items="entity_type"
+              item-text="text"
+              item-value="value"
+              v-model="entitySelected"
+              dense 
+              class="ml-3"
+              clearable
+              @change="changeRequest"
+              ></v-select>
+              <v-select
+              v-else
+              disabled
+              dense class="ml-3">
+              </v-select>
+            </v-col>
+            <v-btn
+            color="primary" 
+            v-on:click="getCsv"
+            :disabled="submitDataRequest">
+              Export csv file
+            </v-btn>
+          </v-row>
         <v-data-table
           :headers="csvHeaders"
           :items="csvRecord"
@@ -289,30 +301,30 @@
               mdi-cloud-download
             </v-icon>
           </template>
-<template v-slot:top>
-  <div class="text-center">
-    <v-dialog
-      v-model="dialog"
-      max-width="500"
-    >
-      <v-card>
-        <v-card-title class="text-h5">
-          file processing, please come back later
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="dialog = false"
-          >
-            close
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
-</template>
+          <template v-slot:top>
+            <div class="text-center">
+              <v-dialog
+                v-model="dialog"
+                max-width="500"
+              >
+                <v-card>
+                  <v-card-title class="text-h5">
+                    file processing, please come back later
+                  </v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="primary"
+                      text
+                      @click="dialog = false"
+                    >
+                      close
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </div>
+          </template>
         </v-data-table>
         </template>
         </v-container>
@@ -430,6 +442,9 @@ export default {
       ],
       csvRecord: [],
       dialog: false,
+      submitDataRequest: true,
+      interactionDisable: true,
+      entityDisable: true
     }
   },
   mounted() {
@@ -469,14 +484,21 @@ export default {
     },
     getcsvLabsByCourseId() {
       this.csvlabSelected = null;
-      getLabList({ courseId: this.csvCourseSelected }).then(res => {
-        console.log(res);
-        if (res.status == 200) {
-          this.csvlabs = res.data;
-        } else {
+      this.csvCaptureSelected = null;
+      this.submitDataRequest = true;
+      this.typeSelected = null;
+      this.entitySelected = null;
+      this.interactionSelected = null;
+      if(this.csvCourseSelected!==null && this.csvCourseSelected!==undefined){
+        getLabList({ courseId: this.csvCourseSelected }).then(res => {
           console.log(res);
-        }
-      })
+          if (res.status == 200) {
+            this.csvlabs = res.data;
+          } else {
+            console.log(res);
+          }
+        })
+      }
     },
     getCapturesByLabId() {
       this.captureSelected = null;
@@ -490,6 +512,7 @@ export default {
     },
     getCsvCapturesByLabId() {
       this.csvCaptureSelected = null;
+      this.submitDataRequest = true;
       getCaptureList({ labId: this.csvLabSelected }).then(res => {
         if (res.status == 200) {
           this.captures = res.data;
@@ -663,6 +686,30 @@ export default {
           this.dialog = true;
         }
       })
+    },
+    changeFunctionType(){
+      this.interactionSelected=null;
+      this.entitySelected=null;
+      if(this.typeSelected == "aggregate user"){
+        this.submitDataRequest = false;
+      }
+      else{
+        this.submitDataRequest = true;
+      }
+    },
+    changeRequest(){
+      if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && (this.csvCaptureSelected!==null && this.csvCaptureSelected!==undefined) && (this.interactionSelected!==null && this.interactionSelected!==undefined) && (this.entitySelected!==null && this.entitySelected!==undefined) && this.typeSelected =='user energy'){
+        this.submitDataRequest = false;
+      }
+      else if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && this.typeSelected =='aggregate interaction' && this.interactionSelected!==null && (this.csvCaptureSelected!==null && this.csvCaptureSelected!==undefined)){
+        this.submitDataRequest = false;
+      }
+      else if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && this.typeSelected =='aggregate user' && (this.csvCaptureSelected!==null || this.csvCaptureSelected!==undefined)){
+        this.submitDataRequest = false;
+      }
+      else{
+        this.submitDataRequest = true;
+      }
     }
   }
 }

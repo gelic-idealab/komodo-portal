@@ -164,18 +164,20 @@ export default {
               duration: moment.duration(startTime.diff(endTime)).humanize()
             }
           });
-          this.captures = values[2].data.map(capture => {
-            const start = moment(capture.start);
-            const end = moment(capture.end);
-            return {
-              id: capture.sessionId,
-              captureId: capture.captureId,
-              labName: capture.sessionName,
-              date: start.format("L"),
-              time: `${start.format("LT")}`,
-              duration: moment.duration(start.diff(end)).humanize()
-            }
-          });
+          if(typeof values[2] !== "undefined"){
+            this.captures = values[2].data.map(capture => {
+              const start = moment(capture.start);
+              const end = moment(capture.end);
+              return {
+                id: capture.sessionId,
+                captureId: capture.captureId,
+                labName: capture.sessionName,
+                date: start.format("L"),
+                time: `${start.format("LT")}`,
+                duration: moment.duration(start.diff(end)).humanize()
+              }
+            });
+          }
         });
     }
   }
