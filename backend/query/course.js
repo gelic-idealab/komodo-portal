@@ -94,7 +94,7 @@ DELETE FROM KP_Course
 WHERE course_id = ?;
 `
 const getCourseAccessByCouseId = `
-SELECT * FROM can_access_capture_files
+SELECT client_id FROM can_access_capture_files
 WHERE couse_id = ?
 `
 
