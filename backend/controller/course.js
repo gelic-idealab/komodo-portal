@@ -1,5 +1,5 @@
 const express = require("express");
-const { getCourseList, getCourseListByInstructor, getCourseDetail, getAllCourses, createCourse, editCourse, editMultipleCourse, getAllSemesters, deleteCourse } = require("../service/course");
+const { getCourseList, getCourseListByInstructor, getCourseDetail, getAllCourses, createCourse, editCourse, editMultipleCourse, getAllSemesters, deleteCourse, getCourseAccess } = require("../service/course");
 const courseController = express.Router();
 
 // Query course list by user id
@@ -77,5 +77,13 @@ courseController.delete("/delete",
     res.status(results.code || 200).json(results.data);
   }
 );
+
+//get access list of courses by course id
+courseController.get("/permissions/:courseId",
+  async (req, res) => {
+    const { courseId } = req.params;
+    const results = await getCourseAccess(courseId);
+    res.status(results.code || 200).json(results.data);
+  });
 
 module.exports = courseController;
