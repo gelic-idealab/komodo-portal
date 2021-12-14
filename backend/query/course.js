@@ -92,7 +92,12 @@ FROM KP_Semester;
 const deleteCourseQuery = `
 DELETE FROM KP_Course 
 WHERE course_id = ?;
-`;
+`
+const getCourseAccessByCouseId = `
+SELECT client_id FROM can_access_capture_files
+WHERE couse_id = ?
+`
+
 module.exports = {
   getCourseList,
   getCourseListByInstructor,
@@ -106,5 +111,6 @@ module.exports = {
   unregisterUser,
   editMultipleCourses,
   getSemestersQuery,
-  deleteCourseQuery
+  deleteCourseQuery,
+  getCourseAccessByCouseId
 };
