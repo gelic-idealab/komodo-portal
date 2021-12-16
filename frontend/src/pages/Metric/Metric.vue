@@ -337,7 +337,7 @@
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData, getAllRawCourse, getAllRawLab, getAllRawCapture, getAllDataRequest, exportMetricCsv, getDownloadLink } from "../../requests/data";
+import { getInteractionData, getAllRawCourse, getAllRawLab, getAllRawCapture, getAllDataRequest, exportMetricCsv, getDownloadLink, getCaptureJSONFile } from "../../requests/data";
 import { getCourseListByInstructor, getLabList, getCaptureList } from "../../requests/course";
 import { Parser } from "json2csv";
 
@@ -532,6 +532,12 @@ export default {
       let captureId = this.rawExportCaptureSelected;
 
       if (courseId && labId && captureId) {
+        getCaptureJSONFile({ captureId });
+        /*.then(res => {
+          console.log(res);
+        });
+        */
+        /*
         getAllRawCapture({ captureId }).then(res => {
           if (res.status == 200) {
             console.log(res.data)
@@ -540,6 +546,7 @@ export default {
             console.log(res);
           }
         });
+        */
       } else if (courseId && labId) {
         getAllRawLab({ labId }).then(res => {
           if (res.status == 200) {
