@@ -45,33 +45,6 @@ const getRawExportFilePath = async(idAndTimestamp) => {
   };
 };
 
-const getCombinedCapture = async(id) => {
-  const results = {}
-  results.pos = await pool.execute(dataQuery.getRawPosCapture, [id]);
-  results.int = await pool.execute(dataQuery.getRawIntCapture, [id]);
-  return {
-    data: results
-  };
-};
-
-const getCombinedLabCaptures = async(id) => {
-  const results = {}
-  results.pos = await pool.execute(dataQuery.getRawPosLab, [id]);
-  results.int = await pool.execute(dataQuery.getRawIntLab, [id]);
-  return {
-    data: results
-  };
-};
-
-const getCombinedCourseCaptures = async(id) => {
-  const results = {}
-  results.pos = await pool.execute(dataQuery.getRawPosCourse, [id]);
-  results.int = await pool.execute(dataQuery.getRawIntCourse, [id]);
-  return {
-    data: results
-  };
-};
-
 const exportMetricCsv = async(data) => {
   let request = [data.captureId, data.clientId, data.type, 0, data]
   results = await pool.execute(dataQuery.insertRequest,request);
@@ -153,9 +126,6 @@ const getDownloadLink = async(request) => {
 module.exports = {
   getAllInteractions,
   getRawExportFilePath,
-  getCombinedCapture,
-  getCombinedLabCaptures,
-  getCombinedCourseCaptures,
   getAllCsvExport,
   exportMetricCsv,
   getDownloadLink

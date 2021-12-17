@@ -337,7 +337,7 @@
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData, getCombinedCourseCaptures, getCombinedLabCaptures, getCombinedCapture, getAllDataRequest, exportMetricCsv, getDownloadLink, downloadCaptureJSONFile } from "../../requests/data";
+import { getInteractionData, getAllDataRequest, exportMetricCsv, getDownloadLink, downloadCaptureJSONFile } from "../../requests/data";
 import { getCourseListByInstructor, getLabList, getCaptureList } from "../../requests/course";
 import { Parser } from "json2csv";
 

@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 
-const { getAllInteractions, getRawExportFilePath, getCombinedCapture, getCombinedLabCaptures, getCombinedCourseCaptures, getAllCsvExport, exportMetricCsv, getDownloadLink } = require("../service/data");
+const { getAllInteractions, getRawExportFilePath, getAllCsvExport, exportMetricCsv, getDownloadLink } = require("../service/data");
 const dataController = express.Router();
 
 dataController.get("/", 
@@ -40,30 +40,6 @@ dataController.get("/export/raw/capture/:captureId",
         console.error(err);
       }
     });
-  }
-);
-
-dataController.get("/export/combined/capture/:captureId",
-  async (req, res) => {
-    const { captureId } = req.params;
-    let results = await getCombinedCapture(captureId);
-    res.status(200).json(results.data);
-  }
-);
-
-dataController.get("/export/combined/lab/:labId",
-  async (req, res) => {
-    const { labId } = req.params;
-    let results = await getCombinedLabCaptures(labId);
-    res.status(200).json(results.data);
-  }
-);
-
-dataController.get("/export/combined/course/:courseId",
-  async (req, res) => {
-    const { courseId } = req.params;
-    let results = await getCombinedCourseCaptures(courseId);
-    res.status(200).json(results.data);
   }
 );
 
