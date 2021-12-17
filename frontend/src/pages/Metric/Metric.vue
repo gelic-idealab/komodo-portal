@@ -564,52 +564,6 @@ export default {
       
       downloadCaptureJSONFile({ captureId });
     },
-    formatAndDownload(res) {
-      let intData = res.data.int;
-      let posData = res.data.pos;
-
-      let intFields = [];
-      intData[1].forEach(field => {
-        intFields.push(field.name)
-      });
-      const intOpts = { intFields };
-      
-      let posFields = [];
-      posData[1].forEach(field => {
-        posFields.push(field.name)
-      });
-      const posOpts = { posFields };
-
-      try {
-        const encoding = "data:text/csv;charset=utf-8,";
-
-        // interactions csv
-        if (intData[0].length) {
-          const intParser = new Parser(intOpts);
-          const intCsv = encoding+intParser.parse(intData[0]);
-          let encodedUri = encodeURI(intCsv);
-          let link = document.createElement("a");
-          link.setAttribute("href", encodedUri);
-          link.setAttribute("download", `${this.rawExportCaptureSelected || this.rawExportLabSelected || this.rawExportCourseSelected}_interactions.csv`);
-          document.body.appendChild(link); // Required for FF
-          link.click();
-        }
-
-        // positions csv
-        if (posData[0].length) {
-          const posParser = new Parser(posOpts);
-          const posCsv = encoding+posParser.parse(posData[0]);
-          let encodedUri = encodeURI(posCsv);
-          let link = document.createElement("a");
-          link.setAttribute("href", encodedUri);
-          link.setAttribute("download", `${this.rawExportCaptureSelected || this.rawExportLabSelected || this.rawExportCourseSelected}_positions.csv`);
-          document.body.appendChild(link); // Required for FF
-          link.click();
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    },
     getMetrics() {
       getInteractionData().then(data => {
         if (data.data) {
