@@ -1,32 +1,37 @@
 import baseRequest from "./base";
 
+const path = require("path");
+
 // Get metrics data
 export const getInteractionData = () => {
   return baseRequest.get("/data/interactions");
 };
 
 // Get raw position and interaction data by course id
-export const getAllRawCourse = params => {
+export const getCombinedCourseCaptures = params => {
   const { courseId } = params;
-  return baseRequest.get(`/data/export/raw/course/${courseId}`);
+  return baseRequest.get(`/data/export/combined/course/${courseId}`);
 };
 
 // Get raw position and interaction data by lab id
-export const getAllRawLab = params => {
+export const getCombinedLabCaptures = params => {
   const { labId } = params;
-  return baseRequest.get(`/data/export/raw/lab/${labId}`);
+  return baseRequest.get(`/data/export/combined/lab/${labId}`);
 };
 
 // Get raw position and interaction data by capture id
-export const getAllRawCapture = params => {
+export const getCombinedCapture = params => {
   const { captureId } = params;
-  return baseRequest.get(`/data/export/raw/capture/${captureId}`);
+  return baseRequest.get(`/data/export/combined/capture/${captureId}`);
 };
 
 // Get raw position and interaction data by capture id
-export const getCaptureJSONFile = params => {
+export const downloadCaptureJSONFile = params => {
   const { captureId } = params;
-  window.open(`/data/export/json/capture/${captureId}`);
+
+  let pathName = path.join("data", "export", "raw", "capture", captureId);
+
+  window.open(`${baseRequest.defaults.baseURL}${pathName}`);
 };
 
 //post params to get csv file for metric page

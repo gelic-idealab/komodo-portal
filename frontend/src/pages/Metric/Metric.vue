@@ -87,7 +87,7 @@
                 </v-col>
 
                 <v-btn 
-                v-if="rawExportCourseSelected" 
+                v-if="rawExportCaptureSelected" 
                 color="primary" 
                 v-on:click="exportData">
                   Export Data
@@ -337,7 +337,7 @@
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData, getAllRawCourse, getAllRawLab, getAllRawCapture, getAllDataRequest, exportMetricCsv, getDownloadLink, getCaptureJSONFile } from "../../requests/data";
+import { getInteractionData, getCombinedCourseCaptures, getCombinedLabCaptures, getCombinedCapture, getAllDataRequest, exportMetricCsv, getDownloadLink, downloadCaptureJSONFile } from "../../requests/data";
 import { getCourseListByInstructor, getLabList, getCaptureList } from "../../requests/course";
 import { Parser } from "json2csv";
 
@@ -475,6 +475,17 @@ export default {
     },
     getRawExportLabsByCourseId() {
       this.rawExportLabSelected = null;
+
+      if (!this.rawExportCourseSelected) {
+        this.rawExportLabSelected = null;
+        
+        this.rawExportCaptureSelected = null;
+
+        this.rawExportLabs = [];
+
+        return;
+      }
+
       getLabList({ courseId: this.rawExportCourseSelected }).then(res => {
         console.log(res);
         if (res.status == 200) {
@@ -503,7 +514,13 @@ export default {
       }
     },
     getRawExportCapturesByLabId() {
-      this.rawExportCaptureSelected = null;
+      if (!this.rawExportLabSelected) {
+        this.rawExportCaptureSelected = null;
+
+        this.rawExportCaptures = [];
+
+        return;
+      }
       getCaptureList({ labId: this.rawExportLabSelected }).then(res => {
         if (res.status == 200) {
           this.rawExportCaptures = res.data;
@@ -528,44 +545,24 @@ export default {
     },
     exportData() {
       let courseId = this.rawExportCourseSelected;
-      let labId = this.rawExportLabSelected;
-      let captureId = this.rawExportCaptureSelected;
 
-      if (courseId && labId && captureId) {
-        getCaptureJSONFile({ captureId });
-        /*.then(res => {
-          console.log(res);
-        });
-        */
-        /*
-        getAllRawCapture({ captureId }).then(res => {
-          if (res.status == 200) {
-            console.log(res.data)
-            this.formatAndDownload(res);
-          } else {
-            console.log(res);
-          }
-        });
-        */
-      } else if (courseId && labId) {
-        getAllRawLab({ labId }).then(res => {
-          if (res.status == 200) {
-            console.log(res.data)
-            this.formatAndDownload(res);
-          } else {
-            console.log(res);
-          }
-        });
-      } else if (courseId) {
-        getAllRawCourse({ courseId }).then(res => {
-          if (res.status == 200) {
-            console.log(res.data)
-            this.formatAndDownload(res);
-          } else {
-            console.log(res);
-          }
-        });
+      if (!courseId) {
+        return;
+      } 
+      
+      let labId = this.rawExportLabSelected;
+
+      if (!labId) {
+        return;
       }
+      
+      let captureId = this.rawExportCaptureSelected;
+        
+      if (!captureId) {
+        return;
+      }
+      
+      downloadCaptureJSONFile({ captureId });
     },
     formatAndDownload(res) {
       let intData = res.data.int;

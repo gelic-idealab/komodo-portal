@@ -10,6 +10,8 @@ const path = require('path');
 const pool = require("./index");
 const dataQuery = require("../query/data");
 
+const CAPTURE_FILE_NAME_AND_EXTENSION = "data";
+
 const getAllInteractions = async() => {
   const results = await pool.execute(dataQuery.getAllInteractions);
   return {
@@ -17,7 +19,7 @@ const getAllInteractions = async() => {
   };
 };
 
-const getCaptureJSONFile = async(idAndTimestamp) => {
+const getRawExportFilePath = async(idAndTimestamp) => {
   // from express, generate the capture path directory
   // return that file?
   // return a download URL?
@@ -36,12 +38,14 @@ const getCaptureJSONFile = async(idAndTimestamp) => {
 
   const directory = path.join(config.captures, id, timestamp);
 
+  const pathAndFilename = path.join(directory, CAPTURE_FILE_NAME_AND_EXTENSION);
+
   return {
-    data: directory
+    data: pathAndFilename
   };
 };
 
-const getAllRawCapture = async(id) => {
+const getCombinedCapture = async(id) => {
   const results = {}
   results.pos = await pool.execute(dataQuery.getRawPosCapture, [id]);
   results.int = await pool.execute(dataQuery.getRawIntCapture, [id]);
@@ -50,7 +54,7 @@ const getAllRawCapture = async(id) => {
   };
 };
 
-const getAllRawLab = async(id) => {
+const getCombinedLabCaptures = async(id) => {
   const results = {}
   results.pos = await pool.execute(dataQuery.getRawPosLab, [id]);
   results.int = await pool.execute(dataQuery.getRawIntLab, [id]);
@@ -59,7 +63,7 @@ const getAllRawLab = async(id) => {
   };
 };
 
-const getAllRawCourse = async(id) => {
+const getCombinedCourseCaptures = async(id) => {
   const results = {}
   results.pos = await pool.execute(dataQuery.getRawPosCourse, [id]);
   results.int = await pool.execute(dataQuery.getRawIntCourse, [id]);
@@ -148,10 +152,10 @@ const getDownloadLink = async(request) => {
 
 module.exports = {
   getAllInteractions,
-  getCaptureJSONFile,
-  getAllRawCapture,
-  getAllRawLab,
-  getAllRawCourse,
+  getRawExportFilePath,
+  getCombinedCapture,
+  getCombinedLabCaptures,
+  getCombinedCourseCaptures,
   getAllCsvExport,
   exportMetricCsv,
   getDownloadLink

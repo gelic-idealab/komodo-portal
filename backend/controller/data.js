@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 
-const { getAllInteractions, getCaptureJSONFile, getAllRawCapture, getAllRawLab, getAllRawCourse, getAllCsvExport, exportMetricCsv, getDownloadLink } = require("../service/data");
+const { getAllInteractions, getRawExportFilePath, getCombinedCapture, getCombinedLabCaptures, getCombinedCourseCaptures, getAllCsvExport, exportMetricCsv, getDownloadLink } = require("../service/data");
 const dataController = express.Router();
 
 dataController.get("/", 
@@ -17,14 +17,14 @@ dataController.get("/interactions",
   }
 );
 
-dataController.get("/export/json/capture/:captureId",
+dataController.get("/export/raw/capture/:captureId",
   async (req, res) => {
     const { captureId } = req.params;
 
-    let results = await getCaptureJSONFile(captureId);
+    let results = await getRawExportFilePath(captureId);
 
     if (!results || results == undefined) {
-      console.error("results.data was null or undefined");
+      console.error("results was null or undefined");
 
       return;
     }
@@ -35,60 +35,34 @@ dataController.get("/export/json/capture/:captureId",
       return;
     }
 
-    const filename = "data";
-
-    const ext = ""; // ext must start with a "." unless there's no extension
-
-    const fullFilename = `${filename}${ext}`;
-
-    const pathAndFilename = path.join(results.data, fullFilename);
-    
-    const options = {
-      root: results.data,
-      headers: {
-        'x-timestamp': Date.now(),
-        'x-sent': true
-      }
-    };
-
-    // res.sendFile(fullFilename, options, function (err) {
-    //   if (err) {
-    //     console.error(err);
-    //   } else {
-    //     console.log('Sent:', fullFilename);
-    //   }
-    // });
-
-    res.download(pathAndFilename, function (err) {
+    res.download(results.data, function (err) {
       if (err) {
         console.error(err);
-      } else {
-        //console.log('Sent:', fullFilename);
       }
-    })
+    });
   }
 );
 
-dataController.get("/export/raw/capture/:captureId",
+dataController.get("/export/combined/capture/:captureId",
   async (req, res) => {
     const { captureId } = req.params;
-    let results = await getAllRawCapture(captureId);
+    let results = await getCombinedCapture(captureId);
     res.status(200).json(results.data);
   }
 );
 
-dataController.get("/export/raw/lab/:labId",
+dataController.get("/export/combined/lab/:labId",
   async (req, res) => {
     const { labId } = req.params;
-    let results = await getAllRawLab(labId);
+    let results = await getCombinedLabCaptures(labId);
     res.status(200).json(results.data);
   }
 );
 
-dataController.get("/export/raw/course/:courseId",
+dataController.get("/export/combined/course/:courseId",
   async (req, res) => {
     const { courseId } = req.params;
-    let results = await getAllRawCourse(courseId);
+    let results = await getCombinedCourseCaptures(courseId);
     res.status(200).json(results.data);
   }
 );
