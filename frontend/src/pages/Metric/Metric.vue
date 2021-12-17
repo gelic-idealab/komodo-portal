@@ -139,7 +139,7 @@
                 ></v-text-field>
               </v-row>
             </template>
-          </v-container fluid>
+          </v-container>
           <v-container fluid>
             <v-data-table
                   :headers="interactionTableHeaders"
