@@ -142,7 +142,7 @@ export default {
       file: null,
       fileRules: [
         v => !!v || "File is required",
-        v => !v || v.size < 17179870000 || "File must be less than 2 GiB"
+        v => !v || v.size < 2147484000 || "File must be less than 2 GiB"
       ],
       status: "pending"
     }
