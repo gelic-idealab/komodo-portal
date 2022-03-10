@@ -261,13 +261,15 @@
         <br>Elisandro Cabada
         <br>Xianzhuo (Patrick) Cao
         <br>Brandon Dang
+        <br>Mihir Joshi
       </v-col>
       <v-col :cols="3">
-        Mihir Joshi
-        <br>Welisa Lewis
+        Welisa Lewis
+        <br>Jiayu (Jonathan) Lin
         <br>Zhe Liu
         <br>Nishi Mehta
         <br>William H. Mischo
+        <br>Yi-Shiuan Ho
       </v-col>
       <v-col :cols="3">
         Jamie Nelson
@@ -275,13 +277,14 @@
         <br>James Planey
         <br>Dr. Andre Schleife
         <br>David Tamayo
+        <br>Professor Chiara Vincenzi
       </v-col>
       <v-col :cols="3">
-        Professor Chiara Vincenzi
-        <br>Robert Wallace
+        Robert Wallace
         <br>Jim Wentworth
         <br>Xiaohan Yin
         <br>Chengyi Zhang
+        <br>Wendy Zhu
       </v-col>
     </v-row>
 
