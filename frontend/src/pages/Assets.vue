@@ -71,7 +71,8 @@
               <span>{{ moment(item.updateAt).format("L LT") }}</span>
             </template>
             <template v-slot:item.isPublic="{ item }">
-                <span>Public</span>
+              <span v-if="item.isPublic">Public</span>
+              <span v-if="!item.isPublic">Private</span>
             </template>
             </v-data-table>
           </v-container>
