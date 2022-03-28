@@ -522,6 +522,10 @@ export default {
       })      
     },
     loadData(e) {
+      if (e) {
+        console.error(e);
+      }
+
       this.dataLoaded = true;
     },
     exportData() {

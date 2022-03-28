@@ -68,7 +68,7 @@ Vue.use(GlobalComponents);
 Vue.use(GlobalDirectives);
 // Vue.use(Notifications);
 Vue.component('file-upload', VueUploadComponent);
-Vue.component('apexchart', VueApexCharts);
+Vue.component('ApexChart', VueApexCharts);
 
 Vue.config.devtools = true;
 
