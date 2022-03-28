@@ -106,7 +106,7 @@ import SectionCard from "../../components/Cards/SectionCard";
 import {getUserList,getUserListByCourse, deleteUser} from "../../requests/auth";
 import { getCourseList, getAllCourses, deleteCourse } from '../../requests/course';
 export default {
-    name: "Admin",
+    name: "AdminPage",
     components: {
       SectionCard
     },

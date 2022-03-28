@@ -99,7 +99,7 @@
         <span class="font-weight-bold">Implement the domain module.</span> Customize the environment, add 3D models, program custom features, and connect our networking components. 
       </v-col>
       <v-col :cols="4">
-        <span class="font-weight-bold">Build and upload.​</span> Build your module and serve it with our Komodo build server.  In the near future, in the web portal, you'll be able to customize data analytics for both your scene content and user-uploaded assets.
+        <span class="font-weight-bold">Build and upload.​ </span>Build your module and serve it with our Komodo build server.  In the near future, in the web portal, you'll be able to customize data analytics for both your scene content and user-uploaded assets.
       </v-col>
     </v-row>
     <v-row>
@@ -303,7 +303,7 @@
 
 <script>
 export default {
-  name: "About",
+  name: "AboutPage",
   components: {
   },
   data() {

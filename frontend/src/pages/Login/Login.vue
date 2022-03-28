@@ -76,6 +76,7 @@ import { login } from "../../requests/auth";
 import { getCourseList } from "../../requests/course";
 
 export default {
+  name: "LoginPage",
   data: () => ({
     password: "",
     email: "",

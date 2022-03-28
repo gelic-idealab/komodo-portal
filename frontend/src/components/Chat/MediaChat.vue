@@ -215,7 +215,7 @@ export default {
                 console.log('error getting local stream:', err);
             });
         },
-        addStreamToRecording(stream) { // TODO(rob): removing audio capture for now to focus on data playback. 
+        //addStreamToRecording(stream) { // TODO(rob): removing audio capture for now to focus on data playback. 
 
             // let streams = new MediaStream([...stream.getTracks()]);
             // this.recorder = new MediaRecorder(streams);
@@ -255,7 +255,7 @@ export default {
             // } else {
             //     this.recorder.getInternalRecorder().addStreams([stream]);
             // }
-        },
+        //},
         emitAudioBlob(blob) {
             this.socket.emit('mic', {
                 session_id: this.sessionId, 

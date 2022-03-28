@@ -96,7 +96,7 @@ import { getUserDetailWithAssets } from '../../requests/auth';
 import SectionCard from "../../components/Cards/SectionCard";
 
 export default {
-  name: "Assets",
+  name: "UserAssets",
   components: {
     SectionCard
   },

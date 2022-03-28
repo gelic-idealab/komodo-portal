@@ -87,7 +87,7 @@ import { getAssetList, getAssetDetail } from "../requests/asset"
 import SectionCard from "../components/Cards/SectionCard";
 
 export default {
-  name: "Assets",
+  name: "AssetsPage",
   components: {
     SectionCard
   },

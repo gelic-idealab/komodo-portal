@@ -23,7 +23,6 @@ import VueApexCharts from "vue-apexcharts";
 import { initial } from "./requests/auth";
 import { getCourseList } from "./requests/course";
 
-
 // configure router
 const router = new VueRouter({
   mode: 'history',

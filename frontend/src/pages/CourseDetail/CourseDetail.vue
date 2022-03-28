@@ -95,7 +95,7 @@
 
 <script>
 import moment from "moment";
-import { getCourseDetail, getLabList, getCaptures } from "../../requests/course";
+import { getCourseDetail, getLabList } from "../../requests/course";
 
 import SectionCard from "../../components/Cards/SectionCard";
 
