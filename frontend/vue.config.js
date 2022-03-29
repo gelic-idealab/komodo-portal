@@ -1,7 +1,7 @@
 // vue.config.js
 module.exports = {
     publicPath: '/',
-    outputDir: '../dist/',
+    outputDir: './dist/',
     configureWebpack: {
         resolve: {
             fallback: {
