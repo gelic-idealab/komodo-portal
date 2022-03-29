@@ -54,7 +54,7 @@ const exportMetricCsv = async(data) => {
 
 const getAllCsvExport = async(data) => {
   let userId = data.userId;
-  results = await pool.query(dataQuery.getAllDataRequest,userId);
+  results = await pool.execute(dataQuery.getAllDataRequest,[userId]);
   for(i=0;i<results[0].length;i++){
     results[0][i].message = JSON.parse(results[0][i].message);
   }
