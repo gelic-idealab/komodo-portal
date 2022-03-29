@@ -147,7 +147,7 @@ const getCourseAccess = async courseId => {
   const accessResults = await pool.execute(courseQuery.getCourseAccessByCouseId, [courseId]);
   const accessList = accessResults[0];
   return {
-    data: {courseId: courseId, accessList: accessList}
+    data: {accessList}
   };
 };
 
