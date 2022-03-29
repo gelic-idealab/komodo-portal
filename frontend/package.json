@@ -68,7 +68,13 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "rules": {},
+    "rules": {
+      "vue/valid-v-slot": [
+        "error", {
+          "allowModifiers": true
+        }
+      ]
+    },
     "parserOptions": {
       "parser": "@babel/eslint-parser",
       "requireConfigFile": "false"
