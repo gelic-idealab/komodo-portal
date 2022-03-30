@@ -14,10 +14,6 @@ services:
     networks:
       - proxy
       - komodo_internal
-    volumes: 
-      - ../captures:/komodo/captures 
-      # this requires that komodo-portal and captures are in the same directory
-      # this should be a bind mount and not a volume
 
   frontend:
     build: ./frontend

@@ -25,7 +25,7 @@
     
     <v-row>
       <v-col>
-        <SectionCard title="Raw Export">
+        <SectionCard title="Capture Data">
           <v-container fluid>
             <template>
               <v-row>
@@ -38,8 +38,8 @@
                   :items="courses"
                   item-text="courseName"
                   item-value="courseId"
-                  v-model="rawExportCourseSelected"
-                  v-on:change="getRawExportLabsByCourseId"
+                  v-model="courseSelected"
+                  v-on:change="getLabsByCourseId"
                   dense 
                   class="ml-3"
                   clearable
@@ -48,13 +48,13 @@
                 </v-col>
                 <v-col>
                   <v-select
-                  v-if="rawExportCourseSelected"
+                  v-if="courseSelected"
                   label="Select Lab"
-                  :items="rawExportLabs"
+                  :items="labs"
                   item-text="sessionName"
                   item-value="sessionId"
-                  v-model="rawExportLabSelected"
-                  v-on:change="getRawExportCapturesByLabId"
+                  v-model="labSelected"
+                  v-on:change="getCapturesByLabId"
                   dense 
                   class="ml-3"
                   clearable
@@ -68,12 +68,12 @@
                 </v-col>
                 <v-col>
                   <v-select 
-                  v-if="rawExportLabSelected"
+                  v-if="labSelected"
                   label="Select Capture"
-                  :items="rawExportCaptures"
+                  :items="captures"
                   item-text="captureId"
                   item-value="captureId"
-                  v-model="rawExportCaptureSelected"
+                  v-model="captureSelected"
                   v-on:change="loadData"
                   dense class="ml-3"
                   clearable
@@ -87,7 +87,7 @@
                 </v-col>
 
                 <v-btn 
-                v-if="rawExportCaptureSelected" 
+                v-if="courseSelected" 
                 color="primary" 
                 v-on:click="exportData">
                   Export Data
@@ -139,7 +139,7 @@
                 ></v-text-field>
               </v-row>
             </template>
-          </v-container>
+          </v-container fluid>
           <v-container fluid>
             <v-data-table
                   :headers="interactionTableHeaders"
@@ -173,8 +173,8 @@
               :items="courses"
               item-text="courseName"
               item-value="courseId"
-              v-model="dataRequestCourseSelected"
-              v-on:change="getDataRequestLabsByCourseId"
+              v-model="csvCourseSelected"
+              v-on:change="getcsvLabsByCourseId"
               dense 
               class="ml-3"
               clearable
@@ -184,13 +184,13 @@
             </v-col>
             <v-col>
               <v-select
-              v-if="dataRequestCourseSelected"
+              v-if="csvCourseSelected"
               label="Select Lab"
-              :items="dataRequestLabs"
+              :items="csvlabs"
               item-text="sessionName"
               item-value="sessionId"
-              v-model="dataRequestLabSelected"
-              v-on:change="getDataRequestCapturesByLabId"
+              v-model="csvLabSelected"
+              v-on:change="getCsvCapturesByLabId"
               dense 
               class="ml-3"
               clearable
@@ -205,12 +205,12 @@
             </v-col>
             <v-col>
               <v-select 
-              v-if="dataRequestLabSelected && dataRequestCourseSelected"
+              v-if="csvLabSelected && csvCourseSelected"
               label="Select Capture"
-              :items="dataRequestCaptures"
+              :items="captures"
               item-text="captureId"
               item-value="captureId"
-              v-model="dataRequestCaptureSelected"
+              v-model="csvCaptureSelected"
               dense class="ml-3"
               clearable
               @change="changeRequest"
@@ -226,7 +226,7 @@
           <v-row>
             <v-col>
               <v-select 
-              v-if="dataRequestLabSelected && dataRequestCourseSelected"
+              v-if="csvLabSelected && csvCourseSelected"
               label="type"
               :items="type"
               v-model="typeSelected"
@@ -245,7 +245,7 @@
           <v-row>
             <v-col>
               <v-select
-              v-if="dataRequestLabSelected && dataRequestCourseSelected && (typeSelected =='user energy' || typeSelected =='aggregate interaction')"
+              v-if="csvLabSelected && csvCourseSelected && (typeSelected =='user energy' || typeSelected =='aggregate interaction')"
               label="Select interaction type"
               :items="interaction_type"
               item-text="text"
@@ -264,7 +264,7 @@
             </v-col>
             <v-col>
               <v-select
-              v-if="dataRequestCourseSelected && dataRequestLabSelected && typeSelected =='user energy'"
+              v-if="csvCourseSelected && csvLabSelected && typeSelected =='user energy'"
               label="Select entity type"
               :items="entity_type"
               item-text="text"
@@ -337,7 +337,7 @@
 <script>
 import GlobalBar from "../../components/Charts/GlobalBar";
 import SectionCard from "../../components/Cards/SectionCard";
-import { getInteractionData, getAllDataRequest, exportMetricCsv, getDownloadLink, downloadCaptureJSONFile } from "../../requests/data";
+import { getInteractionData, getAllRawCourse, getAllRawLab, getAllRawCapture, getAllDataRequest, exportMetricCsv, getDownloadLink } from "../../requests/data";
 import { getCourseListByInstructor, getLabList, getCaptureList } from "../../requests/course";
 import { Parser } from "json2csv";
 
@@ -352,16 +352,14 @@ export default {
       userId: null,
       courses: [],
       courseSelected: null,
-      rawExportCourseSelected: null,
-      dataRequestCourseSelected: null,
-      rawExportLabs: [],
-      dataRequestLabs: [],
-      rawExportLabSelected: null,
-      dataRequestLabSelected: null,
-      rawExportCaptures: [],
-      dataRequestCaptures: [],
-      rawExportCaptureSelected: null,
-      dataRequestCaptureSelected: null,
+      csvCourseSelected: null,
+      labs: [],
+      csvlabs: [],
+      labSelected: null,
+      csvLabSelected: null,
+      captures: [],
+      captureSelected: null,
+      csvCaptureSelected: null,
       dataLoaded: false,
       search: '',
       interactions: [],
@@ -473,68 +471,51 @@ export default {
         this.courses = data.data;
       })
     },
-    getRawExportLabsByCourseId() {
-      this.rawExportLabSelected = null;
-
-      if (!this.rawExportCourseSelected) {
-        this.rawExportLabSelected = null;
-        
-        this.rawExportCaptureSelected = null;
-
-        this.rawExportLabs = [];
-
-        return;
-      }
-
-      getLabList({ courseId: this.rawExportCourseSelected }).then(res => {
+    getLabsByCourseId() {
+      this.labSelected = null;
+      getLabList({ courseId: this.courseSelected }).then(res => {
         console.log(res);
         if (res.status == 200) {
-          this.rawExportLabs = res.data;
+          this.labs = res.data;
         } else {
           console.log(res);
         }
       })
     },
-    getDataRequestLabsByCourseId() {
-      this.dataRequestLabSelected = null;
-      this.dataRequestCaptureSelected = null;
+    getcsvLabsByCourseId() {
+      this.csvlabSelected = null;
+      this.csvCaptureSelected = null;
       this.submitDataRequest = true;
       this.typeSelected = null;
       this.entitySelected = null;
       this.interactionSelected = null;
-      if(this.dataRequestCourseSelected!==null && this.dataRequestCourseSelected!==undefined){
-        getLabList({ courseId: this.dataRequestCourseSelected }).then(res => {
+      if(this.csvCourseSelected!==null && this.csvCourseSelected!==undefined){
+        getLabList({ courseId: this.csvCourseSelected }).then(res => {
           console.log(res);
           if (res.status == 200) {
-            this.dataRequestLabs = res.data;
+            this.csvlabs = res.data;
           } else {
             console.log(res);
           }
         })
       }
     },
-    getRawExportCapturesByLabId() {
-      if (!this.rawExportLabSelected) {
-        this.rawExportCaptureSelected = null;
-
-        this.rawExportCaptures = [];
-
-        return;
-      }
-      getCaptureList({ labId: this.rawExportLabSelected }).then(res => {
+    getCapturesByLabId() {
+      this.captureSelected = null;
+      getCaptureList({ labId: this.labSelected }).then(res => {
         if (res.status == 200) {
-          this.rawExportCaptures = res.data;
+          this.csvCaptures = res.data;
         } else {
           console.log(res);
         }
       })
     },
-    getDataRequestCapturesByLabId() {
-      this.dataRequestCaptureSelected = null;
+    getCsvCapturesByLabId() {
+      this.csvCaptureSelected = null;
       this.submitDataRequest = true;
-      getCaptureList({ labId: this.dataRequestLabSelected }).then(res => {
+      getCaptureList({ labId: this.csvLabSelected }).then(res => {
         if (res.status == 200) {
-          this.dataRequestCaptures = res.data;
+          this.captures = res.data;
         } else {
           console.log(res);
         }
@@ -544,25 +525,84 @@ export default {
       this.dataLoaded = true;
     },
     exportData() {
-      let courseId = this.rawExportCourseSelected;
+      let courseId = this.courseSelected;
+      let labId = this.labSelected;
+      let captureId = this.captureSelected;
 
-      if (!courseId) {
-        return;
-      } 
-      
-      let labId = this.rawExportLabSelected;
+      if (courseId && labId && captureId) {
+        getAllRawCapture({ captureId }).then(res => {
+          if (res.status == 200) {
+            console.log(res.data)
+            this.formatAndDownload(res);
+          } else {
+            console.log(res);
+          }
+        });
+      } else if (courseId && labId) {
+        getAllRawLab({ labId }).then(res => {
+          if (res.status == 200) {
+            console.log(res.data)
+            this.formatAndDownload(res);
+          } else {
+            console.log(res);
+          }
+        });
+      } else if (courseId) {
+        getAllRawCourse({ courseId }).then(res => {
+          if (res.status == 200) {
+            console.log(res.data)
+            this.formatAndDownload(res);
+          } else {
+            console.log(res);
+          }
+        });
+      }
+    },
+    formatAndDownload(res) {
+      let intData = res.data.int;
+      let posData = res.data.pos;
 
-      if (!labId) {
-        return;
-      }
+      let intFields = [];
+      intData[1].forEach(field => {
+        intFields.push(field.name)
+      });
+      const intOpts = { intFields };
       
-      let captureId = this.rawExportCaptureSelected;
-        
-      if (!captureId) {
-        return;
+      let posFields = [];
+      posData[1].forEach(field => {
+        posFields.push(field.name)
+      });
+      const posOpts = { posFields };
+
+      try {
+        const encoding = "data:text/csv;charset=utf-8,";
+
+        // interactions csv
+        if (intData[0].length) {
+          const intParser = new Parser(intOpts);
+          const intCsv = encoding+intParser.parse(intData[0]);
+          let encodedUri = encodeURI(intCsv);
+          let link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", `${this.captureSelected || this.labSelected || this.courseSelected}_interactions.csv`);
+          document.body.appendChild(link); // Required for FF
+          link.click();
+        }
+
+        // positions csv
+        if (posData[0].length) {
+          const posParser = new Parser(posOpts);
+          const posCsv = encoding+posParser.parse(posData[0]);
+          let encodedUri = encodeURI(posCsv);
+          let link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", `${this.captureSelected || this.labSelected || this.courseSelected}_positions.csv`);
+          document.body.appendChild(link); // Required for FF
+          link.click();
+        }
+      } catch (err) {
+        console.error(err);
       }
-      
-      downloadCaptureJSONFile({ captureId });
     },
     getMetrics() {
       getInteractionData().then(data => {
@@ -623,9 +663,9 @@ export default {
     },
     getCsv() {
       let data = {
-        "sessionId": this.dataRequestLabSelected,
+        "sessionId": this.csvLabSelected,
         "clientId": this.userId,
-        "captureId": this.dataRequestCaptureSelected,
+        "captureId": this.csvCaptureSelected,
         "type": this.typeSelected,
         "interactionType": this.interactionSelected,
         "entityType": this.entitySelected
@@ -658,13 +698,13 @@ export default {
       }
     },
     changeRequest(){
-      if((this.dataRequestLabSelected!==null && this.dataRequestLabSelected!==undefined) && (this.dataRequestCaptureSelected!==null && this.dataRequestCaptureSelected!==undefined) && (this.interactionSelected!==null && this.interactionSelected!==undefined) && (this.entitySelected!==null && this.entitySelected!==undefined) && this.typeSelected =='user energy'){
+      if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && (this.csvCaptureSelected!==null && this.csvCaptureSelected!==undefined) && (this.interactionSelected!==null && this.interactionSelected!==undefined) && (this.entitySelected!==null && this.entitySelected!==undefined) && this.typeSelected =='user energy'){
         this.submitDataRequest = false;
       }
-      else if((this.dataRequestLabSelected!==null && this.dataRequestLabSelected!==undefined) && this.typeSelected =='aggregate interaction' && this.interactionSelected!==null && (this.dataRequestCaptureSelected!==null && this.dataRequestCaptureSelected!==undefined)){
+      else if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && this.typeSelected =='aggregate interaction' && this.interactionSelected!==null && (this.csvCaptureSelected!==null && this.csvCaptureSelected!==undefined)){
         this.submitDataRequest = false;
       }
-      else if((this.dataRequestLabSelected!==null && this.dataRequestLabSelected!==undefined) && this.typeSelected =='aggregate user' && (this.dataRequestCaptureSelected!==null || this.dataRequestCaptureSelected!==undefined)){
+      else if((this.csvLabSelected!==null && this.csvLabSelected!==undefined) && this.typeSelected =='aggregate user' && (this.csvCaptureSelected!==null || this.csvCaptureSelected!==undefined)){
         this.submitDataRequest = false;
       }
       else{

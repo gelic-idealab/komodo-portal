@@ -1,49 +1,46 @@
-'esversion: 6';
-
 const fs = require('fs');
 const AWS = require('aws-sdk');
 const config = require("../config");
 AWS.config.update(config.aws);
 const s3 = new AWS.S3();
 const BUCKET_NAME = config.aws.bucket;
-const path = require('path');
+
 const pool = require("./index");
 const dataQuery = require("../query/data");
-
-const CAPTURE_FILE_NAME_AND_EXTENSION = "data";
 
 const getAllInteractions = async() => {
   const results = await pool.execute(dataQuery.getAllInteractions);
   return {
     data: results[0]
-  };
-};
-
-const getRawExportFilePath = async(idAndTimestamp) => {
-  // from express, generate the capture path directory
-  // return that file?
-  // return a download URL?
-
-  const splitIdAndTimestamp = idAndTimestamp.split("_");
-
-  if (splitIdAndTimestamp.length != 2) {
-    console.error("string should be formatted like <string>_<timestamp>");
-
-    return;
   }
+}
 
-  const id = splitIdAndTimestamp[0];
-
-  const timestamp = splitIdAndTimestamp[1];
-
-  const directory = path.join(config.captures, id, timestamp);
-
-  const pathAndFilename = path.join(directory, CAPTURE_FILE_NAME_AND_EXTENSION);
-
+const getAllRawCapture = async(id) => {
+  const results = {}
+  results.pos = await pool.execute(dataQuery.getRawPosCapture, [id]);
+  results.int = await pool.execute(dataQuery.getRawIntCapture, [id]);
   return {
-    data: pathAndFilename
-  };
-};
+    data: results
+  }
+}
+
+const getAllRawLab = async(id) => {
+  const results = {}
+  results.pos = await pool.execute(dataQuery.getRawPosLab, [id]);
+  results.int = await pool.execute(dataQuery.getRawIntLab, [id]);
+  return {
+    data: results
+  }
+}
+
+const getAllRawCourse = async(id) => {
+  const results = {}
+  results.pos = await pool.execute(dataQuery.getRawPosCourse, [id]);
+  results.int = await pool.execute(dataQuery.getRawIntCourse, [id]);
+  return {
+    data: results
+  }
+}
 
 const exportMetricCsv = async(data) => {
   let request = [data.captureId, data.clientId, data.type, 0, data]
@@ -52,8 +49,8 @@ const exportMetricCsv = async(data) => {
     data: {
       status: "success"
     }
-  };
-};
+  }
+}
 
 const getAllCsvExport = async(data) => {
   let userId = data.userId;
@@ -62,16 +59,16 @@ const getAllCsvExport = async(data) => {
     for(i=0;i<results[0].length;i++){
       results[0][i].message = JSON.parse(results[0][i].message);
     }
-
     return {
       data: results[0]
     };
   }else{
     return {
       data: []
-    };
+    }
   }
-};
+
+}
 
 const getDownloadLink = async(request) => {
   let requestId = request.requestId;
@@ -81,7 +78,7 @@ const getDownloadLink = async(request) => {
       data: {
         status: "processing"
       }
-    });
+    })
   }else{
     if(results[0][0].url == null){
       // Read content from the file
@@ -125,7 +122,9 @@ const getDownloadLink = async(request) => {
 
 module.exports = {
   getAllInteractions,
-  getRawExportFilePath,
+  getAllRawCapture,
+  getAllRawLab,
+  getAllRawCourse,
   getAllCsvExport,
   exportMetricCsv,
   getDownloadLink
