@@ -1,0 +1,273 @@
+
+# Manual Test Plan (Front End)
+
+- All Pages
+    - responsiveness
+    - width
+    - layout
+
+
+- Accessibility
+    - item focus
+    - contrast
+    - font size
+
+
+- Routing
+    - proper URLs
+
+
+- Login Page
+    - title: “Login”
+    - username
+    - email
+    - show password button
+        - unimplemented
+    - login button
+    - Register hint
+    - Title
+    - subtitle
+    - credit
+    - learn more button
+    - Icon
+- Logout Page
+    - Redirection
+- Sidebar
+    - Hover functionality
+    - Name
+        - \<FirstName\> \<LastName\>
+        - links to profile page
+    - Email
+    - Dashboard button
+    - Courses button
+        - can expand or collapse course list
+    - Courses list
+        - course buttons
+            - link to proper courses
+        - 
+    - Assets button
+    - Metrics button
+    - Admin button
+        - Only shows for admins
+    - Logout button
+- Profile Page
+    - Title
+    - User information
+        - name
+        - email
+    - Assets table
+        - Should filter by user’s assets
+        - Should show proper visibility 
+        - Upload button
+        - Search bar
+        - names
+        - descriptions
+        - updated
+        - visibility
+        - rows per page
+        - previous page
+        - next page
+    - Edit Profile Page
+- Dashboard
+    - Title: “Welcome, \<FirstName\>”
+    - Courses
+        - display properly
+            - unpopulated
+                - prompt to create a course as an admin
+            - populated
+                - tile
+                    - name
+                    - instructor
+        - route correctly
+    - Assets
+        - browse button
+            - routes correctly
+        - upload button
+            - routes correctly
+- Assets
+    - Most recent three assets
+        - model-viewer
+        - inspect button
+    - Assets table
+        - Upload button
+        - Search bar
+        - names
+        - descriptions
+        - updated
+        - visibility
+        - rows per page
+        - next page 
+        - previous page
+        - sorting
+    - Upload
+        - OBJ
+        - GLB
+        - Public vs private
+- Metrics Page
+    - Raw Export
+    - Download Button
+        - Error
+    - Data Requests
+- Admin Page
+    - only accessible to admin users
+    - Title: “ADMIN VIEW”
+    - Users tab
+        - New user button
+        - Edit multiple users button
+        - Users table
+            - Checkboxes
+            - names
+            - email
+            - roles
+            - courses
+            - Edit buttons
+            - Delete buttons
+            - rows per page
+            - previous page
+            - next page
+    - Courses tab
+        - New course button
+        - Edit multiple courses button
+        - Courses table
+            - Checkboxes
+            - names
+            - CRNS
+            - Descriptions
+            - Instructors
+            - Semesters
+            - Students
+            - Edit button
+            - Delete button
+            - rows per page 
+            - previous page
+            - next page
+- Course Detail Page
+    - semester
+    - title
+    - instructor
+    - new session button
+    - description tab
+    - labs tab
+        - new lab
+        - items
+            - name
+            - date
+            - time
+            - duration
+            - actions
+    - captures tab
+    - roster
+        - names
+        - emails
+- Lab Detail Page
+    - name
+    - course name
+    - details
+        - start now button
+        - more button
+            - edit button
+            - delete button
+        - start time
+        - end time
+        - duration
+        - will start
+    - settings
+        - shows for admins / instructors only
+        - build scope (app)
+        - build folder (build version)
+    - Description
+        - content
+        - edit button
+    - assets
+        - names
+        - descriptions
+        - rows per page
+        - next page
+        - previous page
+        - edit button
+- Lab Edit Page
+    - title: “Edit Lab Details”
+    - Course (disabled)
+    - Title
+    - Description
+    - Date
+    - Start time
+    - End time
+    - Assets upload button
+    - Assets table
+        - checkboxes
+        - names
+        - description
+        - updated
+        - sorting
+        - rows per page
+        - previous page
+        - next page
+    - Advanced Settings
+        - build scope (app)
+        - build folder (build version)
+    - Cancel button
+    - Schedule button
+- Asset Detail page
+    - name
+    - model-viewer
+    - description
+    - information
+        - name
+        - date created
+        - date uploaded
+        - type (3D Model / 3D Model Pack)
+        - default scale
+        - delete button
+    - edit button 
+        - shows for Admin / uploaders only
+- VR Page
+    - Shows build properly
+    - Media panel
+    - Text chat panel
+- Admin Edit User Page
+    - First name
+    - Last name
+    - Email
+    - Password field
+        - Edit button
+        - Default password behavior
+    - Radio buttons
+        - Admin
+        - Instructor
+        - Student
+    - Registered courses
+        - checkboxes
+        - course name
+        - name
+        - description
+        - rows per page
+        - previous page
+        - next page
+        - sorting
+    - Cancel Button
+    - Submit button
+- Admin Edit Courses Page
+    - Title: “Edit Course”
+    - course name
+    - CRN
+    - description
+    - credit hours
+    - department
+    - instructor
+        - lists instructors
+        - only lists instructors
+    - semester
+        - lists semesters
+    - Registered users table
+        - Checkboxes
+        - Names
+        - Emails
+        - Roles
+        - rows per page
+        - previous page
+        - next page
+    - Cancel Button
+    - Update button
+        - show status
+        - redirect button
