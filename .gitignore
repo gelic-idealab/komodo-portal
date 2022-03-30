@@ -2,3 +2,4 @@
 .DS_Store
 frontend/package-lock.json
 backend/package-lock.json
+frontend/dist

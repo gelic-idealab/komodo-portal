@@ -3,7 +3,7 @@
   <v-container>
     <v-img
       :src="require('../assets/img/komodo-logo-wordmark-rusa-award.jpg')"
-      alt="Title Project Komodo, with a gray, smiling, cartoon Komodo dragon wearing a virtual reality headset and pointing with a teaching stick or laser beam. Beneath it is the text, 'ALA • References and User Services Association • Emerging Technologies Section​ -- 2021 Best Emerging Technology Application Award​'"
+      alt="Title Project Komodo, with a gray, smiling, cartoon Komodo dragon wearing a virtual reality headset and pointing with a teaching stick or laser beam. Beneath it is the text, 'ALA • References and User Services Association • Emerging Technologies Section -- 2021 Best Emerging Technology Application Award'"
     ></v-img>
     <br>
     <hr>
@@ -59,13 +59,13 @@
     </v-row>
     <v-row>
       <v-col :cols="4">
-        <span class="font-weight-bold">Instantly deploy a classroom session.​</span> Komodo provides social features for class sessions: networked tools, VR avatars, and, coming soon, cross-platform audio and video chat.
+        <span class="font-weight-bold">Instantly deploy a classroom session.</span> Komodo provides social features for class sessions: networked tools, VR avatars, and, coming soon, cross-platform audio and video chat.
       </v-col>
       <v-col :cols="4">
-        <span class="font-weight-bold">Manage sessions and upload models.</span> Komodo helps you schedule sessions and get content in easily. We can store 3D and 2D content for you.​
+        <span class="font-weight-bold">Manage sessions and upload models.</span> Komodo helps you schedule sessions and get content in easily. We can store 3D and 2D content for you.
       </v-col>
       <v-col :cols="4">
-        <span class="font-weight-bold">Analyze student, asset, and session statistics.​</span> Komodo automatically networks and tracks interactions with content. Our data pipeline shows flexible metrics views in the web portal (coming soon).​
+        <span class="font-weight-bold">Analyze student, asset, and session statistics.</span> Komodo automatically networks and tracks interactions with content. Our data pipeline shows flexible metrics views in the web portal (coming soon).
       </v-col>
     </v-row>
     <v-row>
@@ -93,13 +93,13 @@
     </v-row>
     <v-row>
       <v-col :cols="4">
-        <span class="font-weight-bold">Start with the Unity SDK.​</span> Download and open the Project Komodo Package in Unity. You’ll get the out-of-the-box features described.
+        <span class="font-weight-bold">Start with the Unity SDK.</span> Download and open the Project Komodo Package in Unity. You’ll get the out-of-the-box features described.
       </v-col>
       <v-col :cols="4">
         <span class="font-weight-bold">Implement the domain module.</span> Customize the environment, add 3D models, program custom features, and connect our networking components. 
       </v-col>
       <v-col :cols="4">
-        <span class="font-weight-bold">Build and upload.​</span> Build your module and serve it with our Komodo build server.  In the near future, in the web portal, you'll be able to customize data analytics for both your scene content and user-uploaded assets.
+        <span class="font-weight-bold">Build and upload. </span>Build your module and serve it with our Komodo build server.  In the near future, in the web portal, you'll be able to customize data analytics for both your scene content and user-uploaded assets.
       </v-col>
     </v-row>
     <v-row>
@@ -306,7 +306,7 @@
 
 <script>
 export default {
-  name: "About",
+  name: "AboutPage",
   components: {
   },
   data() {

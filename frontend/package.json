@@ -4,16 +4,15 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --mode production",
-    "dev": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "dev": "vue-cli-service serve --mode development"
   },
   "dependencies": {
     "apexcharts": "^3.17.0",
     "axios": "^0.19.0",
+    "core-js": "^3.8.3",
     "crypto-js": "^4.0.0",
-    "eslint": "^5.16.0",
-    "eslint-loader": "^2.1.2",
     "howler": "^2.2.1",
     "js-cookie": "^2.2.1",
     "json2csv": "^5.0.6",
@@ -22,13 +21,14 @@
     "querystring": "^0.2.0",
     "recordrtc": "^5.6.1",
     "socket.io-client": "^2.3.0",
+    "stream-browserify": "^3.0.0",
     "three": "^0.116.1",
     "uuid": "^7.0.2",
     "vee-validate": "^3.4.13",
     "vue": "2.6.10",
     "vue-apexcharts": "^1.5.2",
     "vue-clickaway": "2.2.2",
-    "vue-eslint-parser": "^6.0.4",
+    "vue-eslint-parser": "^7.0.0",
     "vue-github-buttons": "3.1.0",
     "vue-grid-layout": "^2.3.4",
     "vue-material": "1.0.0-beta-11",
@@ -41,16 +41,24 @@
     "vuex-persistedstate": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
     "@vue/cli": "^4.2.2",
-    "@vue/cli-plugin-babel": "3.8.0",
-    "@vue/cli-plugin-eslint": "3.8.0",
-    "@vue/cli-service": "3.8.3",
+    "@vue/cli-plugin-babel": "^5.0.4",
+    "@vue/cli-plugin-eslint": "^5.0.4",
+    "@vue/cli-service": "^5.0.4",
     "@vue/eslint-config-prettier": "4.0.1",
+    "crypto-browserify": "^3.12.0",
     "es6-promise": "4.2.8",
-    "eslint-plugin-vue": "^5.2.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.5.0",
+    "eslint-webpack-plugin": "^3.1.1",
     "material-design-icons-iconfont": "^5.0.1",
-    "node-sass": "4.14.0",
-    "sass-loader": "7.1.0",
+    "prettier": "^2.4.1",
+    "sass": "^1.0.0",
+    "sass-loader": "^8.0.0",
     "vue-template-compiler": "2.6.10"
   },
   "eslintConfig": {
@@ -62,9 +70,17 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "rules": {},
+    "rules": {
+      "vue/valid-v-slot": [
+        "error",
+        {
+          "allowModifiers": true
+        }
+      ]
+    },
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser",
+      "requireConfigFile": "false"
     }
   }
 }
