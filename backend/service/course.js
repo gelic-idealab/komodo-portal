@@ -142,15 +142,6 @@ const deleteCourse = async({courseId}) => {
   }
 }
 
-//get access list of courses by course id
-const getCourseAccess = async courseId => {
-  const accessResults = await pool.execute(courseQuery.getCourseAccessByCouseId, [courseId]);
-  const accessList = accessResults[0];
-  return {
-    data: {courseId: courseId, accessList: accessList}
-  };
-};
-
 module.exports = {
   getCourseList,
   getCourseListByInstructor,
@@ -160,6 +151,5 @@ module.exports = {
   editCourse,
   editMultipleCourse,
   getAllSemesters,
-  deleteCourse,
-  getCourseAccess
+  deleteCourse
 };
