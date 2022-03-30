@@ -12,11 +12,19 @@ services:
   backend:
     labels:
       - "traefik.enable=false"
+    networks:
+      - komodo_internal
     ports:
       - 4040:4040
 
   frontend:
     labels:
       - "traefik.enable=false"
+    networks:
+      - komodo_internal
     ports: 
       - 8080:80
+
+networks:
+  komodo_internal:
+    external: true
