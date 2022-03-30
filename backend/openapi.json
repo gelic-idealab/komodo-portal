@@ -6,10 +6,10 @@
     "version" : "1.0.0-oas3"
   },
   "servers" : [ {
-    "url" : "https://api.komodo-dev.library.illinois.edu/api",
+    "url" : "https://api.komodo-dev.library.illinois.edu/",
     "description" : "Production server"
   }, {
-    "url" : "http://localhost:4040/api",
+    "url" : "http://localhost:4040/",
     "description" : "Local server"
   } ],
   "tags" : [ {
@@ -26,7 +26,7 @@
     "description" : "API for VMD uploading"
   } ],
   "paths" : {
-    "/portal/courses/{courseId}" : {
+    "/courses/{courseId}" : {
       "get" : {
         "tags" : [ "Courses" ],
         "summary" : "Get course detail with a given id",
@@ -54,7 +54,7 @@
         }
       }
     },
-    "/portal/labs/{labId}/assets" : {
+    "/labs/{labId}/assets" : {
       "get" : {
         "tags" : [ "Labs" ],
         "summary" : "Get asset list for a lab session",
@@ -85,7 +85,7 @@
         }
       }
     },
-    "/portal/assets/{assetId}" : {
+    "/assets/{assetId}" : {
       "get" : {
         "tags" : [ "Assets" ],
         "summary" : "Get asset detail with a given id",
