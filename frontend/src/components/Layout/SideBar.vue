@@ -3,8 +3,8 @@
     class="side-bar"
     width="230"
     permanent
-    fixed
     expand-on-hover
+    fixed
     dark
   >
     <v-list>
@@ -16,6 +16,9 @@
           <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
 
         </v-list-item-content>
+      </v-list-item>
+      <v-list-item>
+        <SideBarMenuItem title="Logout" icon-name="mdi-logout-variant" to="/logout"/>
       </v-list-item>
     </v-list>
 
@@ -44,7 +47,9 @@
     </v-list>
 
     <v-list class="side-bar-bottom-wrapper" nav dense>
-      <SideBarMenuItem title="Logout" icon-name="mdi-logout-variant" to="/logout"/>
+      <v-list-item>
+        1.2.2 <!-- TODO -- update this manually with every version -->
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
