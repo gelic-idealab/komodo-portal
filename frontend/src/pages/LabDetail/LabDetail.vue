@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-row v-if="!clientPath" class="lab-basic-info mb-4 flex-column no-gutters">
-      <p class="display-1 text-capitalize">{{ labName }}</p>
-      <p v-if="captureId"> CAPTURE ID: {{ captureId }}</p>
-      <p class="mb-0">
-        
-          <v-btn color="secondary" depressed small @click="goToCourse">{{ `${courseNo}: ${courseName}` }}</v-btn>
+    <v-row v-if="!clientPath">
+      <p class="mb-1">
+        <v-btn color="secondary" depressed small @click="goToCourse">{{ `${courseNo}: ${courseName} > Labs > ` }}</v-btn>
       </p>
+    </v-row>
+    <v-row v-if="!clientPath" class="lab-basic-info mb-4 no-gutters">
+      <p class="display-1 text-capitalize">{{ labName }}</p>
     </v-row>
     <!-- Start the lab view -->
     <!-- Embedded VR Client and Cha t -->
@@ -229,9 +229,19 @@ export default {
 
         // get build scopes from buildserver
         axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}`).then( res => {
+
+          if (!res.data || res.data.length == 0 || !res.data.forEach) {
+            console.error("SETTINGS (ADMIN ONLY): Build server returned no apps (build scopes). Check connection to build server and check that builds have been uploaded correctly.");
+
+            this.buildScopes = [];
+
+            return;
+          }
+
           res.data.forEach(scope => {
             this.buildScopes.push(scope.name)
           });
+
           this.getBuilds();
         });
       }
