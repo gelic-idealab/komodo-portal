@@ -4,7 +4,8 @@
       <p class="display-1 text-capitalize">{{ labName }}</p>
       <p v-if="captureId"> CAPTURE ID: {{ captureId }}</p>
       <p class="mb-0">
-        <span class="body-1 pointer" @click="goToCourse">{{ `${courseNo}: ${courseName}` }}</span>
+        
+          <v-btn color="secondary" depressed small @click="goToCourse">{{ `${courseNo}: ${courseName}` }}</v-btn>
       </p>
     </v-row>
     <!-- Start the lab view -->
@@ -27,14 +28,11 @@
     <v-row v-if="!clientPath">
       <v-col>
         <!-- Lab details section -->
-        <SectionCard title="Details">
+        <SectionCard title="Lab Details">
           <template v-slot:actions>
-            <v-btn text small color="accent" @click="startSession">
-              <v-icon left x-small>mdi-play</v-icon>Start Now
-            </v-btn>
             <v-menu
-            bottom
-            left
+              bottom
+              left
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -63,83 +61,65 @@
               </v-list>
             </v-menu>
           </template>
-          <v-container class="py-0 details-content">
-            <v-row dense>
-              <v-col :cols="2">
-                <v-chip outlined>Start Time</v-chip>
-              </v-col>
-              <v-col :cols="4" align-self="center">
-                {{ schedule.startTime }}
-              </v-col>
-              <v-col :cols="2">
-                <v-chip outlined>Duration</v-chip>
-              </v-col>
-              <v-col align-self="center">
-                {{ schedule.duration }}
-              </v-col>
-            </v-row>
-            <v-row dense>
-              <v-col :cols="2">
-                <v-chip outlined>End Time</v-chip>
-              </v-col>
-              <v-col :cols="4" align-self="center">
-                {{ schedule.endTime }}
-              </v-col>
-              <v-col :cols="2">
-                <v-chip outlined>Will Start</v-chip>
-              </v-col>
-              <v-col align-self="center">
-                {{ schedule.timeLeft }}
-              </v-col>
-            </v-row>
-          </v-container>
-        </SectionCard>
-      </v-col>
-      <v-col :cols="3" v-if="user.role == `admin`">
-        <!-- Settings section -->
-        <SectionCard title="Settings">
-          <template v-slot:actions>
-              <v-icon small>mdi-hammer-wrench</v-icon>
-          </template>
+          <v-btn color="primary" @click.stop="startSession">
+            <v-icon left x-small>mdi-play</v-icon> Start
+          </v-btn>
           <v-row>
-            <v-col :cols="4" class="setting-label">
-              <v-chip outlined>Version</v-chip>
-            </v-col>
             <v-col>
-              <v-select
-              v-model="buildScope"
-              :items="buildScopes"
-              dense
-              @change="getBuilds"
-              ></v-select>
-              <v-select
-                v-model="build"
-                :value="build"
-                :items="builds"
-                hint="Change the Komodo version for this session"
-                persistent-hint
-                dense
-              ></v-select>
+              {{ description }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col :col=2>
+              {{ schedule.duration }} long
+            </v-col>
+            <v-col :col=2>
+            {{ schedule.timeLeft }} 
+            </v-col>
+            <v-col :col=2>
+              {{ schedule.startTime }} (Start) 
+            </v-col>
+            <v-col :col=2>
+              {{ schedule.endTime }} (End)
             </v-col>
           </v-row>
         </SectionCard>
-      </v-col>
-    </v-row>
+        </v-col>
+      </v-row>
+      <v-row v-if="!clientPath">
+        <v-col v-if="user.role == `admin`">
+          <!-- Settings section -->
+          <SectionCard title="Settings (Admin Only)">
+            <v-row>
+              <v-col>
+                Temporarily change the app and build version, for your view only. To change the build for everyone, edit the settings.
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="buildScope"
+                  :items="buildScopes"
+                  dense
+                  persistent-hint
+                  hint="App"
+                  @change="getBuilds"
+                ></v-select>
+                <v-select
+                  v-model="build"
+                  :value="build"
+                  :items="builds"
+                  hint="Build / Version"
+                  persistent-hint
+                  dense
+                ></v-select>
+              </v-col>
+            </v-row>
+          </SectionCard>
+        </v-col>
+      </v-row>
     <v-row v-if="!clientPath">
-      <v-col :cols="5">
-        <!-- Description section -->
-        <SectionCard title="Description">
-          <template v-slot:actions v-if="user.role == `admin` || user.role == `instructor`">
-            <router-link :to="{ name: 'Lab Edit', params: { courseId, labId } }">
-              <v-btn text small color="grey">
-                <v-icon left x-small>mdi-pencil</v-icon>Edit
-              </v-btn>
-            </router-link>
-          </template>
-          {{ description }}
-        </SectionCard>
-      </v-col>
-      <v-col :cols="7">
+      <v-col>
         <!-- Asset section -->
         <SectionCard title="Assets">
           <template v-slot:actions v-if="user.role == `admin` || user.role == `instructor`">
@@ -154,7 +134,7 @@
             :items="assetList"
             @click:row="onAssetClick"
             item-key="assetId"
-            no-data-text="No asset added"
+            no-data-text="No assets added. Please edit the lab."
           />
         </SectionCard>
       </v-col>
