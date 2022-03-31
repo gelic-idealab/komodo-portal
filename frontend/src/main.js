@@ -23,7 +23,6 @@ import VueApexCharts from "vue-apexcharts";
 import { initial } from "./requests/auth";
 import { getCourseList } from "./requests/course";
 
-
 // configure router
 const router = new VueRouter({
   mode: 'history',
@@ -69,7 +68,7 @@ Vue.use(GlobalComponents);
 Vue.use(GlobalDirectives);
 // Vue.use(Notifications);
 Vue.component('file-upload', VueUploadComponent);
-Vue.component('apexchart', VueApexCharts);
+Vue.component('ApexChart', VueApexCharts);
 
 Vue.config.devtools = true;
 

@@ -51,7 +51,7 @@ import LandingCourseCard from "./LandingCourseCard";
 import { getAssetList } from "../../requests/asset"
 
 export default {
-  name: "Landing",
+  name: "LandingPage",
   components: {
     SectionCard,
     LandingCourseCard,

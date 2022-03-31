@@ -139,7 +139,7 @@
                 ></v-text-field>
               </v-row>
             </template>
-          </v-container fluid>
+          </v-container>
           <v-container fluid>
             <v-data-table
                   :headers="interactionTableHeaders"
@@ -342,7 +342,7 @@ import { getCourseListByInstructor, getLabList, getCaptureList } from "../../req
 import { Parser } from "json2csv";
 
 export default {
-  name: "Metric",
+  name: "MetricsPage",
   components: {
     GlobalBar,
     SectionCard
@@ -522,6 +522,10 @@ export default {
       })      
     },
     loadData(e) {
+      if (e) {
+        console.error(e);
+      }
+
       this.dataLoaded = true;
     },
     exportData() {

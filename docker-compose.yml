@@ -1,3 +1,11 @@
+# This Docker compose file serves as a base. To use it with networks, please see...
+# - docker-compose.override.yml
+# - docker-compose.dev.yml
+
+# examples of using this file: 
+#     $ docker-compose up --build
+#     $ docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build
+
 version: '3.3'
 services:
 
@@ -5,33 +13,10 @@ services:
     build: ./backend
     container_name: komodo-portal-backend
     restart: always
-    labels:
-      - "traefik.frontend.rule=Host:api.komodo-dev.library.illinois.edu"
-      - "traefik.backend=komodo-portal-backend"
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
-      - "traefik.port=4040"
-    networks:
-      - proxy
-      - komodo_internal
 
   frontend:
     build: ./frontend
     container_name: komodo-portal-frontend
     restart: always
-    labels:
-      - "traefik.frontend.rule=Host:komodo-dev.library.illinois.edu"
-      - "traefik.backend=komodo-portal-frontend"
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
     environment:
       - VUE_APP_API_BASE_URL 
-    networks:
-      - proxy
-      - komodo_internal
-
-networks:
-  proxy:
-    external: true
-  komodo_internal:
-    external: true

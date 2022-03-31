@@ -1,18 +1,18 @@
 import MainLayout from "../components/Layout/MainLayout";
-import Login from "../pages/Login/Login";
-import Logout from "../pages/Logout/Logout";
-import Landing from "../pages/Landing/Landing";
+import LoginPage from "../pages/Login/Login";
+import LogoutPage from "../pages/Logout/Logout";
+import LandingPage from "../pages/Landing/Landing";
 import CourseDetail from "../pages/CourseDetail/CourseDetail";
 import AssetCreate from "../pages/AssetCreate/AssetCreate";
 import AssetDetail from "../pages/AssetDetail/AssetDetail";
 import LabCreate from "../pages/LabCreate/LabCreate";
 import LabEdit from "../pages/LabEdit/LabEdit";
 import LabDetail from "../pages/LabDetail/LabDetail";
-import Metric from "../pages/Metric/Metric";
-import Assets from "../pages/Assets.vue";
+import MetricsPage from "../pages/Metric/Metric";
+import AssetsPage from "../pages/Assets.vue";
 import resetUser from "../pages/Account/ResetUser";
-import About from "../pages/About.vue";
-import Admin from "../pages/Admin/Admin.vue";
+import AboutPage from "../pages/About.vue";
+import AdminPage from "../pages/Admin/Admin.vue";
 import UserCreate from "../pages/UserCreate/UserCreate.vue";
 import UserEdit from "../pages/UserEdit/UserEdit.vue";
 import MultipleUsersEdit from "../pages/MultipleUsersEdit/MultipleUsersEdit.vue";
@@ -25,13 +25,13 @@ const routes = [
   {
     path: "/login",
     name: "Login",
-    component: Login,
+    component: LoginPage,
   },
   // User logout
   {
     path: "/logout",
     name: "Logout",
-    component: Logout,
+    component: LogoutPage,
     meta: {
       requireLogin: true
     }
@@ -40,7 +40,7 @@ const routes = [
   {
     path: "/about",
     name: "About",
-    component: About,
+    component: AboutPage,
     meta: {
       requireLogin: false
     }
@@ -55,7 +55,7 @@ const routes = [
       {
         path: "dashboard",
         name: "Landing",
-        component: Landing,
+        component: LandingPage,
         meta: {
           requireLogin: true
         }
@@ -100,7 +100,7 @@ const routes = [
       {
         path: "/assets",
         name: "Assets",
-        component: Assets,
+        component: AssetsPage,
         meta: {
           requireLogin: true
         }
@@ -109,7 +109,7 @@ const routes = [
       {
         path: "/admin",
         name: "Admin",
-        component: Admin,
+        component: AdminPage,
         meta: {
           requireLogin: true
         }
@@ -190,7 +190,7 @@ const routes = [
       {
         path: "metrics",
         name: "Metric",
-        component: Metric,
+        component: MetricsPage,
         meta: {
           requireLogin: true
         }

@@ -1,5 +1,5 @@
 <template>
-  <apexchart type="rangeBar" width="800" :options="chartOptions" :series="series" />
+  <ApexChart type="rangeBar" width="800" :options="chartOptions" :series="series" />
 </template>
 
 <script>

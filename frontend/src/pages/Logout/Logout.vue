@@ -21,7 +21,7 @@ import ContainerCard from "../../components/Cards/ContainerCard";
 import {logout} from "../../requests/auth";
 
 export default {
-  name: "Logout",
+  name: "LogoutPage",
   components: {
     ContainerCard
   },
