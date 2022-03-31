@@ -15,30 +15,12 @@
           <vr-client :src="clientPath"></vr-client>
         </v-card>
         <br>
-
-      </v-col>
-      <v-col :cols="2">
-        <!-- Lab details section -->
-        <SectionCard title="Media" class="mb-3">
-          <template v-slot:actions>
-            <v-row
-              align="center"
-              justify="space-around"
-            >
-            <v-btn v-if="!inCall" text color="success" @click="startCall">
-              <v-icon left x-small>call</v-icon>Start Call
-            </v-btn>
-            <v-btn v-if="inCall" text color="error" @click="endCall">
-              <v-icon left x-small>call_end</v-icon>End Call
-            </v-btn>
-            </v-row>
-          </template>
-          <!-- Chat section -->
-          <MediaChat class="media-chat" ref="mediachat" :userId="userId" :sessionId="sessionId" :firstName="firstName" :lastName="lastName"></MediaChat>
-        </SectionCard>
-        <SectionCard title="Text">
-            <TextChat ref="textchat" :session-id="sessionId"/>
-        </SectionCard>
+        <p>
+          Press the blue [VR] button to enter VR.
+        </p>
+        <p>
+          In this version, Voice and Text chat are unavailable.
+        </p>
       </v-col>
     </v-row>
     <!-- Initial view -->
@@ -186,17 +168,13 @@ import moment from "moment";
 import axios from "axios";
 import { getCourseDetail, getLabDetail, deleteLab } from "../../requests/course";
 import SectionCard from "../../components/Cards/SectionCard";
-import VrClient from "../../components/VR/VrClient"
-import MediaChat from "../../components/Chat/MediaChat"
-import TextChat from "../../components/Chat/TextChat";
+import VrClient from "../../components/VR/VrClient";
 
 export default {
   name: "LabDetail",
   components: {
     SectionCard,
-    VrClient,
-    MediaChat,
-    TextChat
+    VrClient
   },
   data() {
     return {
@@ -281,12 +259,6 @@ export default {
   },
   // Navigation handler
   beforeRouteLeave(to, from, next){
-    if (this.inCall) {
-      if (!window.confirm("Are you sure you want to leave?")) {
-        return;
-      }
-      this.$refs.mediachat.hangup();
-    }
     if (this.captureId) {
       if (!window.confirm("Are you sure you want to leave?")) {
         return;
@@ -302,15 +274,15 @@ export default {
       axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/`).then( res => {
         res.data.forEach(build => {
           this.builds.push(build.name)
-        })
-      })
+        });
+      });
     },
     // Go to the selected course details page
     goToCourse() {
       this.$router.push({
         name: "Course Detail",
         params: { courseId: this.$route.params.courseId }
-      })
+      });
     },
     // Start the session
     startSession() {
@@ -331,16 +303,6 @@ export default {
         params: { assetId }
       });
     },
-    //  Start the call
-    startCall() {
-      this.$refs.mediachat.connect();
-      this.inCall = !this.inCall;
-    },
-    // End the call
-    endCall() {
-      this.$refs.mediachat.hangup();
-      this.inCall = !this.inCall;
-    },
     // Delete the lab 
     deleteLabClick() {
       let res = confirm('Are you sure you want to delete this lab?');
@@ -352,7 +314,7 @@ export default {
           // Redirec to the course details page
           this.$router.push({
             name: "Course Detail",
-            params: { courseId: this.courseId}
+            params: { courseId: this.courseId }
           })
         }, 1000);
         })
@@ -362,44 +324,37 @@ export default {
 }
 </script>
 <style>
-    .lab-detail {
-      overflow-y: scroll;
-      max-height: 764px;
-    }
-    span.body-1.pointer {
-      padding-left: 2px;
-    }
-    .v-tab{
-      font-size: 12px!important;
-    }
+  .lab-detail {
+    overflow-y: scroll;
+    max-height: 764px;
+  }
 
-    .v-btn:not(.v-btn--round).v-size--small {
-      height: 20px!important;
-      padding: 10px!important;
-    }
+  span.body-1.pointer {
+    padding-left: 2px;
+  }
 
-    .media-chat.col.col-3{
-      flex:1!important;
-      max-width: 100%!important;
-    }
+  .v-tab{
+    font-size: 12px!important;
+  }
 
-    .chat-history-container {
-      max-height: 725px;
-    }
+  .v-btn:not(.v-btn--round).v-size--small {
+    height: 20px!important;
+    padding: 10px!important;
+  }
 
-    .v-application--is-ltr .v-data-footer__select .v-select {
-      margin: 13px 0 13px 13px!important;
-    }
+  .v-application--is-ltr .v-data-footer__select .v-select {
+    margin: 13px 0 13px 13px!important;
+  }
 
-    .v-data-footer {
-      padding: 0 5px!important;
-      margin-left: -14px;
-      margin-right: -14px;
-    }
+  .v-data-footer {
+    padding: 0 5px!important;
+    margin-left: -14px;
+    margin-right: -14px;
+  }
 
-    .v-application--is-ltr .v-data-footer__pagination {
-      margin: 0 15px 0 15px!important;
-    }
+  .v-application--is-ltr .v-data-footer__pagination {
+    margin: 0 15px 0 15px!important;
+  }
 
   @media screen and (max-width: 800px) and (max-height: 450px){
     .col.col-4.setting-label{
