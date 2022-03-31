@@ -9,8 +9,8 @@
         </div>
       </v-col>
       <v-col>
-        <v-chip class="mr-1" color="primary" outlined label>{{ course.semester }}</v-chip>
-        <v-chip class="mr-1" color="secondary" outlined label>{{ course.department }}</v-chip>
+        <v-chip class="mr-1" color="primary" outlined label>{{ course.semester || "None (Semester)" }}</v-chip>
+        <v-chip class="mr-1" color="secondary" outlined label>{{ course.department || "None (Department)" }}</v-chip>
         <p class="display-1">{{ `${course.courseNo}: ${course.courseName}` }}</p>
         <p class="body-1">
           <v-icon>mdi-account-circle</v-icon>
@@ -19,13 +19,8 @@
       </v-col>
       <v-col class="col-auto" v-if="user.role == `admin` || user.role == `instructor`">
         <v-menu offset-y>
-          <template v-slot:activator="{ on }">
-            <v-btn color="success" depressed v-on="on">
-              New Session
-            </v-btn>
-          </template>
           <v-list dense>
-            <v-list-item-group color="success">
+            <v-list-item-group color="secondary">
               <!-- Redirect to the lab create page -->
               <router-link :to="{ name: 'Lab Create', params: { courseId: course.courseId } }">
                 <v-list-item>
@@ -52,30 +47,17 @@
         <div class="px-4 pb-4 radius-2 shadow-section background-white">
           <v-tabs v-model="currentTab" class="mb-1">
             <v-tab>
-              Description
-            </v-tab>
-            <v-tab>
               Labs
               <v-chip class="ml-2 px-1" outlined label x-small>
                 {{ labList.length }}
               </v-chip>
             </v-tab>
-            <v-tab>
-              Captures
-              <v-chip class="ml-2 px-1" outlined label x-small>
-                {{ captures.length }}
-              </v-chip>
-            </v-tab>
           </v-tabs>
           <v-tabs-items v-model="currentTab" class="full-width">
-            <CourseDetailDescription :description="course.description" />
-            <CourseDetailLab :course-id="course.courseId" :lab-list="labList" v-show="currentTab == 1"/>
-            <CaptureLabList :course-id="course.courseId" :captures="captures" v-show="currentTab == 2"/>
+            <CourseDetailLab :course-id="course.courseId" :lab-list="labList" v-show="currentTab == 0"/>
           </v-tabs-items>
         </div>
-      </v-col>
       <!-- student list section -->
-      <v-col class="student-details">
         <SectionCard title="Roster">
           <v-list dense>
             <v-list-item-group>
@@ -98,18 +80,13 @@ import moment from "moment";
 import { getCourseDetail, getLabList } from "../../requests/course";
 
 import SectionCard from "../../components/Cards/SectionCard";
-
-import CourseDetailDescription from "./CourseDetailDescription";
 import CourseDetailLab from "./CourseDetailLab";
-import CaptureLabList from "../Capture/CaptureLabList";
 
 export default {
   name: "CourseDetail",
   components: {
     SectionCard,
-    CourseDetailDescription,
-    CourseDetailLab,
-    CaptureLabList
+    CourseDetailLab
   },
   data() {
     return {
