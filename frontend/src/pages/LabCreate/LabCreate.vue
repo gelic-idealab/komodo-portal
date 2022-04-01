@@ -122,7 +122,7 @@
         </v-col>
       </v-row>
       <!-- Asset list table  -->
-      <LabCreateAsset :asset-list="assetList" @onSelectChange="onAssetSelectChange" @uploadNewAsset="uploadNewAsset" />
+      <LabCreateAsset :asset-list="assetList" @onSelectChange="onAssetSelectChange" @uploadNewAsset="uploadNewAsset" @refreshAssetList="refreshAssetList"/>
       <v-row>
         <v-col>
           <v-expansion-panels
@@ -311,8 +311,23 @@ export default {
         endTime: this.endTime,
         build: this.buildScope + '/' + this.build
       };
-      localStorage.setItem('newLab', JSON.stringify(cached));
-      this.$router.push({ name: "Asset Create" });
+      localStorage.setItem('newLab', JSON.stringify(cached)); 
+
+      // Open in new tab
+      let routeData = this.$router.resolve({name: 'Asset Create'});
+      window.open(routeData.href, '_blank');
+    },
+    refreshAssetList() {
+      getAssetList()
+      .then(res => {
+        const assetList = res.data;
+        this.assetList = assetList.map(asset => {
+          return {
+            ...asset,
+            updatedOn: (asset.updateAt || asset.createAt),
+          }
+        });
+      })
     },
     validate() {
       return this.$refs.form.validate();

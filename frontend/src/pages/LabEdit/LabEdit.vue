@@ -120,7 +120,7 @@
         </v-col>
       </v-row>
       <!-- Asset list section -->
-      <LabEditAsset :assetList="assetList" :selectedAssetList="selectedAssetList" @onSelectChange="onAssetSelectChange" @uploadNewAsset="uploadNewAsset" />
+      <LabEditAsset :assetList="assetList" :selectedAssetList="selectedAssetList" @onSelectChange="onAssetSelectChange" @uploadNewAsset="uploadNewAsset" @refreshAssetList="refreshAssetList"/>
       <v-row>
         <v-col>
           <v-expansion-panels
@@ -283,16 +283,16 @@ export default {
         });
       })
       .then(() => {
-        if (localStorage.getItem('newLab')) {
+        if (localStorage.getItem('editLab')) {
           try {
-            const cached = JSON.parse(localStorage.getItem('newLab'));
+            const cached = JSON.parse(localStorage.getItem('editLab'));
             this.title = cached.title;
             this.description = cached.description;
             this.date = cached.date;
             this.startTime = cached.startTime;
             this.endTime = cached.endTime;
           } catch(e) {
-            localStorage.removeItem('newLab');
+            localStorage.removeItem('editLab');
           }
         }
       })
@@ -324,8 +324,23 @@ export default {
         build: this.buildScope + '/' + this.build
       };
       // Cached the asset information and redirect to the asset create page
-      localStorage.setItem('newLab', JSON.stringify(cached));
-      this.$router.push({ name: "Asset Create" });
+      localStorage.setItem('editLab', JSON.stringify(cached));
+
+      // Open in new tab
+      let routeData = this.$router.resolve({name: 'Asset Create'});
+      window.open(routeData.href, '_blank');
+    },
+    refreshAssetList() {
+      getAssetList()
+      .then(res => {
+        const assetList = res.data;
+        this.assetList = assetList.map(asset => {
+          return {
+            ...asset,
+            updatedOn: (asset.updateAt || asset.createAt),
+          }
+        });
+      })
     },
     // Validate the input of the form
     validate() {
@@ -348,7 +363,7 @@ export default {
       })
       .then(() => {
         this.status = "success";
-        localStorage.removeItem('newLab');
+        localStorage.removeItem('editLab');
         setTimeout(() => {
           // Redirect to the lab detail page
           this.$router.push({
