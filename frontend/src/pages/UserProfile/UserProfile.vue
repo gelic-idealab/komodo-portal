@@ -13,8 +13,8 @@
             <v-col>
                 <SectionCard title="User information">
                 <template v-slot:actions>
-                    <router-link :to="{ name: 'Account' }">
-                        <v-btn text small color="success">
+                    <router-link :to="{ name: 'Edit Account' }">
+                        <v-btn text small color="primary">
                         <v-icon small left>mode_edit</v-icon>
                         Edit
                         </v-btn>
