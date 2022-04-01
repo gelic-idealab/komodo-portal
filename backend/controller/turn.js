@@ -9,7 +9,7 @@ const authToken = config.TWILIO_AUTH_TOKEN;
 
 turnController.get("/", 
   async (req, res) => {
-    console.log(accountSid, authToken)
+    //console.log(accountSid, authToken)
     const client = twilio(accountSid, authToken);
     client.tokens.create().then(token => {
         res.send(token.iceServers);

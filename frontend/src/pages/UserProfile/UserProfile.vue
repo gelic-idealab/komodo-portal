@@ -132,7 +132,6 @@ export default {
     Promise.all([getUserDetailWithAssets({userId})])
     .then(values => {
         const user = values[0].data;
-        console.dir(user);
         // Initialize the asset list
         this.fullUserName = `${user.firstName} ${user.lastName}`;
         this.hiddenUserName = `${user.firstName.substr(0,1)}. ${user.lastName.substr(0,1)}.`
