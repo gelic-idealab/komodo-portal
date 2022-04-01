@@ -59,8 +59,8 @@ export default {
       search: '',
       tableHeaders: [
         { text: "Name", value: "labName" },
-        { text: "Date", value: "date" },
-        { text: "Actions", value: "action", sortable: false }
+        { text: "Actions", value: "action", sortable: false },
+        { text: "Date", value: "date" }
       ],
       updatedList: []
     }
