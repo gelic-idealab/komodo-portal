@@ -262,6 +262,15 @@ export default {
       this.builds = [];
       // get scopes and builds from buildserver
       axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/`).then( res => {
+
+        if (!res.data || res.data.length == 0 || !res.data.forEach) {
+          console.error("SETTINGS (ADMIN ONLY): Build server returned no apps (build scopes). Check connection to build server and check that builds have been uploaded correctly.");
+
+          this.buildScopes = [];
+
+          return;
+        }
+        
         res.data.forEach(build => {
           this.builds.push(build.name)
         });
