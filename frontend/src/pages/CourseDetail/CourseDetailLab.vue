@@ -1,6 +1,6 @@
 <template>
 <!-- course details section -->
-  <v-tab-item>
+  <div> 
     <v-data-table
       :headers="tableHeaders"
       :items="labList"
@@ -9,8 +9,6 @@
       :sort-desc="[true]"
       @click:row="onRowClick"
     >
-      <template v-slot:top>
-      </template>
       <!-- Edit and delete the lab -->
       <template v-slot:item.action="{ item }">
         <v-btn class="float-right" color="primary" depressed small @click.stop="onRowClick(item)">
@@ -28,7 +26,7 @@
         </v-btn>
       </router-link>
     </div>
-  </v-tab-item>
+  </div>
 </template>
 
 <script>

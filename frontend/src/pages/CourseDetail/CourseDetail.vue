@@ -1,22 +1,36 @@
 <template>
 <!-- Course detail page  -->
   <div>
+    <v-row>
+      <p class="mb-1">
+        <router-link :to="{ name: 'Landing' }">
+          <v-btn color="secondary" depressed small>{{ `Courses > ` }}</v-btn>
+        </router-link>
+      </p>
+    </v-row>
     <!-- course basic information  -->
     <v-row class="course-basic-info">
       <v-col class="col-auto">
-        <div class="course-avatar-placeholder radius-2 display-1 white--text font-weight-bold">
-          {{ course.courseNo.replace(/[0-9]/g, '') }}
+        <div class="course-avatar-placeholder radius-2">
+          <p class="display-1 white--text font-weight-bold" align="center">{{ course.courseNo.replace(/([a-zA-Z])([0-9])/g, '$1\n$2') }}</p>
         </div>
       </v-col>
-      <v-col>
-        <v-chip class="mr-1" color="primary" outlined label>{{ course.semester || "None (Semester)" }}</v-chip>
-        <v-chip class="mr-1" color="secondary" outlined label>{{ course.department || "None (Department)" }}</v-chip>
-        <p class="display-1">{{ `${course.courseNo}: ${course.courseName}` }}</p>
-        <p class="body-1">
-          <v-icon>mdi-account-circle</v-icon>
-          Instructor: {{ course.instructorName }}
-        </p>
+      <v-col class="col-auto">
+        <h1>
+          {{ course.courseName }}
+        </h1>
       </v-col>
+    </v-row>
+    <v-row class="course-basic-info">
+      <v-col>
+        <v-chip class="mr-1" label>
+          <v-icon>mdi-account-circle</v-icon>{{ ` ${course.instructorName}` || " None (Instructor)" }}
+        </v-chip>
+        <v-chip class="mr-1" label>{{ course.semester || "None (Semester)" }}</v-chip>
+        <v-chip class="mr-1" label>{{ course.department || "None (Department)" }}</v-chip>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col class="col-auto" v-if="user.role == `admin` || user.role == `instructor`">
         <v-menu offset-y>
           <v-list dense>
@@ -44,30 +58,24 @@
     <v-row>
       <!-- course details section -->
       <v-col class="course-details">
-        <div class="px-4 pb-4 radius-2 shadow-section background-white">
-          <v-tabs v-model="currentTab" class="mb-1">
-            <v-tab>
-              Labs
-              <v-chip class="ml-2 px-1" outlined label x-small>
-                {{ labList.length }}
-              </v-chip>
-            </v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="currentTab" class="full-width">
-            <CourseDetailLab :course-id="course.courseId" :lab-list="labList" v-show="currentTab == 0"/>
-          </v-tabs-items>
-        </div>
+        <SectionCard title="Labs">
+          <CourseDetailLab :course-id="course.courseId" :lab-list="labList" />
+        </SectionCard>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
       <!-- student list section -->
         <SectionCard title="Roster">
-          <v-list dense>
-            <v-list-item-group>
-              <v-list-item v-for="user in course.userList" :key="user.email">
+          <v-list three-line>
+            <template v-for="user in course.userList" >
+              <v-list-item :key="user.email">
                 <v-list-item-content>
                   <v-list-item-title> {{ `${user.firstName.substr(0, 3)}. ${user.lastName.substr(0, 1)}.` }} </v-list-item-title>
                   <v-list-item-subtitle>{{ getAbbreviatedEmail(user.email) }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
-            </v-list-item-group>
+            </template>
           </v-list>
         </SectionCard>
       </v-col>
