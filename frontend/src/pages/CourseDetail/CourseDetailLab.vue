@@ -1,9 +1,17 @@
 <template>
 <!-- course details section -->
   <div> 
+    <v-text-field
+      v-model="search"
+      append-icon="mdi-magnify"
+      label="Search"
+      single-line
+      hide-details
+    ></v-text-field>
     <v-data-table
       :headers="tableHeaders"
       :items="labList"
+      :search="search"
       :items-per-page="10"
       :sort-by="['date']"
       :sort-desc="[true]"
@@ -11,10 +19,11 @@
     >
       <!-- Edit and delete the lab -->
       <template v-slot:item.action="{ item }">
-        <v-btn class="float-right" color="primary" depressed small @click.stop="onRowClick(item)">
-          Go
+        <v-btn color="primary" depressed small @click.stop="onRowClick(item)">
+          Go to Lab
         </v-btn>
-        <v-icon small class="mr-2" v-if="user.role == `admin` || user.role == `instructor`" @click.stop="deleteLabClick(item)">delete</v-icon>
+        <v-btn v-if="user.role == `admin` || user.role == `instructor`" color="error" depressed small @click.stop="deleteLabClick(item)"><v-icon small class="mr-2">delete</v-icon></v-btn>
+        
       </template>
     </v-data-table>
     <!-- Redirect to the lab create page -->
@@ -47,6 +56,7 @@ export default {
   data() {
     return {
       user: this.$store.getters.user,
+      search: '',
       tableHeaders: [
         { text: "Name", value: "labName" },
         { text: "Date", value: "date" },
