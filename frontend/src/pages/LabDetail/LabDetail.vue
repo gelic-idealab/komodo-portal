@@ -92,7 +92,7 @@
           <SectionCard title="Settings (Admin Only)">
             <v-row>
               <v-col>
-                Temporarily change the app and build version, for your view only. To change the build for everyone, edit the settings.
+                Temporarily change the app and build version, for your view only. To change the build for everyone, edit the lab.
               </v-col>
             </v-row>
             <v-row>
