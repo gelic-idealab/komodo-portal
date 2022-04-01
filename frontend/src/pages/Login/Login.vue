@@ -19,8 +19,9 @@
               <v-text-field
                 v-model="password"
                 label="Password"
-                type="password"
-                append-icon="mdi-eye-off"
+                :type="showPassword ? 'text' : 'password'"
+                @click:append="() => showPassword = !showPassword"
+                :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 v-on:keyup.enter="login"
               />
               <v-alert
@@ -35,11 +36,7 @@
               <v-btn class="mx-6 full-width" color="primary" @click="login" large>Login</v-btn>
             </v-card-actions>
             <p class="register-text">
-              Don't have an account?
-              <span class="primary--text font-weight-medium" :click="register" style="cursor: pointer">
-                Register
-              </span>
-              now.
+              Don't have an account? Please click "Learn More" and fill out the Interest form to indicate that you are interested in getting an account, or contact the Project Komodo team if you are supposed to have access.
             </p>
           </v-col>
           <!-- Image section -->
@@ -78,6 +75,7 @@ import { getCourseList } from "../../requests/course";
 export default {
   name: "LoginPage",
   data: () => ({
+    showPassword: false,
     password: "",
     email: "",
     showDialog: false,
