@@ -31,7 +31,6 @@ const login = async (email, password) => {
  * @param {string} password
  */
 const resetUser = async (user_id, firstName, lastName, email, password) => {
-  console.log(`${[firstName, lastName, email, password, user_id]}`)
   const results = await pool.execute(userQuery.resetUser, [firstName, lastName, email, password, user_id]);
   const success = results[0];
   if (!success.changedRows) {
