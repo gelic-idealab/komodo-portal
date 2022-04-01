@@ -35,11 +35,14 @@
       <v-col :cols="6" class="">
         <div class="deep-purple lighten-5 pa-2 rounded d-flex justify-center align-baseline">
           <span class="ma-1 text-body-1">Already have access?</span>
-          <v-btn 
-            small 
-            color="primary" 
-            class="ma-1" 
-            href="https://komodo-dev.library.illinois.edu/login">Log in →</v-btn> 
+          <router-link :to="{ name: 'Login' }">
+            <v-btn 
+              small 
+              color="primary" 
+              class="ma-1">
+              Log in →
+              </v-btn> 
+          </router-link>
         </div>
       </v-col>
     </v-row>

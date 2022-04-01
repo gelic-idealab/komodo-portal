@@ -52,13 +52,14 @@
                 <p class="white--text">
                   Developed at the University of Illinois Urbana-Champaign
                 </p>
-                <v-btn 
-                  small 
-                  color="primary" 
-                  class="ma-1" 
-                  href="https://komodo-dev.library.illinois.edu/about">
-                  Learn More →
+                <router-link :to="{ name: 'About' }">
+                  <v-btn 
+                    small 
+                    color="primary" 
+                    class="ma-1">
+                    Learn More →
                   </v-btn>
+                </router-link>
               </div>
             </div>
           </v-col>

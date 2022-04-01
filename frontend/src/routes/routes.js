@@ -46,7 +46,6 @@ const routes = [
     name: "About",
     component: AboutPage,
     meta: {
-      requireLogin: true,
       title: "About — Komodo"
     }
   },
