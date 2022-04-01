@@ -58,8 +58,10 @@
                       v-model="Password"
                       label="New Password"
                       :error-messages="errors"
-                      type="password"
-                      append-icon="mdi-eye-off"
+                      :type="showPasswords ? 'text' : 'password'"
+                      @click:append="() => showPasswords = !showPasswords"
+                      :append-icon="showPasswords ? 'mdi-eye-off' : 'mdi-eye'"
+                      v-on:keyup.enter="login"
                     />
                   </validation-provider>
                   <validation-provider
@@ -71,8 +73,10 @@
                       v-model="PasswordConfirm"
                       label="Confirm New Password"
                       :error-messages="errors"
-                      type="password"
-                      append-icon="mdi-eye-off"
+                      :type="showPasswords ? 'text' : 'password'"
+                      @click:append="() => showPasswords = !showPasswords"
+                      :append-icon="showPasswords ? 'mdi-eye-off' : 'mdi-eye'"
+                      v-on:keyup.enter="login"
                     />
                   </validation-provider>
                   <v-alert
@@ -125,7 +129,8 @@ export default {
     PasswordConfirm: "",
     showDialog: false,
     message: "",
-    messageType: "info"
+    messageType: "info",
+    showPasswords: false
   }),
   mounted() {
     this.user = this.$store.getters.user;
