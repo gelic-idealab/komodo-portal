@@ -31,12 +31,13 @@ const login = async (email, password) => {
  * @param {string} password
  */
 const resetUser = async (user_id, firstName, lastName, email, password) => {
+  console.log(`${[firstName, lastName, email, password, user_id]}`)
   const results = await pool.execute(userQuery.resetUser, [firstName, lastName, email, password, user_id]);
   const success = results[0];
   if (!success.changedRows) {
     return {
-      code: 401,
-      data: { success: false, message: "Error updating password." }
+      code: 400,
+      data: { success: false, message: "Possible error updating password. This message also appears if you have not changed any of your information, so you can safely ignore it." }
     }
   }
 
