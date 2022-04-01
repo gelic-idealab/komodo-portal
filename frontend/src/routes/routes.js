@@ -26,6 +26,9 @@ const routes = [
     path: "/login",
     name: "Login",
     component: LoginPage,
+    meta: {
+      title: "Log In — Komodo"
+    }
   },
   // User logout
   {
@@ -33,7 +36,8 @@ const routes = [
     name: "Logout",
     component: LogoutPage,
     meta: {
-      requireLogin: true
+      requireLogin: true,
+      title: "Logging out... (Komodo)"
     }
   },
   // Go to about page
@@ -42,7 +46,8 @@ const routes = [
     name: "About",
     component: AboutPage,
     meta: {
-      requireLogin: false
+      requireLogin: true,
+      title: "About — Komodo"
     }
   },
   // Go to dashboard page
@@ -57,7 +62,8 @@ const routes = [
         name: "Landing",
         component: LandingPage,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Dashboard — Komodo"
         }
       },
       // Get course details
@@ -66,7 +72,8 @@ const routes = [
         name: "Course Detail",
         component: CourseDetail,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Course — Komodo"
         }
       },
       // Create new lab
@@ -75,7 +82,8 @@ const routes = [
         name: "Lab Create",
         component: LabCreate,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Create Lab — Komodo"
         }
       },
       // Edit lab by lab id
@@ -84,7 +92,8 @@ const routes = [
         name: "Lab Edit",
         component: LabEdit,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Edit Lab — Komodo"
         }
       },
       // Go to the lab detail page by course id and lab id
@@ -93,7 +102,8 @@ const routes = [
         name: "Lab Detail",
         component: LabDetail,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Lab — Komodo"
         }
       },
       // Go to the assets page
@@ -102,7 +112,8 @@ const routes = [
         name: "Assets",
         component: AssetsPage,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "All Assets — Komodo"
         }
       },
       // Go to the admin view page
@@ -111,7 +122,8 @@ const routes = [
         name: "Admin",
         component: AdminPage,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Admin — Komodo"
         }
       },
       // Create new user
@@ -120,7 +132,8 @@ const routes = [
         name: "User Create",
         component: UserCreate,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Create User — Komodo"
         }
       },
       // Edit user by user id
@@ -129,7 +142,8 @@ const routes = [
         name: "User Edit",
         component: UserEdit,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Edit Users — Komodo"
         }
       },
       // Edit multiple users in admin page
@@ -138,7 +152,8 @@ const routes = [
         name: "Multiple Users Edit",
         component: MultipleUsersEdit,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Edit Users — Komodo"
         }
       },
       // Create new course in admin page
@@ -147,7 +162,8 @@ const routes = [
         name: "Course Create",
         component: CourseCreate,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Create Course — Komodo"
         }
       },
       // Edit course by course id
@@ -156,7 +172,8 @@ const routes = [
         name: "Course Edit",
         component: CourseEdit,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Edit Course — Komodo"
         }
       },
       // Edit multiple course in admin page
@@ -165,7 +182,8 @@ const routes = [
         name: "Multiple Courses Edit",
         component: MultipleCoursesEdit,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Edit Courses — Komodo"
         }
       },
       // Create new asset
@@ -174,7 +192,8 @@ const routes = [
         name: "Asset Create",
         component: AssetCreate,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Upload Asset — Komodo"
         }
       },
       // Get assets details by asset id
@@ -192,7 +211,8 @@ const routes = [
         name: "Metric",
         component: MetricsPage,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Metrics — Komodo"
         }
       },
       // {
@@ -205,10 +225,11 @@ const routes = [
       // },
       {
         path: "/account/reset",
-        name: "Account",
+        name: "Edit Account",
         component: resetUser,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Account — Komodo"
         },
       },
       // User Profile page
@@ -217,7 +238,8 @@ const routes = [
         name: "UserProfilePage",
         component: UserProfilePage,
         meta: {
-          requireLogin: true
+          requireLogin: true,
+          title: "Account — Komodo"
         }
       },
     ]
