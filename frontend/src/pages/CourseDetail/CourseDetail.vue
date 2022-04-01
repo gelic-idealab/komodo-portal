@@ -1,31 +1,40 @@
 <template>
 <!-- Course detail page  -->
   <div>
+    <v-row>
+      <p class="mb-1">
+        <router-link :to="{ name: 'Landing' }">
+          <v-btn color="secondary" depressed small>{{ `Courses > ` }}</v-btn>
+        </router-link>
+      </p>
+    </v-row>
     <!-- course basic information  -->
     <v-row class="course-basic-info">
       <v-col class="col-auto">
-        <div class="course-avatar-placeholder radius-2 display-1 white--text font-weight-bold">
-          {{ course.courseNo.replace(/[0-9]/g, '') }}
+        <div class="course-avatar-placeholder radius-2">
+          <p class="display-1 white--text font-weight-bold" align="center">{{ course.courseNo.replace(/([a-zA-Z])([0-9])/g, '$1\n$2') }}</p>
         </div>
       </v-col>
-      <v-col>
-        <v-chip class="mr-1" color="primary" outlined label>{{ course.semester }}</v-chip>
-        <v-chip class="mr-1" color="secondary" outlined label>{{ course.department }}</v-chip>
-        <p class="display-1">{{ `${course.courseNo}: ${course.courseName}` }}</p>
-        <p class="body-1">
-          <v-icon>mdi-account-circle</v-icon>
-          Instructor: {{ course.instructorName }}
-        </p>
+      <v-col class="col-auto">
+        <h1>
+          {{ course.courseName }}
+        </h1>
       </v-col>
+    </v-row>
+    <v-row class="course-basic-info">
+      <v-col>
+        <v-chip class="mr-1" label>
+          <v-icon>mdi-account-circle</v-icon>{{ ` ${course.instructorName}` || " None (Instructor)" }}
+        </v-chip>
+        <v-chip class="mr-1" label>{{ course.semester || "None (Semester)" }}</v-chip>
+        <v-chip class="mr-1" label>{{ course.department || "None (Department)" }}</v-chip>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col class="col-auto" v-if="user.role == `admin` || user.role == `instructor`">
         <v-menu offset-y>
-          <template v-slot:activator="{ on }">
-            <v-btn color="success" depressed v-on="on">
-              New Session
-            </v-btn>
-          </template>
           <v-list dense>
-            <v-list-item-group color="success">
+            <v-list-item-group color="secondary">
               <!-- Redirect to the lab create page -->
               <router-link :to="{ name: 'Lab Create', params: { courseId: course.courseId } }">
                 <v-list-item>
@@ -49,43 +58,24 @@
     <v-row>
       <!-- course details section -->
       <v-col class="course-details">
-        <div class="px-4 pb-4 radius-2 shadow-section background-white">
-          <v-tabs v-model="currentTab" class="mb-1">
-            <v-tab>
-              Description
-            </v-tab>
-            <v-tab>
-              Labs
-              <v-chip class="ml-2 px-1" outlined label x-small>
-                {{ labList.length }}
-              </v-chip>
-            </v-tab>
-            <v-tab>
-              Captures
-              <v-chip class="ml-2 px-1" outlined label x-small>
-                {{ captures.length }}
-              </v-chip>
-            </v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="currentTab" class="full-width">
-            <CourseDetailDescription :description="course.description" />
-            <CourseDetailLab :course-id="course.courseId" :lab-list="labList" v-show="currentTab == 1"/>
-            <CaptureLabList :course-id="course.courseId" :captures="captures" v-show="currentTab == 2"/>
-          </v-tabs-items>
-        </div>
+        <SectionCard title="Labs">
+          <CourseDetailLab :course-id="course.courseId" :lab-list="labList" />
+        </SectionCard>
       </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
       <!-- student list section -->
-      <v-col class="student-details">
         <SectionCard title="Roster">
-          <v-list dense>
-            <v-list-item-group>
-              <v-list-item v-for="user in course.userList" :key="user.email">
+          <v-list three-line>
+            <template v-for="user in course.userList" >
+              <v-list-item :key="user.email">
                 <v-list-item-content>
-                  <v-list-item-title> {{ user.firstName + ` ` + user.lastName }} </v-list-item-title>
-                  <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
+                  <v-list-item-title> {{ `${user.firstName.substr(0, 3)}. ${user.lastName.substr(0, 1)}.` }} </v-list-item-title>
+                  <v-list-item-subtitle>{{ getAbbreviatedEmail(user.email) }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
-            </v-list-item-group>
+            </template>
           </v-list>
         </SectionCard>
       </v-col>
@@ -94,22 +84,16 @@
 </template>
 
 <script>
-import moment from "moment";
 import { getCourseDetail, getLabList } from "../../requests/course";
 
 import SectionCard from "../../components/Cards/SectionCard";
-
-import CourseDetailDescription from "./CourseDetailDescription";
 import CourseDetailLab from "./CourseDetailLab";
-import CaptureLabList from "../Capture/CaptureLabList";
 
 export default {
   name: "CourseDetail",
   components: {
     SectionCard,
-    CourseDetailDescription,
-    CourseDetailLab,
-    CaptureLabList
+    CourseDetailLab
   },
   data() {
     return {
@@ -154,31 +138,48 @@ export default {
             ...values[0].data
           };
           this.labList = values[1].data.map(lab => {
-            const startTime = moment(lab.startTime);
-            const endTime = moment(lab.endTime);
             return {
               id: lab.sessionId,
               labName: lab.sessionName,
-              date: startTime.format("L"),
-              time: `${startTime.format("LT")} - ${endTime.format("LT")}`,
-              duration: moment.duration(startTime.diff(endTime)).humanize()
+              date: lab.startTime,
+              time: lab.endTime,
+              duration: "--"
             }
           });
           if(typeof values[2] !== "undefined"){
             this.captures = values[2].data.map(capture => {
-              const start = moment(capture.start);
-              const end = moment(capture.end);
               return {
                 id: capture.sessionId,
                 captureId: capture.captureId,
                 labName: capture.sessionName,
-                date: start.format("L"),
-                time: `${start.format("LT")}`,
-                duration: moment.duration(start.diff(end)).humanize()
+                date: capture.start,
+                time: capture.end,
+                duration: "--"
               }
             });
           }
         });
+    },
+    getAbbreviatedEmail(email) {
+      let splitEmail = email.split('@');
+
+      if (splitEmail.length != 2) {
+        return "Invalid email format.";
+      }
+
+      let beforeAt = splitEmail[0];
+
+      let afterAt = splitEmail[1].split('.');
+
+      if (afterAt.length != 2) {
+        return "Invalid email format.";
+      }
+
+      let betweenAtAndDot = afterAt[0];
+
+      let afterDot = afterAt[1];
+
+      return `${beforeAt.substr(0,1)}...@${betweenAtAndDot.substr(0,1)}....${afterDot}`
     }
   }
 }

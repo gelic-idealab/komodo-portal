@@ -98,7 +98,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import { getAssetDetail } from "../../requests/asset";
 import SectionCard from "../../components/Cards/SectionCard";
 import {deleteAsset} from "../../requests/asset"
@@ -141,8 +140,8 @@ export default {
         this.assetId = assetId;
         this.asset = {
           ...asset,
-          createAt: moment(asset.createAt).format("L LT"),
-          updateAt: moment(asset.updateAt).format("L LT"),
+          createAt: asset.createAt,
+          updateAt: asset.updateAt,
           fileType: asset.path.split('.')[asset.path.split('.').length - 1].toUpperCase()
         };
       })

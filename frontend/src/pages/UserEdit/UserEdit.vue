@@ -26,19 +26,15 @@
         />
         <v-row class="password">
         <v-text-field
-        v-model="password"
-        label="Default Password"
-        :rules="requireRules"
+        v-model="newPassword"
+        label="Password (Leave blank to keep existing password)"
         autofocus
-        required
-        :disabled="passwordDisabled"
         />
-        <p class="edit-password" @click="updatePassword">Edit</p>
         </v-row>
         <v-radio-group
               v-model="role"
               row
-              madndatory
+              mandatory
             >
             <v-radio
             label="Admin"
@@ -98,7 +94,7 @@ export default {
       userId: this.$route.params.item.userId,
       lastName: "",
       firstName: "",
-      password: "********",
+      newPassword: "",
       editPassword: false,
       email: "",
       role: "3",
@@ -128,9 +124,6 @@ export default {
     })
   },
   computed:{
-    passwordDisabled(){
-      return !this.editPassword;
-    }
   },
   methods: {
     goBack() {
@@ -142,21 +135,19 @@ export default {
     validate() {
       return this.$refs.form.validate();
     },
-    // Initailize the password to be empty for setting the new password
-    updatePassword(){
-      this.editPassword = true;
-      this.password = "";
-    },
     editUser(){
       if(!this.validate()){
         return;
       }
+
       editUser({
         lastName: this.lastName,
         firstName: this.firstName,
         email: this.email,
-        // Update the password only when the password was changed
-        password: this.updatePassword ? sha1(this.password).toString() : this.password,
+        // Update the password only when the password was changed/
+        // We expect the back end userEdit service to accept an
+        // empty string to indicate that the password should not be //// changed.
+        password: this.newPassword == "" ? "" : sha1(this.newPassword).toString(),
         roleId: parseInt(this.role),
         courseList: this.selectedCourseList.map(course => course.courseId),
         userId: this.userId

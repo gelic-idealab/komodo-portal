@@ -26,19 +26,23 @@
         <!-- Assets section -->
         <SectionCard title="Assets">
           <template v-slot:actions>
-            <router-link :to="{name: 'Assets' }">
-              <v-btn class="mr-1" text small color="info">
-                <v-icon small left color="info">mdi-earth</v-icon>
-                Browse
-              </v-btn>
-            </router-link>
             <router-link :to="{ name: 'Asset Create' }">
-              <v-btn text small color="success">
+              <v-btn text small color="primary">
                 <v-icon small left>mdi-plus</v-icon>
                 Upload
               </v-btn>
             </router-link>
           </template>
+          <router-link :to="{ name: 'UserProfilePage' }">
+            <v-btn text small color="primary">
+              Your Assets
+            </v-btn>
+          </router-link>
+          <router-link :to="{name: 'Assets' }">
+            <v-btn class="mr-1" text small color="primary">
+              All Assets
+            </v-btn>
+          </router-link>
         </SectionCard>
       </v-col>
     </v-row>

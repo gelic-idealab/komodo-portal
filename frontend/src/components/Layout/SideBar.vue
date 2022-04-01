@@ -3,20 +3,21 @@
     class="side-bar"
     width="230"
     permanent
-    fixed
     expand-on-hover
+    fixed
     dark
   >
     <v-list>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="title" :tabindex="8" @focus.native="focusProfileLink" @click="goToProfilePage" style="cursor: pointer; margin-bottom: 10px;">
-            {{ `${user.firstName} ${user.lastName}` }}
+      <v-list-item @click="goToProfilePage">
+        <v-list-item-content :tabindex="8" @focus.native="focusProfileLink"  style="cursor: pointer; margin-bottom: 10px;">
+          <v-list-item-title class="title" >
+            {{ `${user.firstName} ${user.lastName.substr(0,1)}.` }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
-
+          <v-list-item-subtitle>{{ getAbbreviatedEmail(user.email) }}</v-list-item-subtitle>
+          <v-list-item-subtitle>Go to Account</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
+      <SideBarMenuItem title="Log Out" icon-name="mdi-logout-variant" to="/logout"/>
     </v-list>
 
     <v-divider></v-divider>
@@ -44,7 +45,9 @@
     </v-list>
 
     <v-list class="side-bar-bottom-wrapper" nav dense>
-      <SideBarMenuItem title="Logout" icon-name="mdi-logout-variant" to="/logout"/>
+      <v-list-item>
+        1.2.2 <!-- TODO -- update this manually with every version -->
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -75,6 +78,27 @@ export default {
       this.$router.push({
         name: "UserProfilePage"
       });
+    },
+    getAbbreviatedEmail(email) {
+      let splitEmail = email.split('@');
+
+      if (splitEmail.length != 2) {
+        return "Invalid email format.";
+      }
+
+      let beforeAt = splitEmail[0];
+
+      let afterAt = splitEmail[1].split('.');
+
+      if (afterAt.length != 2) {
+        return "Invalid email format.";
+      }
+
+      let betweenAtAndDot = afterAt[0];
+
+      let afterDot = afterAt[1];
+
+      return `${beforeAt.substr(0,1)}...@${betweenAtAndDot.substr(0,1)}....${afterDot}`
     }
   }
 }

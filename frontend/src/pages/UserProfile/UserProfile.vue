@@ -4,7 +4,7 @@
             <v-col>
                 <div class="mx-auto">
                     <p class="display-1">
-                    Profile page
+                    Account
                     </p>
                 </div>
             </v-col>
@@ -13,31 +13,29 @@
             <v-col>
                 <SectionCard title="User information">
                 <template v-slot:actions>
-                    <router-link :to="{ name: 'Account' }">
-                        <v-btn text small color="success">
+                    <router-link :to="{ name: 'Edit Account' }">
+                        <v-btn text small color="primary">
                         <v-icon small left>mode_edit</v-icon>
                         Edit
                         </v-btn>
                     </router-link>
                 </template>
-                    <div class="text--primary mx-auto" style="width:80%;" align="center" justify="center">
-                        <v-row>
-                            <v-col>
-                            Name:
-                            </v-col>
-                            <v-col>
-                            {{ $store.getters.user.firstName }} {{ $store.getters.user.lastName }}
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col>
-                            email:
-                            </v-col>
-                            <v-col>
-                            {{ $store.getters.user.email }}
-                            </v-col>
-                        </v-row>
-                    </div>
+                <v-row>
+                    <v-col>
+                      {{this.showUserName ? this.fullUserName : this.hiddenUserName}}
+                      <v-btn class="mx-2" dark small depressed v-on:click="() => showUserName = !showUserName">
+                        <v-icon>{{showUserName ? 'mdi-eye-off' : 'mdi-eye'}}</v-icon>
+                      </v-btn>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                      {{this.showEmail ? this.fullEmail : this.hiddenEmail}}
+                      <v-btn class="mx-2" dark small depressed v-on:click="() => showEmail = !showEmail">
+                        <v-icon>{{showEmail ? 'mdi-eye-off' : 'mdi-eye'}}</v-icon>
+                      </v-btn>
+                    </v-col>
+                </v-row>
                 </SectionCard>
             </v-col>
         </v-row>
@@ -46,11 +44,17 @@
         <v-col>
         <!-- Assets data table section -->
         <SectionCard title="Assets">
+          This page shows your private and public assets.
           <template v-slot:actions>
             <router-link :to="{ name: 'Asset Create' }">
-              <v-btn text small color="success">
+              <v-btn text small color="primary">
                 <v-icon small left>mdi-plus</v-icon>
                 Upload
+              </v-btn>
+            </router-link>
+            <router-link :to="{ name: 'Assets' }">
+              <v-btn text small color="primary">
+                All Assets
               </v-btn>
             </router-link>
           </template>
@@ -78,7 +82,7 @@
               no-data-text="No asset added"
             >
             <template v-slot:item.updateAt="{ item }">
-              <span>{{ moment(item.updateAt).format("L LT") }}</span>
+              <span>{{item.updateAt}}</span>
             </template>
             <template v-slot:item.isPublic="{ item }">
               <span v-if="item.isPublic">Public</span>
@@ -104,7 +108,12 @@ export default {
   data() {
     return {
         userId: this.$store.getters.user.userId,
-        userName: "",
+        showUserName: false,
+        showEmail: false,
+        hiddenUserName: "",
+        fullUserName: "",
+        hiddenEmail: "",
+        fullEmail: "",
         search: "",
         assetList: [],
         headers: [
@@ -124,7 +133,10 @@ export default {
     .then(values => {
         const user = values[0].data;
         // Initialize the asset list
-        this.userName = user.first_name;
+        this.fullUserName = `${user.firstName} ${user.lastName}`;
+        this.hiddenUserName = `${user.firstName.substr(0,1)}. ${user.lastName.substr(0,1)}.`
+        this.fullEmail = user.email;
+        this.hiddenEmail = this.getAbbreviatedEmail(user.email);
         this.assetList = user.assetList;
     })
   },
@@ -135,6 +147,27 @@ export default {
             params: { assetId }
         });
     },
+    getAbbreviatedEmail(email) {
+      let splitEmail = email.split('@');
+
+      if (splitEmail.length != 2) {
+        return "Invalid email format.";
+      }
+
+      let beforeAt = splitEmail[0];
+
+      let afterAt = splitEmail[1].split('.');
+
+      if (afterAt.length != 2) {
+        return "Invalid email format.";
+      }
+
+      let betweenAtAndDot = afterAt[0];
+
+      let afterDot = afterAt[1];
+
+      return `${beforeAt.substr(0,1)}...@${betweenAtAndDot.substr(0,1)}....${afterDot}`
+    }
   }
 }
 </script>

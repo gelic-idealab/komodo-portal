@@ -25,6 +25,7 @@
         <v-text-field
         v-model="credit"
         label="Credit Hours"
+        disabled
         autofocus
         />
         <v-text-field
@@ -84,7 +85,7 @@ export default {
     return {
       courseName: "",
       CRN: "",
-      credit:null,
+      credit: 1,
       department:null,
       description: null,
       instructor: "",

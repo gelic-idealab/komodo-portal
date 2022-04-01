@@ -122,7 +122,7 @@
         </v-col>
       </v-row>
       <!-- Asset list table  -->
-      <LabCreateAsset :asset-list="assetList" @onSelectChange="onAssetSelectChange" @uploadNewAsset="uploadNewAsset" />
+      <LabCreateAsset :asset-list="assetList" @onSelectChange="onAssetSelectChange" @uploadNewAsset="uploadNewAsset" @refreshAssetList="refreshAssetList"/>
       <v-row>
         <v-col>
           <v-expansion-panels
@@ -240,6 +240,14 @@ export default {
   mounted: function() {
     // get build scopes from buildserver
     axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}`).then( res => {
+      if (!res.data || res.data.length == 0 || !res.data.forEach) {
+        console.error("SETTINGS (ADMIN ONLY): Build server returned no apps (build scopes). Check connection to build server and check that builds have been uploaded correctly.");
+
+        this.buildScopes = [];
+
+        return;
+      }
+
       res.data.forEach(scope => {
         this.buildScopes.push(scope.name)
       });
@@ -261,7 +269,7 @@ export default {
         this.assetList = assetList.map(asset => {
           return {
             ...asset,
-            updatedOn: moment(asset.updateAt || asset.createAt).format("L"),
+            updatedOn: asset.updateAt || asset.createAt,
           }
         });
       })
@@ -285,6 +293,14 @@ export default {
       this.builds = [];
       // get scopes and builds from buildserver
       axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/`).then( res => {
+        if (!res.data || res.data.length == 0 || !res.data.forEach) {
+          console.error("SETTINGS (ADMIN ONLY): Build server returned no apps (build scopes). Check connection to build server and check that builds have been uploaded correctly.");
+
+          this.buildScopes = [];
+
+          return;
+        }
+        
         res.data.forEach(build => {
           this.builds.push(build.name)
         })
@@ -311,8 +327,23 @@ export default {
         endTime: this.endTime,
         build: this.buildScope + '/' + this.build
       };
-      localStorage.setItem('newLab', JSON.stringify(cached));
-      this.$router.push({ name: "Asset Create" });
+      localStorage.setItem('newLab', JSON.stringify(cached)); 
+
+      // Open in new tab
+      let routeData = this.$router.resolve({name: 'Asset Create'});
+      window.open(routeData.href, '_blank');
+    },
+    refreshAssetList() {
+      getAssetList()
+      .then(res => {
+        const assetList = res.data;
+        this.assetList = assetList.map(asset => {
+          return {
+            ...asset,
+            updatedOn: (asset.updateAt || asset.createAt),
+          }
+        });
+      })
     },
     validate() {
       return this.$refs.form.validate();
