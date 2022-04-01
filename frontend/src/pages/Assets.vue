@@ -36,11 +36,17 @@
         <v-col>
         <!-- Assets data table section -->
         <SectionCard title="Assets">
+          This page shows everyone's public assets, your public assets, and your private assets.
           <template v-slot:actions>
             <router-link :to="{ name: 'Asset Create' }">
-              <v-btn text small color="success">
+              <v-btn text small color="primary">
                 <v-icon small left>mdi-plus</v-icon>
                 Upload
+              </v-btn>
+            </router-link>
+            <router-link :to="{ name: 'UserProfilePage' }">
+              <v-btn text small color="primary">
+                Your Assets
               </v-btn>
             </router-link>
           </template>
