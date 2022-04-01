@@ -40,7 +40,6 @@
 
 <script>
 import io from "socket.io-client";
-import moment from "moment";
 // import {Howl, Howler} from 'howler';
 
 export default {
@@ -86,7 +85,7 @@ export default {
       this.socket.disconnect();
     },
     formatTime(ts) {
-      return moment(ts).format('h:mm a');
+      return "not implemented";
     },
     handleMicText(record) {
       this.appendRecord(record).then( () => { this.updateScroll(); });

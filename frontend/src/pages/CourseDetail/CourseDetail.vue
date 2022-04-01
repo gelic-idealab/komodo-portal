@@ -84,7 +84,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import { getCourseDetail, getLabList } from "../../requests/course";
 
 import SectionCard from "../../components/Cards/SectionCard";
@@ -139,27 +138,23 @@ export default {
             ...values[0].data
           };
           this.labList = values[1].data.map(lab => {
-            const startTime = moment(lab.startTime);
-            const endTime = moment(lab.endTime);
             return {
               id: lab.sessionId,
               labName: lab.sessionName,
-              date: startTime.format("L"),
-              time: `${startTime.format("LT")} - ${endTime.format("LT")}`,
-              duration: moment.duration(startTime.diff(endTime)).humanize()
+              date: lab.startTime,
+              time: lab.endTime,
+              duration: "--"
             }
           });
           if(typeof values[2] !== "undefined"){
             this.captures = values[2].data.map(capture => {
-              const start = moment(capture.start);
-              const end = moment(capture.end);
               return {
                 id: capture.sessionId,
                 captureId: capture.captureId,
                 labName: capture.sessionName,
-                date: start.format("L"),
-                time: `${start.format("LT")}`,
-                duration: moment.duration(start.diff(end)).humanize()
+                date: capture.start,
+                time: capture.end,
+                duration: "--"
               }
             });
           }

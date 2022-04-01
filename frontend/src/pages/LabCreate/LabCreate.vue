@@ -261,7 +261,7 @@ export default {
         this.assetList = assetList.map(asset => {
           return {
             ...asset,
-            updatedOn: moment(asset.updateAt || asset.createAt).format("L"),
+            updatedOn: asset.updateAt || asset.createAt,
           }
         });
       })

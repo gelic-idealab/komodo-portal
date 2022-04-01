@@ -78,7 +78,7 @@
               no-data-text="No asset added"
             >
             <template v-slot:item.updateAt="{ item }">
-              <span>{{ moment(item.updateAt).format("L LT") }}</span>
+              <span>{{item.updateAt}}</span>
             </template>
             <template v-slot:item.isPublic="{ item }">
               <span v-if="item.isPublic">Public</span>
