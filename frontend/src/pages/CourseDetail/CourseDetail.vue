@@ -63,8 +63,8 @@
             <v-list-item-group>
               <v-list-item v-for="user in course.userList" :key="user.email">
                 <v-list-item-content>
-                  <v-list-item-title> {{ user.firstName + ` ` + user.lastName }} </v-list-item-title>
-                  <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
+                  <v-list-item-title> {{ `${user.firstName.substr(0, 3)}. ${user.lastName.substr(0, 1)}.` }} </v-list-item-title>
+                  <v-list-item-subtitle>{{ getAbbreviatedEmail(user.email) }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -156,6 +156,27 @@ export default {
             });
           }
         });
+    },
+    getAbbreviatedEmail(email) {
+      let splitEmail = email.split('@');
+
+      if (splitEmail.length != 2) {
+        return "Invalid email format.";
+      }
+
+      let beforeAt = splitEmail[0];
+
+      let afterAt = splitEmail[1].split('.');
+
+      if (afterAt.length != 2) {
+        return "Invalid email format.";
+      }
+
+      let betweenAtAndDot = afterAt[0];
+
+      let afterDot = afterAt[1];
+
+      return `${beforeAt.substr(0,1)}...@${betweenAtAndDot.substr(0,1)}....${afterDot}`
     }
   }
 }
