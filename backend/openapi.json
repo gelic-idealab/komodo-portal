@@ -3,7 +3,7 @@
   "info" : {
     "title" : "Komodo Portal",
     "description" : "Komodo Portal API",
-    "version" : "1.0.0-oas3"
+    "version" : "1.2.2-oas3"
   },
   "servers" : [ {
     "url" : "https://api.komodo-dev.library.illinois.edu/",

@@ -120,7 +120,7 @@
         </v-col>
       </v-row>
       <!-- Asset list section -->
-      <LabEditAsset :assetList="assetList" :selectedAssetList="selectedAssetList" @onSelectChange="onAssetSelectChange" @uploadNewAsset="uploadNewAsset" />
+      <LabEditAsset :assetList="assetList" :selectedAssetList="selectedAssetList" @onSelectChange="onAssetSelectChange" @uploadNewAsset="uploadNewAsset" @refreshAssetList="refreshAssetList"/>
       <v-row>
         <v-col>
           <v-expansion-panels
@@ -188,12 +188,14 @@ import { getCourseDetail, getLabDetail, editLab } from "../../requests/course";
 import { getAssetList } from "../../requests/asset";
 
 import ContainerCard from "../../components/Cards/ContainerCard";
+import SectionCard from "../../components/Cards/SectionCard";
 import LabEditAsset from "./LabEditAsset";
 
 export default {
   name: "EditCreate",
   components: {
     ContainerCard,
+    SectionCard,
     LabEditAsset
   },
   data() {
@@ -259,6 +261,15 @@ export default {
     });
     // get build scopes from buildserver
     axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}`).then( res => {
+
+      if (!res.data || res.data.length == 0 || !res.data.forEach) {
+        console.error("SETTINGS (ADMIN ONLY): Build server returned no apps (build scopes). Check connection to build server and check that builds have been uploaded correctly.");
+
+        this.buildScopes = [];
+
+        return;
+      }
+
       res.data.forEach(scope => {
         this.buildScopes.push(scope.name)
       });
@@ -278,21 +289,21 @@ export default {
         this.assetList = assetList.map(asset => {
           return {
             ...asset,
-            updatedOn: moment(asset.updateAt || asset.createAt).format("L"),
+            updatedOn: (asset.updateAt || asset.createAt),
           }
         });
       })
       .then(() => {
-        if (localStorage.getItem('newLab')) {
+        if (localStorage.getItem('editLab')) {
           try {
-            const cached = JSON.parse(localStorage.getItem('newLab'));
+            const cached = JSON.parse(localStorage.getItem('editLab'));
             this.title = cached.title;
             this.description = cached.description;
             this.date = cached.date;
             this.startTime = cached.startTime;
             this.endTime = cached.endTime;
           } catch(e) {
-            localStorage.removeItem('newLab');
+            localStorage.removeItem('editLab');
           }
         }
       })
@@ -301,7 +312,16 @@ export default {
     getBuilds() {
       this.builds = [];
       // get scopes and builds from buildserver
+      
       axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/`).then( res => {
+        if (!res.data || res.data.length == 0 || !res.data.forEach) {
+          console.error("SETTINGS (ADMIN ONLY): Build server returned no apps (build scopes). Check connection to build server and check that builds have been uploaded correctly.");
+
+          this.buildScopes = [];
+
+          return;
+        }
+
         res.data.forEach(build => {
           this.builds.push(build.name)
         })
@@ -324,8 +344,23 @@ export default {
         build: this.buildScope + '/' + this.build
       };
       // Cached the asset information and redirect to the asset create page
-      localStorage.setItem('newLab', JSON.stringify(cached));
-      this.$router.push({ name: "Asset Create" });
+      localStorage.setItem('editLab', JSON.stringify(cached));
+
+      // Open in new tab
+      let routeData = this.$router.resolve({name: 'Asset Create'});
+      window.open(routeData.href, '_blank');
+    },
+    refreshAssetList() {
+      getAssetList()
+      .then(res => {
+        const assetList = res.data;
+        this.assetList = assetList.map(asset => {
+          return {
+            ...asset,
+            updatedOn: (asset.updateAt || asset.createAt),
+          }
+        });
+      })
     },
     // Validate the input of the form
     validate() {
@@ -348,7 +383,7 @@ export default {
       })
       .then(() => {
         this.status = "success";
-        localStorage.removeItem('newLab');
+        localStorage.removeItem('editLab');
         setTimeout(() => {
           // Redirect to the lab detail page
           this.$router.push({

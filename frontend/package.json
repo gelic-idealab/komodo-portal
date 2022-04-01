@@ -1,6 +1,7 @@
 {
-  "name": "komodo",
-  "version": "0.1.8",
+  "name": "komodo-portal-frontend",
+  "version": "1.2.2",
+  "description": "Front end for Project Komodo web portal",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --mode production",

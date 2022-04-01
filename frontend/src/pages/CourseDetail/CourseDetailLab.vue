@@ -1,35 +1,41 @@
 <template>
 <!-- course details section -->
-  <v-tab-item>
+  <div> 
+    <v-text-field
+      v-model="search"
+      append-icon="mdi-magnify"
+      label="Search"
+      single-line
+      hide-details
+    ></v-text-field>
     <v-data-table
       :headers="tableHeaders"
       :items="labList"
+      :search="search"
       :items-per-page="10"
       :sort-by="['date']"
       :sort-desc="[true]"
       @click:row="onRowClick"
-      show-select
     >
-      <template v-slot:top>
-        <!-- Redirect to the lab create page -->
-        <div class="clear-fix" v-if="user.role == `admin` || user.role == `instructor`">
-          <router-link :to="{ name: 'Lab Create', params: { courseId } }">
-            <v-btn class="float-right" color="success" depressed small>
-              <v-icon left small>mdi-plus</v-icon>
-              New Lab
-            </v-btn>
-          </router-link>
-        </div>
-      </template>
       <!-- Edit and delete the lab -->
       <template v-slot:item.action="{ item }">
-        <v-icon small class="mr-2">mdi-play</v-icon>
-        <v-icon small class="mr-2">mdi-camera</v-icon>
-        <v-icon small class="mr-2" v-if="user.role == `admin` || user.role == `instructor`">edit</v-icon>
-        <v-icon small class="mr-2" v-if="user.role == `admin` || user.role == `instructor`" @click.stop="deleteLabClick(item)">delete</v-icon>
+        <v-btn color="primary" depressed small @click.stop="onRowClick(item)">
+          Go to Lab
+        </v-btn>
+        <v-btn v-if="user.role == `admin` || user.role == `instructor`" color="error" depressed small @click.stop="deleteLabClick(item)"><v-icon small class="mr-2">delete</v-icon></v-btn>
+        
       </template>
     </v-data-table>
-  </v-tab-item>
+    <!-- Redirect to the lab create page -->
+    <div class="clear-fix" v-if="user.role == `admin` || user.role == `instructor`">
+      <router-link :to="{ name: 'Lab Create', params: { courseId } }">
+        <v-btn class="float-right" color="secondary" depressed small>
+          <v-icon left small>mdi-plus</v-icon>
+          Create New Lab
+        </v-btn>
+      </router-link>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -50,12 +56,11 @@ export default {
   data() {
     return {
       user: this.$store.getters.user,
+      search: '',
       tableHeaders: [
         { text: "Name", value: "labName" },
-        { text: "Date", value: "date" },
-        { text: "Time", value: "time" },
-        { text: "Duration", value: "duration", sortable: false },
-        { text: "Actions", value: "action", sortable: false }
+        { text: "Actions", value: "action", sortable: false },
+        { text: "Date", value: "date" }
       ],
       updatedList: []
     }

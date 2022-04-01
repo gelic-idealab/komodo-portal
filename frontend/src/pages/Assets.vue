@@ -36,11 +36,17 @@
         <v-col>
         <!-- Assets data table section -->
         <SectionCard title="Assets">
+          This page shows everyone's public assets, your public assets, and your private assets.
           <template v-slot:actions>
             <router-link :to="{ name: 'Asset Create' }">
-              <v-btn text small color="success">
+              <v-btn text small color="primary">
                 <v-icon small left>mdi-plus</v-icon>
                 Upload
+              </v-btn>
+            </router-link>
+            <router-link :to="{ name: 'UserProfilePage' }">
+              <v-btn text small color="primary">
+                Your Assets
               </v-btn>
             </router-link>
           </template>
@@ -68,7 +74,7 @@
               no-data-text="No asset added"
             >
             <template v-slot:item.updateAt="{ item }">
-              <span>{{ moment(item.updateAt).format("L LT") }}</span>
+              <span>{{ item.updateAt }}</span>
             </template>
             <template v-slot:item.isPublic="{ item }">
               <span v-if="item.isPublic">Public</span>
@@ -83,7 +89,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import { getAssetList, getAssetDetail } from "../requests/asset"
 import SectionCard from "../components/Cards/SectionCard";
 
@@ -125,8 +130,8 @@ export default {
             let asset = res.data;
             let formatted = {
                 ...asset,
-                createAt: moment(asset.createAt).format("L LT"),
-                updateAt: moment(asset.updateAt).format("L LT"),
+                createAt: asset.createAt,
+                updateAt: asset.updateAt,
                 fileType: asset.path.split('.')[asset.path.split('.').length - 1].toUpperCase()
             };
             this.assets.push(formatted);

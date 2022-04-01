@@ -35,10 +35,11 @@ const resetUser = async (user_id, firstName, lastName, email, password) => {
   const success = results[0];
   if (!success.changedRows) {
     return {
-      code: 401,
-      data: { success: false, message: "Error updating password." }
+      code: 400,
+      data: { success: false, message: "Possible error updating password. This message also appears if you have not changed any of your information, so you can safely ignore it." }
     }
   }
+
   return {
     code: 200,
     data: { success: true }
@@ -58,6 +59,7 @@ const findUser = async(user_id) => {
       data: { message: "User doesn't exist." }
     }
   }
+
   return {
     code: 200,
     data: { user: users[0] }
@@ -102,6 +104,7 @@ const createUser = async ({ lastName, firstName, email, roleId, password, course
     for (const courseId of courseList) {
       values += `(${userId}, ${courseId}),`
     }
+
     await pool.execute(
       courseQuery.registerCourse + values.slice(0, values.length - 1)
     );
@@ -148,7 +151,7 @@ const getUserDetail = async userId => {
  * @param {string} firstName
  * @param {string} email
  * @param {integer} roleId
- * @param {string} password
+ * @param {string} password -- pass empty string to keep existing password
  * @param {Array} courseList
  * @param {integer} userId   
  */
@@ -158,11 +161,12 @@ const editUser = async ({ lastName, firstName, email, password, roleId, courseLi
     userQuery.editUserQuery, [lastName, firstName, email, roleId, userId]
   );
   // If the password was updated, updated the current password
-  if(password !== "********"){
+  if(password !== ""){
     await pool.execute(
       userQuery.updatePassword, [password, userId]
     );
   }
+
   // Remove previous registered courses for the user
   await pool.execute(
     courseQuery.unregisterCourse,
@@ -174,10 +178,12 @@ const editUser = async ({ lastName, firstName, email, password, roleId, courseLi
     for (const courseId of courseList) {
       values += `(${userId}, ${courseId}),`
     }
+
     await pool.execute(
       courseQuery.registerCourse + values.slice(0, values.length - 1)
     );
   }
+
   return {
     data: true
   };
@@ -200,6 +206,7 @@ const editMultipleUsers = async({users, password, roleId, courseList}) => {
         userQuery.updatePassword, [password, userId]
       );
     }
+
     // Remove the previous registered course for the user
     await pool.execute(
       courseQuery.unregisterCourse,[userId]
@@ -213,10 +220,12 @@ const editMultipleUsers = async({users, password, roleId, courseList}) => {
         values += `(${userId}, ${courseId}),`
       }
     }
+
     await pool.execute(
       courseQuery.registerCourse + values.slice(0, values.length - 1)
     );
   }
+
   return {
     data: true
   }
@@ -252,6 +261,7 @@ const deleteUser = async({userId}) => {
     data: true
   }
 }
+
 module.exports = {
   login,
   resetUser,

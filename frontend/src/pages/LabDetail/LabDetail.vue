@@ -1,11 +1,12 @@
 <template>
   <div>
-    <v-row v-if="!clientPath" class="lab-basic-info mb-4 flex-column no-gutters">
-      <p class="display-1 text-capitalize">{{ labName }}</p>
-      <p v-if="captureId"> CAPTURE ID: {{ captureId }}</p>
-      <p class="mb-0">
-        <span class="body-1 pointer" @click="goToCourse">{{ `${courseNo}: ${courseName}` }}</span>
+    <v-row v-if="!clientPath">
+      <p class="mb-1">
+        <v-btn color="secondary" depressed small @click="goToCourse">{{ `${courseNo}: ${courseName} > Labs > ` }}</v-btn>
       </p>
+    </v-row>
+    <v-row v-if="!clientPath" class="lab-basic-info mb-4 no-gutters">
+      <p class="display-1 text-capitalize">{{ labName }}</p>
     </v-row>
     <!-- Start the lab view -->
     <!-- Embedded VR Client and Cha t -->
@@ -15,44 +16,23 @@
           <vr-client :src="clientPath"></vr-client>
         </v-card>
         <br>
-
-      </v-col>
-      <v-col :cols="2">
-        <!-- Lab details section -->
-        <SectionCard title="Media" class="mb-3">
-          <template v-slot:actions>
-            <v-row
-              align="center"
-              justify="space-around"
-            >
-            <v-btn v-if="!inCall" text color="success" @click="startCall">
-              <v-icon left x-small>call</v-icon>Start Call
-            </v-btn>
-            <v-btn v-if="inCall" text color="error" @click="endCall">
-              <v-icon left x-small>call_end</v-icon>End Call
-            </v-btn>
-            </v-row>
-          </template>
-          <!-- Chat section -->
-          <MediaChat class="media-chat" ref="mediachat" :userId="userId" :sessionId="sessionId" :firstName="firstName" :lastName="lastName"></MediaChat>
-        </SectionCard>
-        <SectionCard title="Text">
-            <TextChat ref="textchat" :session-id="sessionId"/>
-        </SectionCard>
+        <p>
+          Press the blue [VR] button to enter VR.
+        </p>
+        <p>
+          In this version, Voice and Text chat are unavailable.
+        </p>
       </v-col>
     </v-row>
     <!-- Initial view -->
     <v-row v-if="!clientPath">
       <v-col>
         <!-- Lab details section -->
-        <SectionCard title="Details">
+        <SectionCard title="Lab Details">
           <template v-slot:actions>
-            <v-btn text small color="accent" @click="startSession">
-              <v-icon left x-small>mdi-play</v-icon>Start Now
-            </v-btn>
             <v-menu
-            bottom
-            left
+              bottom
+              left
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -81,83 +61,65 @@
               </v-list>
             </v-menu>
           </template>
-          <v-container class="py-0 details-content">
-            <v-row dense>
-              <v-col :cols="2">
-                <v-chip outlined>Start Time</v-chip>
-              </v-col>
-              <v-col :cols="4" align-self="center">
-                {{ schedule.startTime }}
-              </v-col>
-              <v-col :cols="2">
-                <v-chip outlined>Duration</v-chip>
-              </v-col>
-              <v-col align-self="center">
-                {{ schedule.duration }}
-              </v-col>
-            </v-row>
-            <v-row dense>
-              <v-col :cols="2">
-                <v-chip outlined>End Time</v-chip>
-              </v-col>
-              <v-col :cols="4" align-self="center">
-                {{ schedule.endTime }}
-              </v-col>
-              <v-col :cols="2">
-                <v-chip outlined>Will Start</v-chip>
-              </v-col>
-              <v-col align-self="center">
-                {{ schedule.timeLeft }}
-              </v-col>
-            </v-row>
-          </v-container>
-        </SectionCard>
-      </v-col>
-      <v-col :cols="3" v-if="user.role == `admin`">
-        <!-- Settings section -->
-        <SectionCard title="Settings">
-          <template v-slot:actions>
-              <v-icon small>mdi-hammer-wrench</v-icon>
-          </template>
+          <v-btn color="primary" @click.stop="startSession">
+            <v-icon left x-small>mdi-play</v-icon> Start
+          </v-btn>
           <v-row>
-            <v-col :cols="4" class="setting-label">
-              <v-chip outlined>Version</v-chip>
-            </v-col>
             <v-col>
-              <v-select
-              v-model="buildScope"
-              :items="buildScopes"
-              dense
-              @change="getBuilds"
-              ></v-select>
-              <v-select
-                v-model="build"
-                :value="build"
-                :items="builds"
-                hint="Change the Komodo version for this session"
-                persistent-hint
-                dense
-              ></v-select>
+              {{ description }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col :col=2>
+              {{ schedule.duration }} long
+            </v-col>
+            <v-col :col=2>
+            {{ schedule.timeLeft }} 
+            </v-col>
+            <v-col :col=2>
+              {{ schedule.startTime }} (Start) 
+            </v-col>
+            <v-col :col=2>
+              {{ schedule.endTime }} (End)
             </v-col>
           </v-row>
         </SectionCard>
-      </v-col>
-    </v-row>
+        </v-col>
+      </v-row>
+      <v-row v-if="!clientPath">
+        <v-col v-if="user.role == `admin`">
+          <!-- Settings section -->
+          <SectionCard title="Settings (Admin Only)">
+            <v-row>
+              <v-col>
+                Temporarily change the app and build version, for your view only. To change the build for everyone, edit the lab.
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="buildScope"
+                  :items="buildScopes"
+                  dense
+                  persistent-hint
+                  hint="App"
+                  @change="getBuilds"
+                ></v-select>
+                <v-select
+                  v-model="build"
+                  :value="build"
+                  :items="builds"
+                  hint="Build / Version"
+                  persistent-hint
+                  dense
+                ></v-select>
+              </v-col>
+            </v-row>
+          </SectionCard>
+        </v-col>
+      </v-row>
     <v-row v-if="!clientPath">
-      <v-col :cols="5">
-        <!-- Description section -->
-        <SectionCard title="Description">
-          <template v-slot:actions v-if="user.role == `admin` || user.role == `instructor`">
-            <router-link :to="{ name: 'Lab Edit', params: { courseId, labId } }">
-              <v-btn text small color="grey">
-                <v-icon left x-small>mdi-pencil</v-icon>Edit
-              </v-btn>
-            </router-link>
-          </template>
-          {{ description }}
-        </SectionCard>
-      </v-col>
-      <v-col :cols="7">
+      <v-col>
         <!-- Asset section -->
         <SectionCard title="Assets">
           <template v-slot:actions v-if="user.role == `admin` || user.role == `instructor`">
@@ -172,7 +134,7 @@
             :items="assetList"
             @click:row="onAssetClick"
             item-key="assetId"
-            no-data-text="No asset added"
+            no-data-text="No assets added. Please edit the lab."
           />
         </SectionCard>
       </v-col>
@@ -186,17 +148,13 @@ import moment from "moment";
 import axios from "axios";
 import { getCourseDetail, getLabDetail, deleteLab } from "../../requests/course";
 import SectionCard from "../../components/Cards/SectionCard";
-import VrClient from "../../components/VR/VrClient"
-import MediaChat from "../../components/Chat/MediaChat"
-import TextChat from "../../components/Chat/TextChat";
+import VrClient from "../../components/VR/VrClient";
 
 export default {
   name: "LabDetail",
   components: {
     SectionCard,
-    VrClient,
-    MediaChat,
-    TextChat
+    VrClient
   },
   data() {
     return {
@@ -271,9 +229,19 @@ export default {
 
         // get build scopes from buildserver
         axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}`).then( res => {
+
+          if (!res.data || res.data.length == 0 || !res.data.forEach) {
+            console.error("SETTINGS (ADMIN ONLY): Build server returned no apps (build scopes). Check connection to build server and check that builds have been uploaded correctly.");
+
+            this.buildScopes = [];
+
+            return;
+          }
+
           res.data.forEach(scope => {
             this.buildScopes.push(scope.name)
           });
+
           this.getBuilds();
         });
       }
@@ -281,12 +249,6 @@ export default {
   },
   // Navigation handler
   beforeRouteLeave(to, from, next){
-    if (this.inCall) {
-      if (!window.confirm("Are you sure you want to leave?")) {
-        return;
-      }
-      this.$refs.mediachat.hangup();
-    }
     if (this.captureId) {
       if (!window.confirm("Are you sure you want to leave?")) {
         return;
@@ -300,17 +262,26 @@ export default {
       this.builds = [];
       // get scopes and builds from buildserver
       axios.get(`${process.env.VUE_APP_VR_CLIENT_BASE_URL}/${this.buildScope}/`).then( res => {
+
+        if (!res.data || res.data.length == 0 || !res.data.forEach) {
+          console.error("SETTINGS (ADMIN ONLY): Build server returned no apps (build scopes). Check connection to build server and check that builds have been uploaded correctly.");
+
+          this.buildScopes = [];
+
+          return;
+        }
+        
         res.data.forEach(build => {
           this.builds.push(build.name)
-        })
-      })
+        });
+      });
     },
     // Go to the selected course details page
     goToCourse() {
       this.$router.push({
         name: "Course Detail",
         params: { courseId: this.$route.params.courseId }
-      })
+      });
     },
     // Start the session
     startSession() {
@@ -331,16 +302,6 @@ export default {
         params: { assetId }
       });
     },
-    //  Start the call
-    startCall() {
-      this.$refs.mediachat.connect();
-      this.inCall = !this.inCall;
-    },
-    // End the call
-    endCall() {
-      this.$refs.mediachat.hangup();
-      this.inCall = !this.inCall;
-    },
     // Delete the lab 
     deleteLabClick() {
       let res = confirm('Are you sure you want to delete this lab?');
@@ -352,7 +313,7 @@ export default {
           // Redirec to the course details page
           this.$router.push({
             name: "Course Detail",
-            params: { courseId: this.courseId}
+            params: { courseId: this.courseId }
           })
         }, 1000);
         })
@@ -362,44 +323,37 @@ export default {
 }
 </script>
 <style>
-    .lab-detail {
-      overflow-y: scroll;
-      max-height: 764px;
-    }
-    span.body-1.pointer {
-      padding-left: 2px;
-    }
-    .v-tab{
-      font-size: 12px!important;
-    }
+  .lab-detail {
+    overflow-y: scroll;
+    max-height: 764px;
+  }
 
-    .v-btn:not(.v-btn--round).v-size--small {
-      height: 20px!important;
-      padding: 10px!important;
-    }
+  span.body-1.pointer {
+    padding-left: 2px;
+  }
 
-    .media-chat.col.col-3{
-      flex:1!important;
-      max-width: 100%!important;
-    }
+  .v-tab{
+    font-size: 12px!important;
+  }
 
-    .chat-history-container {
-      max-height: 725px;
-    }
+  .v-btn:not(.v-btn--round).v-size--small {
+    height: 20px!important;
+    padding: 10px!important;
+  }
 
-    .v-application--is-ltr .v-data-footer__select .v-select {
-      margin: 13px 0 13px 13px!important;
-    }
+  .v-application--is-ltr .v-data-footer__select .v-select {
+    margin: 13px 0 13px 13px!important;
+  }
 
-    .v-data-footer {
-      padding: 0 5px!important;
-      margin-left: -14px;
-      margin-right: -14px;
-    }
+  .v-data-footer {
+    padding: 0 5px!important;
+    margin-left: -14px;
+    margin-right: -14px;
+  }
 
-    .v-application--is-ltr .v-data-footer__pagination {
-      margin: 0 15px 0 15px!important;
-    }
+  .v-application--is-ltr .v-data-footer__pagination {
+    margin: 0 15px 0 15px!important;
+  }
 
   @media screen and (max-width: 800px) and (max-height: 450px){
     .col.col-4.setting-label{

@@ -1,7 +1,8 @@
 {
-  "name": "api",
-  "version": "1.0.0",
-  "description": "",
+  "name": "komodo-portal-backend",
+  "version": "1.2.2",
+  "description": "Back end for Project Komodo web portal",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "dev": "node index.js",
