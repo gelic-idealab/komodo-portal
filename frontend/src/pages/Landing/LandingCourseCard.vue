@@ -1,20 +1,23 @@
 <template>
-  <router-link
-    :to="{ name: 'Course Detail', params: { courseId: course.courseId } }"
-    class="landing-course-card-container pa-4 radius-2 full-height"
-  >
+  <div class="landing-course-card-container pa-4 radius-2 full-height">
     <div class="subtitle-1 text--primary pb-2">
       {{ `${course.courseNo}: ${course.courseName}` }}
     </div>
-    <div class="text--secondary">{{ course.department }}</div>
-    <p class="text--secondary">{{ `Instructor: ${course.instructorName}` }}</p>
+    <div class="text--secondary">{{ course.department || "No Dept."}}</div>
+    <p class="text--secondary">{{ `${course.instructorName || "No Instr."}` }}</p>
+    <router-link
+      :to="{ name: 'Course Detail', params: { courseId: course.courseId } }"
+    >
+      <v-btn color="primary" depressed>{{ `Go` }}</v-btn>
+    </router-link>
     <div v-if="user.role == `admin` || user.role == `instructor`">
     </div>
-  </router-link>
+  </div>
 </template>
 
 <script>
 export default {
+  components: { },
   name: "LandingCourseCard",
   data() {
     return {
@@ -34,12 +37,12 @@ export default {
   .landing-course-card-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    align-items: left;
+    justify-content: left;
+    text-align: left;
   }
-  .landing-course-card-container:hover {
-    box-shadow: inset 0 0 10px -2px rgba(0, 0, 0, 0.1);
+  .landing-course-card-container {
+    background-color: #eee;
   }
 
   @media screen and (max-width: 400px){

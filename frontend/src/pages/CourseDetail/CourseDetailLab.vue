@@ -14,7 +14,7 @@
       <!-- Edit and delete the lab -->
       <template v-slot:item.action="{ item }">
         <v-btn class="float-right" color="primary" depressed small @click.stop="onRowClick(item)">
-          Go to Lab
+          Go
         </v-btn>
         <v-icon small class="mr-2" v-if="user.role == `admin` || user.role == `instructor`" @click.stop="deleteLabClick(item)">delete</v-icon>
       </template>
